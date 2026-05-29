@@ -221,7 +221,9 @@
     </div>
 
     <!-- ───────────── Inject modal ───────────── -->
-    <div v-if="injectModal" class="custom-modal-overlay" @click="closeInject">
+    <!-- Outside-click intentionally does NOT close this modal (amount entry —
+         avoid accidental dismissal); only the × button closes it. -->
+    <div v-if="injectModal" class="custom-modal-overlay">
       <div class="custom-modal cyan-theme" @click.stop>
         <button class="custom-modal-close" type="button" @click="closeInject">✕</button>
         <div class="custom-modal-title">{{ $t("pages.incubator.inject.title") }}</div>
