@@ -1,0 +1,2199 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Incubator - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* =========================================
+               EarnX / Incubator 深海蓝 (Deep Sky Blue) 视觉主题覆盖
+               ========================================= */
+            :root {
+                --cyan: #0284c7;
+                --cyan-glow: rgba(2, 132, 199, 0.4);
+                --cyan-bright: #38bdf8;
+
+                --bg-dark: #020617;
+                --bg-card: rgba(15, 23, 42, 0.95);
+                --bg-card-solid: #0f172a;
+                --border-dark: rgba(2, 132, 199, 0.2);
+                --border-glow: rgba(2, 132, 199, 0.4);
+            }
+
+            body {
+                background: var(--bg-dark) !important;
+            }
+
+            .header {
+                background: rgba(2, 6, 23, 0.85) !important;
+            }
+
+            .grid-bg {
+                background-image:
+                    linear-gradient(
+                        rgba(2, 132, 199, 0.05) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(2, 132, 199, 0.05) 1px,
+                        transparent 1px
+                    ) !important;
+            }
+
+            .glow-bg {
+                background:
+                    radial-gradient(
+                        ellipse at 20% 0%,
+                        rgba(2, 132, 199, 0.15) 0%,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 100%,
+                        rgba(56, 189, 248, 0.08) 0%,
+                        transparent 50%
+                    ) !important;
+            }
+
+            .tab.active {
+                background: rgba(2, 132, 199, 0.15) !important;
+            }
+            .info-box {
+                background: rgba(2, 132, 199, 0.05) !important;
+                border-left-color: var(--cyan) !important;
+            }
+            .info-box.amber {
+                border-left-color: var(--amber) !important;
+                background: rgba(245, 158, 11, 0.05) !important;
+            }
+            .p-btn {
+                background: rgba(2, 132, 199, 0.1) !important;
+                border-color: rgba(2, 132, 199, 0.3) !important;
+                color: var(--cyan-bright) !important;
+            }
+            .p-btn:hover {
+                background: rgba(2, 132, 199, 0.2) !important;
+            }
+            .nav-link:hover,
+            .nav-link.active {
+                background: rgba(2, 132, 199, 0.1) !important;
+                color: var(--cyan-bright) !important;
+            }
+
+            .btn-submit {
+                background: linear-gradient(
+                    135deg,
+                    #0284c7 0%,
+                    #0369a1 100%
+                ) !important;
+                color: #fff !important;
+                box-shadow: 0 0 20px rgba(2, 132, 199, 0.3) !important;
+            }
+
+            .btn-submit.amber {
+                background: linear-gradient(
+                    135deg,
+                    #f59e0b 0%,
+                    #d97706 100%
+                ) !important;
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
+            }
+
+            .brand-logo {
+                box-shadow: 0 0 10px rgba(2, 132, 199, 0.15) !important;
+            }
+            .brand-logo:hover {
+                box-shadow: 0 0 15px rgba(2, 132, 199, 0.4) !important;
+            }
+
+            /* 隐藏数字输入框箭头 */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            .input-header {
+                color: #ffffff !important;
+            }
+
+            /* 迷你调试 Toggle 按钮样式 */
+            .sim-toggle-mini {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--border-dark);
+                color: var(--text-secondary);
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+            }
+
+            /* 外部链接样式 */
+            .ext-link-inline {
+                color: var(--cyan-bright);
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            .ext-link-inline:hover {
+                text-decoration: underline;
+                color: #fff;
+            }
+
+            /* 可折叠面板样式 */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 24px;
+                margin-bottom: 24px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan-bright);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 20px 20px 20px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 排行榜列表项 */
+            .lb-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .lb-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                font-size: 14px;
+            }
+            .lb-rank {
+                font-family: "JetBrains Mono", monospace;
+                color: var(--text-muted);
+                width: 24px;
+                font-weight: 600;
+            }
+            .lb-address {
+                font-family: "JetBrains Mono", monospace;
+                color: var(--text-primary);
+                flex: 1;
+            }
+            .lb-value {
+                font-family: "JetBrains Mono", monospace;
+                color: var(--cyan-bright);
+                font-weight: 600;
+            }
+            .lb-item.top-1 .lb-rank {
+                color: #fbbf24;
+            }
+            .lb-item.top-2 .lb-rank {
+                color: #94a3b8;
+            }
+            .lb-item.top-3 .lb-rank {
+                color: #b45309;
+            }
+
+            /* 弹窗系统样式 */
+            .custom-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .custom-modal {
+                width: 88%;
+                max-width: 360px;
+                background: rgba(15, 23, 42, 0.95);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            }
+            .custom-modal.cyan-theme {
+                border-color: var(--cyan);
+            }
+            .custom-modal.show {
+                transform: translateY(0);
+            }
+            .custom-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .custom-modal-close:hover {
+                color: var(--cyan-bright);
+            }
+            .custom-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                padding-right: 24px;
+            }
+            .custom-modal-text {
+                font-size: 13px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+
+            .done-state-panel {
+                text-align: center;
+                padding: 40px 20px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 10px;
+            }
+            .done-icon {
+                font-size: 40px;
+                color: var(--green);
+                margin-bottom: 16px;
+                filter: drop-shadow(0 0 10px var(--green-glow));
+            }
+            .done-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 12px;
+            }
+            .done-desc {
+                font-size: 14px;
+                color: var(--text-muted);
+                line-height: 1.6;
+            }
+
+            /* 数据表格组件样式 */
+            .modal-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 14px;
+                font-size: 13px;
+            }
+            .modal-table th {
+                border-bottom: 1px solid var(--border-dark);
+                padding: 8px 6px;
+                color: var(--cyan-bright);
+                font-weight: 600;
+                text-align: left;
+            }
+            .modal-table td {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 8px 6px;
+                color: var(--text-secondary);
+            }
+            .modal-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="weight-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeWeightModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="weight-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeWeightModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">OpenDAO Node Weight</div>
+                <div class="custom-modal-text">
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                        "
+                    >
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                line-height: 1.6;
+                            "
+                        >
+                            This value is securely fetched from the
+                            <strong style="color: var(--text-primary)"
+                                >OpenDAO Partner API</strong
+                            >.<br /><br />
+                            It acts as a multiplier applied directly to your
+                            <strong>30-Day Average Injection</strong>. A higher
+                            weight factor significantly amplifies your
+                            competitive proportion in the daily snapshot,
+                            securing a larger share of the BARKX conversion
+                            quota.
+                        </div>
+
+                        <table class="modal-table">
+                            <thead>
+                                <tr>
+                                    <th>Node Tier</th>
+                                    <th>Node Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Not Registered</td>
+                                    <td>1.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Nova</td>
+                                    <td>1.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Voyager</td>
+                                    <td>2.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Navigator</td>
+                                    <td>5.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Commander</td>
+                                    <td>10.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Stellar Master</td>
+                                    <td>20.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="dynamic-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeDynamicModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="dynamic-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeDynamicModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Dynamic Reward Mapping</div>
+                <div class="custom-modal-text">
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                        "
+                    >
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                line-height: 1.6;
+                            "
+                        >
+                            This value is securely fetched from the
+                            <strong style="color: var(--text-primary)"
+                                >OpenDAO Partner API</strong
+                            >.<br /><br />
+                            It acts as a factor to directly map your OpenDAO
+                            Dynamic Reward into the leader's incubation quota.
+                        </div>
+
+                        <table class="modal-table">
+                            <thead>
+                                <tr>
+                                    <th>Node Tier</th>
+                                    <th>Mapping Efficiency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Not Registered</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Nova</td>
+                                    <td>10%</td>
+                                </tr>
+                                <tr>
+                                    <td>Voyager</td>
+                                    <td>20%</td>
+                                </tr>
+                                <tr>
+                                    <td>Navigator</td>
+                                    <td>50%</td>
+                                </tr>
+                                <tr>
+                                    <td>Commander</td>
+                                    <td>100%</td>
+                                </tr>
+                                <tr>
+                                    <td>Stellar Master</td>
+                                    <td>300%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="feedback-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeFeedbackModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="feedback-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeFeedbackModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Feedback Reward Mapping</div>
+                <div class="custom-modal-text">
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                        "
+                    >
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                line-height: 1.6;
+                            "
+                        >
+                            This value is securely fetched from the
+                            <strong style="color: var(--text-primary)"
+                                >OpenDAO Partner API</strong
+                            >.<br /><br />
+                            It acts as a factor to directly map your OpenDAO
+                            Feedback Reward into the leader's incubation quota.
+                        </div>
+
+                        <table class="modal-table">
+                            <thead>
+                                <tr>
+                                    <th>Node Tier</th>
+                                    <th>Mapping Efficiency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Not Registered</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Nova</td>
+                                    <td>20%</td>
+                                </tr>
+                                <tr>
+                                    <td>Voyager</td>
+                                    <td>40%</td>
+                                </tr>
+                                <tr>
+                                    <td>Navigator</td>
+                                    <td>60%</td>
+                                </tr>
+                                <tr>
+                                    <td>Commander</td>
+                                    <td>100%</td>
+                                </tr>
+                                <tr>
+                                    <td>Stellar Master</td>
+                                    <td>200%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="incubate-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeIncubateModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="incubate-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeIncubateModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Confirm Incubation</div>
+                <div class="custom-modal-text" id="incubate-modal-text"></div>
+
+                <button
+                    class="btn-submit"
+                    style="margin-top: 20px"
+                    id="confirm-incubate-btn"
+                    onclick="executeIncubation(this, 'injection')"
+                >
+                    Confirm
+                </button>
+            </div>
+        </div>
+
+        <div
+            id="inject-modal-overlay"
+            class="custom-modal-overlay"
+            style="display: none"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="inject-modal-card"
+                style="max-width: 460px; width: 90%"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeInjectModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Inject vBARKX</div>
+                <div class="custom-modal-text" style="padding-top: 10px">
+                    <div class="info-box">
+                        Inject your vBARKX to build your 30-day average balance.
+                        Daily snapshots taken at
+                        <strong style="color: var(--cyan-bright)"
+                            >00:20 UTC</strong
+                        >
+                        determine your share for the BARKX conversion quota in
+                        the next day.
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-header">
+                            <span>Amount to Inject</span>
+                            <span id="wallet-vbarkx-balance"
+                                >Balance: 12,000.00 vBARKX</span
+                            >
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                id="deposit-input"
+                                class="input-field"
+                                placeholder="0.00"
+                            />
+                            <div class="asset-badge">vBARKX</div>
+                        </div>
+                        <div class="percent-btns">
+                            <button
+                                class="p-btn"
+                                onclick="
+                                    document.getElementById(
+                                        'deposit-input',
+                                    ).value = 12000.0
+                                "
+                            >
+                                MAX
+                            </button>
+                        </div>
+                    </div>
+                    <button
+                        id="deposit-action-btn"
+                        class="btn-submit"
+                        onclick="handleButtonAction(this, 'Inject vBARKX')"
+                    >
+                        Approve vBARKX
+                    </button>
+
+                    <div
+                        style="
+                            color: var(--red);
+                            font-size: 12px;
+                            margin-top: 12px;
+                            line-height: 1.5;
+                            text-align: left;
+                            font-weight: 500;
+                        "
+                    >
+                        ⚠️ Warning: Injection is irreversible. Injected vBARKX
+                        can only be converted and cannot be withdrawn.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent active"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link active"
+                        >Incubator</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent active"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link active"
+                        >Incubator</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 20px;
+                    position: relative;
+                "
+            >
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Incubator
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    VBARKX-BARKX Gateway
+                </p>
+
+                <div
+                    style="
+                        position: absolute;
+                        right: 0;
+                        top: -10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        align-items: flex-end;
+                    "
+                >
+                    <button
+                        id="sim-normal-done-btn"
+                        class="sim-toggle-mini"
+                        onclick="toggleNormalDoneState()"
+                    >
+                        Normal Status: Active
+                    </button>
+                    <button
+                        id="sim-leader-done-btn"
+                        class="sim-toggle-mini"
+                        onclick="toggleLeaderDoneState()"
+                    >
+                        Leader Status: Active
+                    </button>
+                    <button
+                        id="sim-balance-btn"
+                        class="sim-toggle-mini"
+                        onclick="toggleBalanceState()"
+                    >
+                        Simulation: Normal
+                    </button>
+                </div>
+            </div>
+
+            <div id="incubator-content">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('incubate')">
+                        Normal Incubation
+                    </div>
+                    <div class="tab" onclick="switchTab('leader')">
+                        Leader Incubation
+                    </div>
+                </div>
+
+                <div id="incubate-panel" class="panel active">
+                    <div id="incubate-active-view">
+                        <div class="info-box">
+                            Convert your injected vBARKX to BARKX based on your
+                            allocated quota. Any unused conversion quota for the
+                            day will be forfeited and does not roll over to the
+                            next day.
+                        </div>
+
+                        <div
+                            class="card"
+                            style="
+                                background: rgba(0, 0, 0, 0.2);
+                                padding: 16px;
+                                border: 1px solid var(--border-dark);
+                                border-radius: 12px;
+                                margin-bottom: 16px;
+                            "
+                        >
+                            <div class="data-row">
+                                <span class="data-lbl">My Injection</span>
+                                <span
+                                    class="data-val"
+                                    style="color: var(--cyan-bright)"
+                                    id="normal-my-injection-display"
+                                    >25,000.00</span
+                                >
+                            </div>
+                            <div class="data-row">
+                                <span class="data-lbl"
+                                    >30-Day Average Weighted</span
+                                >
+                                <span
+                                    class="data-val"
+                                    style="color: var(--text-primary)"
+                                    >18,450.00</span
+                                >
+                            </div>
+                            <div
+                                class="data-row"
+                                style="
+                                    padding-left: 16px;
+                                    border-bottom: none;
+                                    font-size: 13px;
+                                    opacity: 0.85;
+                                "
+                            >
+                                <span class="data-lbl"
+                                    >└ OpenDAO Node Weight</span
+                                >
+                                <span
+                                    class="data-val"
+                                    style="
+                                        color: var(--text-primary);
+                                        display: inline-flex;
+                                        align-items: center;
+                                    "
+                                >
+                                    1.00
+                                    <svg
+                                        onclick="openWeightModal()"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style="
+                                            cursor: pointer;
+                                            margin-left: 6px;
+                                            color: #ffffff;
+                                        "
+                                    >
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line
+                                            x1="12"
+                                            y1="16"
+                                            x2="12"
+                                            y2="12"
+                                        ></line>
+                                        <line
+                                            x1="12"
+                                            y1="8"
+                                            x2="12.01"
+                                            y2="8"
+                                        ></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-lbl"
+                                    >Current Quota Share</span
+                                >
+                                <span
+                                    class="data-val"
+                                    style="color: var(--text-primary)"
+                                    >0.25%</span
+                                >
+                            </div>
+                            <div class="data-row">
+                                <span class="data-lbl">Global Quota Today</span>
+                                <span
+                                    class="data-val"
+                                    style="color: var(--text-primary)"
+                                    >500,000.00</span
+                                >
+                            </div>
+                            <div class="data-row" style="border-bottom: none">
+                                <span
+                                    class="data-lbl"
+                                    style="
+                                        color: var(--green);
+                                        font-weight: 600;
+                                    "
+                                    >My Quota Today</span
+                                >
+                                <span
+                                    class="data-val green"
+                                    style="font-weight: 700"
+                                    id="your-quota-display"
+                                    >1,250.00</span
+                                >
+                            </div>
+                        </div>
+
+                        <div
+                            class="input-group"
+                            style="border-color: var(--cyan)"
+                        >
+                            <div class="input-header">
+                                <span
+                                    style="
+                                        color: var(--cyan-bright);
+                                        font-weight: 600;
+                                    "
+                                    >Amount to Incubate</span
+                                >
+                                <span id="injected-pool-val"
+                                    >Injected: 25,000.00 vBARKX</span
+                                >
+                            </div>
+                            <div class="input-row">
+                                <input
+                                    type="number"
+                                    id="incubate-input"
+                                    class="input-field"
+                                    placeholder="0.00"
+                                    style="color: var(--cyan-bright)"
+                                    readonly
+                                />
+                                <div class="asset-badge">vBARKX</div>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                text-align: center;
+                                color: var(--text-muted);
+                                font-size: 24px;
+                                margin: 8px 0;
+                            "
+                        >
+                            ↓
+                        </div>
+
+                        <div class="input-group" style="margin-top: 8px">
+                            <div
+                                class="input-header"
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                "
+                            >
+                                <span>Converted Amount</span>
+                                <span
+                                    style="
+                                        color: var(--text-muted);
+                                        font-size: 11px;
+                                    "
+                                    >1 vBARKX = 1 BARKX</span
+                                >
+                            </div>
+                            <div class="input-row">
+                                <input
+                                    type="number"
+                                    id="incubate-output"
+                                    class="input-field"
+                                    placeholder="0.00"
+                                    readonly
+                                />
+                                <div class="asset-badge">BARKX</div>
+                            </div>
+                        </div>
+
+                        <button
+                            id="incubate-action-btn"
+                            class="btn-submit"
+                            style="margin-top: 16px"
+                            onclick="openIncubateModal(false)"
+                        >
+                            Incubate to BARKX
+                        </button>
+
+                        <button
+                            class="btn-submit amber"
+                            style="margin-top: 12px"
+                            onclick="openInjectModal()"
+                        >
+                            Inject vBARKX
+                        </button>
+                    </div>
+
+                    <div
+                        id="incubate-done-view"
+                        class="done-state-panel"
+                        style="display: none"
+                    >
+                        <div class="done-icon">
+                            <svg
+                                width="40"
+                                height="40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                ></path>
+                                <polyline
+                                    points="22 4 12 14.01 9 11.01"
+                                ></polyline>
+                            </svg>
+                        </div>
+                        <div class="done-title">
+                            Normal Incubation Completed
+                        </div>
+                        <div class="done-desc">
+                            You have already executed your conversion in the
+                            Normal Incubator for today.<br />
+                            Please come back tomorrow at
+                            <strong>00:20 UTC</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="leader-panel" class="panel">
+                    <div id="leader-active-view">
+                        <div class="info-box">
+                            Leader Incubator maps the daily conversion quota
+                            from the revenue data of the OpenDAO Node Signal
+                            Model and Node Feedback Model. On any given day, a
+                            node's Dynamic Reward and Feedback Reward are
+                            automatically mapped to its daily conversion quota
+                            in the Leader Incubator. If the daily conversion
+                            quota is unused, it will accumulate automatically.
+                        </div>
+
+                        <div
+                            class="card"
+                            style="
+                                background: rgba(0, 0, 0, 0.2);
+                                padding: 16px;
+                                border: 1px solid var(--border-dark);
+                                border-radius: 12px;
+                                margin-bottom: 16px;
+                            "
+                        >
+                            <div class="data-row">
+                                <span class="data-lbl">Dynamic Reward</span>
+                                <span
+                                    class="data-val"
+                                    style="color: var(--text-primary)"
+                                    >100.00</span
+                                >
+                            </div>
+                            <div
+                                class="data-row"
+                                style="
+                                    padding-left: 16px;
+                                    border-bottom: none;
+                                    font-size: 13px;
+                                    opacity: 0.85;
+                                "
+                            >
+                                <span class="data-lbl"
+                                    >└ OpenDAO Mapping Efficiency</span
+                                >
+                                <span
+                                    class="data-val"
+                                    style="
+                                        color: var(--cyan-bright);
+                                        display: inline-flex;
+                                        align-items: center;
+                                    "
+                                >
+                                    50%
+                                    <svg
+                                        onclick="openDynamicModal()"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style="
+                                            cursor: pointer;
+                                            margin-left: 6px;
+                                            color: var(--cyan-bright);
+                                        "
+                                    >
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line
+                                            x1="12"
+                                            y1="16"
+                                            x2="12"
+                                            y2="12"
+                                        ></line>
+                                        <line
+                                            x1="12"
+                                            y1="8"
+                                            x2="12.01"
+                                            y2="8"
+                                        ></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-lbl">Feedback Reward</span>
+                                <span
+                                    class="data-val"
+                                    style="color: var(--text-primary)"
+                                    >200.00</span
+                                >
+                            </div>
+                            <div
+                                class="data-row"
+                                style="
+                                    padding-left: 16px;
+                                    border-bottom: none;
+                                    font-size: 13px;
+                                    opacity: 0.85;
+                                "
+                            >
+                                <span class="data-lbl"
+                                    >└ OpenDAO Mapping Efficiency</span
+                                >
+                                <span
+                                    class="data-val"
+                                    style="
+                                        color: var(--cyan-bright);
+                                        display: inline-flex;
+                                        align-items: center;
+                                    "
+                                >
+                                    100%
+                                    <svg
+                                        onclick="openFeedbackModal()"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style="
+                                            cursor: pointer;
+                                            margin-left: 6px;
+                                            color: var(--cyan-bright);
+                                        "
+                                    >
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line
+                                            x1="12"
+                                            y1="16"
+                                            x2="12"
+                                            y2="12"
+                                        ></line>
+                                        <line
+                                            x1="12"
+                                            y1="8"
+                                            x2="12.01"
+                                            y2="8"
+                                        ></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div
+                                class="data-row"
+                                style="
+                                    border-top: 1px dashed var(--border-dark);
+                                    margin-top: 6px;
+                                    padding-top: 12px;
+                                "
+                            >
+                                <span
+                                    class="data-lbl"
+                                    style="color: var(--green)"
+                                    >Leader Quota Growth</span
+                                >
+                                <span class="val green">250.00</span>
+                            </div>
+                            <div class="data-row" style="border-bottom: none">
+                                <span
+                                    class="data-lbl"
+                                    style="color: var(--purple)"
+                                    >Total Unused Leader Quota</span
+                                >
+                                <span
+                                    class="data-val"
+                                    style="
+                                        color: var(--purple);
+                                        font-weight: 700;
+                                    "
+                                    >1,000.00</span
+                                >
+                            </div>
+                        </div>
+
+                        <div
+                            class="input-group"
+                            style="border-color: var(--purple)"
+                        >
+                            <div class="input-header">
+                                <span
+                                    style="
+                                        color: var(--purple);
+                                        font-weight: 600;
+                                    "
+                                    >Amount to Incubate</span
+                                >
+                                <span id="leader-available-display"
+                                    >Injected: 25,000.00 vBARKX</span
+                                >
+                            </div>
+                            <div class="input-row">
+                                <input
+                                    type="number"
+                                    id="leader-incubate-input"
+                                    class="input-field"
+                                    placeholder="0.00"
+                                    style="color: var(--purple)"
+                                    readonly
+                                />
+                                <div class="asset-badge">vBARKX</div>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                text-align: center;
+                                color: var(--text-muted);
+                                font-size: 24px;
+                                margin: 8px 0;
+                            "
+                        >
+                            ↓
+                        </div>
+
+                        <div class="input-group" style="margin-top: 8px">
+                            <div
+                                class="input-header"
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                "
+                            >
+                                <span>Converted Amount</span>
+                                <span
+                                    style="
+                                        color: var(--text-muted);
+                                        font-size: 11px;
+                                    "
+                                    >1 vBARKX = 1 BARKX</span
+                                >
+                            </div>
+                            <div class="input-row">
+                                <input
+                                    type="number"
+                                    id="leader-incubate-output"
+                                    class="input-field"
+                                    placeholder="0.00"
+                                    readonly
+                                />
+                                <div class="asset-badge">BARKX</div>
+                            </div>
+                        </div>
+
+                        <button
+                            id="leader-incubate-action-btn"
+                            class="btn-submit"
+                            style="
+                                margin-top: 16px;
+                                background: linear-gradient(
+                                    135deg,
+                                    var(--purple) 0%,
+                                    #7c3aed 100%
+                                ) !important;
+                                box-shadow: 0 0 20px rgba(168, 85, 247, 0.3) !important;
+                            "
+                            onclick="openIncubateModal(true)"
+                        >
+                            Incubate to BARKX
+                        </button>
+
+                        <button
+                            class="btn-submit amber"
+                            style="margin-top: 12px"
+                            onclick="openInjectModal()"
+                        >
+                            Inject vBARKX
+                        </button>
+                    </div>
+
+                    <div
+                        id="leader-done-view"
+                        class="done-state-panel"
+                        style="display: none"
+                    >
+                        <div
+                            class="done-icon"
+                            style="
+                                color: var(--purple);
+                                filter: drop-shadow(
+                                    0 0 10px rgba(168, 85, 247, 0.5)
+                                );
+                            "
+                        >
+                            <svg
+                                width="40"
+                                height="40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                ></path>
+                                <polyline
+                                    points="22 4 12 14.01 9 11.01"
+                                ></polyline>
+                            </svg>
+                        </div>
+                        <div class="done-title">
+                            Leader Incubation Completed
+                        </div>
+                        <div class="done-desc">
+                            You have already executed your conversion in the
+                            Leader Incubator for today.<br />
+                            Please come back tomorrow at
+                            <strong>00:20 UTC</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-card">
+                    <div
+                        class="collapsible-header"
+                        onclick="toggleCollapsible('leaderboard-content', this)"
+                    >
+                        <span
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            Incubation Leaderboard
+                        </span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div id="leaderboard-content" class="collapsible-content">
+                        <div
+                            id="lb-incubation"
+                            class="sub-panel"
+                            style="display: block"
+                        >
+                            <div class="lb-list">
+                                <div class="lb-item top-1">
+                                    <span class="lb-rank">1</span
+                                    ><span class="lb-address">0x8a...4f</span
+                                    ><span class="lb-value">452,100 BARKX</span>
+                                </div>
+                                <div class="lb-item top-2">
+                                    <span class="lb-rank">2</span
+                                    ><span class="lb-address">0x3d...99</span
+                                    ><span class="lb-value">385,450 BARKX</span>
+                                </div>
+                                <div class="lb-item top-3">
+                                    <span class="lb-rank">3</span
+                                    ><span class="lb-address">0x1b...e8</span
+                                    ><span class="lb-value">340,200 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">4</span
+                                    ><span class="lb-address">0x9f...22</span
+                                    ><span class="lb-value">295,800 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">5</span
+                                    ><span class="lb-address">0x5c...11</span
+                                    ><span class="lb-value">275,000 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">6</span
+                                    ><span class="lb-address">0x2a...bb</span
+                                    ><span class="lb-value">240,500 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">7</span
+                                    ><span class="lb-address">0x4e...78</span
+                                    ><span class="lb-value">210,300 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">8</span
+                                    ><span class="lb-address">0x7d...f2</span
+                                    ><span class="lb-value">185,600 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">9</span
+                                    ><span class="lb-address">0x6b...44</span
+                                    ><span class="lb-value">165,900 BARKX</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">10</span
+                                    ><span class="lb-address">0x1c...a3</span
+                                    ><span class="lb-value">150,200 BARKX</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer style="text-align: center; margin-top: 24px">
+                <div
+                    style="
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        opacity: 0.6;
+                        letter-spacing: 0.5px;
+                    "
+                >
+                    Powered by OpenDAO
+                </div>
+            </footer>
+        </main>
+
+        <script>
+            // 全局模拟运行状态变量
+            let isNormalIncubationDone = false;
+            let isLeaderIncubationDone = false;
+            let isInsufficientState = false;
+            let currentInjectedBalance = 25000.0;
+            let currentQuota = 1250.0;
+            let leaderQuotaUnused = 1000.0;
+
+            // 页面加载自动全量初始化联动数据
+            window.addEventListener("DOMContentLoaded", () => {
+                initIncubateValues();
+            });
+
+            function initIncubateValues() {
+                // Normal 面板初始化数值联动
+                document.getElementById("incubate-input").value =
+                    currentQuota.toFixed(2);
+                document.getElementById("incubate-output").value =
+                    currentQuota.toFixed(2);
+
+                // Leader 面板初始化数值全自动联动
+                if (document.getElementById("leader-incubate-input")) {
+                    document.getElementById("leader-incubate-input").value =
+                        leaderQuotaUnused.toFixed(2);
+                }
+                if (document.getElementById("leader-incubate-output")) {
+                    document.getElementById("leader-incubate-output").value =
+                        leaderQuotaUnused.toFixed(2);
+                }
+
+                checkBalanceAndQuotaStatus();
+            }
+
+            // 侧边导航 logic
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // 选项卡切换逻辑
+            function switchTab(tabId) {
+                document
+                    .querySelectorAll(".tabs > .tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll(".panel")
+                    .forEach((p) => p.classList.remove("active"));
+
+                const targetTabBtn = document.querySelector(
+                    `.tabs .tab[onclick="switchTab('${tabId}')"]`,
+                );
+                if (targetTabBtn) targetTabBtn.classList.add("active");
+
+                const targetPanel = document.getElementById(tabId + "-panel");
+                if (targetPanel) targetPanel.classList.add("active");
+            }
+
+            // 折叠面板切换逻辑
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                }
+            }
+
+            // 核心状态检测：根据仿真状态控制所有机制的 Incubate to BARKX 按钮文案与开启行为
+            function checkBalanceAndQuotaStatus() {
+                const normalBtn = document.getElementById(
+                    "incubate-action-btn",
+                );
+                const leaderBtn = document.getElementById(
+                    "leader-incubate-action-btn",
+                );
+
+                if (isInsufficientState) {
+                    // 锁死 Normal 孵化主入口
+                    if (normalBtn) {
+                        normalBtn.innerText = "Insufficient Injection";
+                        normalBtn.disabled = true;
+                        normalBtn.style.opacity = "0.5";
+                        normalBtn.style.pointerEvents = "none";
+                        normalBtn.style.background =
+                            "linear-gradient(135deg, #475569 0%, #334155 100%)";
+                        normalBtn.style.boxShadow = "none";
+                    }
+                    // 锁死 Leader 孵化主入口
+                    if (leaderBtn) {
+                        leaderBtn.innerText = "Insufficient Injection";
+                        leaderBtn.disabled = true;
+                        leaderBtn.style.opacity = "0.5";
+                        leaderBtn.style.pointerEvents = "none";
+                        leaderBtn.style.background =
+                            "linear-gradient(135deg, #475569 0%, #334155 100%)";
+                        leaderBtn.style.boxShadow = "none";
+                    }
+                } else {
+                    // 恢复 Normal 孵化主入口
+                    if (normalBtn) {
+                        normalBtn.innerText = "Incubate to BARKX";
+                        normalBtn.disabled = false;
+                        normalBtn.style.opacity = "1";
+                        normalBtn.style.pointerEvents = "auto";
+                        normalBtn.style.background =
+                            "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)";
+                        normalBtn.style.boxShadow =
+                            "0 0 20px rgba(2, 132, 199, 0.3)";
+                    }
+                    // 恢复 Leader 孵化主入口
+                    if (leaderBtn) {
+                        leaderBtn.innerText = "Incubate to BARKX";
+                        leaderBtn.disabled = false;
+                        leaderBtn.style.opacity = "1";
+                        leaderBtn.style.pointerEvents = "auto";
+                        leaderBtn.style.background =
+                            "linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%)";
+                        leaderBtn.style.boxShadow =
+                            "0 0 20px rgba(168, 85, 247, 0.3)";
+                    }
+                }
+            }
+
+            // 调试 Toggle：Normal 转换完成状态模拟
+            function toggleNormalDoneState() {
+                isNormalIncubationDone = !isNormalIncubationDone;
+                const btn = document.getElementById("sim-normal-done-btn");
+
+                const activeView = document.getElementById(
+                    "incubate-active-view",
+                );
+                const doneView = document.getElementById("incubate-done-view");
+
+                if (isNormalIncubationDone) {
+                    btn.innerText = "Normal Status: Done";
+                    btn.style.color = "var(--green)";
+                    btn.style.borderColor = "var(--green)";
+                    btn.style.background = "rgba(34, 197, 94, 0.1)";
+
+                    activeView.style.display = "none";
+                    doneView.style.display = "block";
+                } else {
+                    btn.innerText = "Normal Status: Active";
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255,255,255,0.05)";
+
+                    activeView.style.display = "block";
+                    doneView.style.display = "none";
+                    checkBalanceAndQuotaStatus();
+                }
+            }
+
+            // 调试 Toggle：Leader 转换完成状态独立模拟
+            function toggleLeaderDoneState() {
+                isLeaderIncubationDone = !isLeaderIncubationDone;
+                const btn = document.getElementById("sim-leader-done-btn");
+
+                const leaderActiveView =
+                    document.getElementById("leader-active-view");
+                const leaderDoneView =
+                    document.getElementById("leader-done-view");
+
+                if (isLeaderIncubationDone) {
+                    btn.innerText = "Leader Status: Done";
+                    btn.style.color = "var(--purple)";
+                    btn.style.borderColor = "var(--purple)";
+                    btn.style.background = "rgba(168, 85, 247, 0.1)";
+
+                    leaderActiveView.style.display = "none";
+                    leaderDoneView.style.display = "block";
+                } else {
+                    btn.innerText = "Leader Status: Active";
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255,255,255,0.05)";
+
+                    leaderActiveView.style.display = "block";
+                    leaderDoneView.style.display = "none";
+                    checkBalanceAndQuotaStatus();
+                }
+            }
+
+            // 调试 Toggle：模拟余额不足 / 恢复正常的数值情景与联动映射
+            function toggleBalanceState() {
+                isInsufficientState = !isInsufficientState;
+                const simBtn = document.getElementById("sim-balance-btn");
+                const injectedPoolVal =
+                    document.getElementById("injected-pool-val");
+                const normalMyInjectionDisplay = document.getElementById(
+                    "normal-my-injection-display",
+                );
+                const leaderAvailableDisplay = document.getElementById(
+                    "leader-available-display",
+                );
+
+                if (isInsufficientState) {
+                    currentInjectedBalance = 500.0;
+                    simBtn.innerText = "Simulation: Insufficient";
+                    simBtn.style.color = "var(--red)";
+                    simBtn.style.borderColor = "var(--red)";
+                    simBtn.style.background = "rgba(239, 68, 68, 0.1)";
+
+                    if (injectedPoolVal)
+                        injectedPoolVal.innerText = "Injected: 500.00 vBARKX";
+                    if (normalMyInjectionDisplay)
+                        normalMyInjectionDisplay.innerText = "500.00";
+                    if (leaderAvailableDisplay)
+                        leaderAvailableDisplay.innerText =
+                            "Injected: 500.00 vBARKX";
+                } else {
+                    currentInjectedBalance = 25000.0;
+                    simBtn.innerText = "Simulation: Normal";
+                    simBtn.style.color = "var(--text-secondary)";
+                    simBtn.style.borderColor = "var(--border-dark)";
+                    simBtn.style.background = "rgba(255, 255, 255, 0.05)";
+
+                    if (injectedPoolVal)
+                        injectedPoolVal.innerText =
+                            "Injected: 25,000.00 vBARKX";
+                    if (normalMyInjectionDisplay)
+                        normalMyInjectionDisplay.innerText = "25,000.00";
+                    if (leaderAvailableDisplay)
+                        leaderAvailableDisplay.innerText =
+                            "Injected: 25,000.00 vBARKX";
+                }
+
+                checkBalanceAndQuotaStatus();
+            }
+
+            // 统一的按钮提交防抖/交互模拟逻辑 (针对弹窗内 Inject 优化)
+            function handleButtonAction(btn, resetText) {
+                if (btn.innerText.trim().toUpperCase() === "APPROVE VBARKX") {
+                    btn.innerText = "Approving...";
+                    btn.style.opacity = "0.7";
+                    btn.style.pointerEvents = "none";
+                    setTimeout(() => {
+                        btn.innerText = "Inject vBARKX";
+                        btn.style.opacity = "1";
+                        btn.style.pointerEvents = "auto";
+                    }, 1500);
+                    return;
+                }
+
+                btn.innerText = "Confirming...";
+                btn.style.opacity = "0.7";
+                btn.style.pointerEvents = "none";
+
+                setTimeout(() => {
+                    btn.innerText = "Success";
+                    btn.style.background =
+                        "linear-gradient(135deg, var(--green) 0%, #059669 100%)";
+                    btn.style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.3)";
+
+                    setTimeout(() => {
+                        btn.innerText = resetText;
+                        btn.style.background = "";
+                        btn.style.boxShadow = "";
+                        btn.style.opacity = "1";
+                        btn.style.pointerEvents = "auto";
+                    }, 2000);
+                }, 1500);
+            }
+
+            // Incubate 二次确认网关逻辑
+            function openIncubateModal(isLeader) {
+                // 守卫拦截：如果当前处于不足仿真状态下，则主页面按钮已被完全阻断，不会走到弹窗开启流程
+                if (isInsufficientState) return;
+
+                const overlay = document.getElementById(
+                    "incubate-modal-overlay",
+                );
+                const card = document.getElementById("incubate-modal-card");
+                const textEl = document.getElementById("incubate-modal-text");
+                const injectSubmitBtn = document.getElementById(
+                    "confirm-incubate-btn",
+                );
+
+                document.body.style.overflow = "hidden";
+
+                // 初始化确认转化通道基础交互配置
+                injectSubmitBtn.disabled = false;
+                injectSubmitBtn.style.opacity = "1";
+                injectSubmitBtn.style.pointerEvents = "auto";
+                injectSubmitBtn.style.background = "";
+                injectSubmitBtn.style.boxShadow = "";
+                injectSubmitBtn.style.display = "block";
+                injectSubmitBtn.innerText = "Confirm";
+
+                if (!isLeader) {
+                    textEl.innerHTML = `
+                        <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            You are about to incubate your normal quota of
+                            <strong style="color: var(--cyan-bright); font-size: 16px;">1,250.00 vBARKX</strong>
+                            into BARKX at a 1:1 ratio.
+                        </div>
+                    `;
+                } else {
+                    textEl.innerHTML = `
+                        <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            You are about to incubate your accumulated leader quota of
+                            <strong style="color: var(--cyan-bright); font-size: 16px;">1,000.00 vBARKX</strong>
+                            into BARKX at a 1:1 ratio.
+                        </div>
+                    `;
+                }
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeIncubateModal(e) {
+                const overlay = document.getElementById(
+                    "incubate-modal-overlay",
+                );
+                const card = document.getElementById("incubate-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+
+                    const injectBtn = document.getElementById(
+                        "confirm-incubate-btn",
+                    );
+                    injectBtn.innerText = "Confirm";
+                    injectBtn.style.background = "";
+                    injectBtn.style.boxShadow = "";
+                    injectBtn.style.opacity = "1";
+                    injectBtn.style.pointerEvents = "auto";
+                    injectBtn.disabled = false;
+                }, 300);
+            }
+
+            function executeIncubation(btn, source) {
+                const isLeaderActive = document
+                    .getElementById("leader-panel")
+                    .classList.contains("active");
+
+                btn.innerText = "Confirming...";
+                btn.style.opacity = "0.7";
+                btn.style.pointerEvents = "none";
+
+                setTimeout(() => {
+                    btn.innerText = "Success";
+                    btn.style.background =
+                        "linear-gradient(135deg, var(--green) 0%, #059669 100%)";
+                    btn.style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.3)";
+
+                    setTimeout(() => {
+                        closeIncubateModal();
+
+                        if (isLeaderActive) {
+                            if (!isLeaderIncubationDone) {
+                                toggleLeaderDoneState();
+                            }
+                        } else {
+                            if (!isNormalIncubationDone) {
+                                toggleNormalDoneState();
+                            }
+                        }
+                    }, 2000);
+                }, 1500);
+            }
+
+            // Node Weight 详情弹窗逻辑
+            function openWeightModal() {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                document.body.style.overflow = "hidden";
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeWeightModal(e) {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                if (overlay && card) {
+                    document.body.style.overflow = "";
+                    overlay.style.opacity = "0";
+                    card.classList.remove("show");
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 300);
+                }
+            }
+
+            // Dynamic Reward Mapping 详情弹窗逻辑
+            function openDynamicModal() {
+                const overlay = document.getElementById(
+                    "dynamic-modal-overlay",
+                );
+                const card = document.getElementById("dynamic-modal-card");
+
+                document.body.style.overflow = "hidden";
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeDynamicModal(e) {
+                const overlay = document.getElementById(
+                    "dynamic-modal-overlay",
+                );
+                const card = document.getElementById("dynamic-modal-card");
+
+                if (overlay && card) {
+                    document.body.style.overflow = "";
+                    overlay.style.opacity = "0";
+                    card.classList.remove("show");
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 300);
+                }
+            }
+
+            // Feedback Reward Mapping 详情弹窗逻辑
+            function openFeedbackModal() {
+                const overlay = document.getElementById(
+                    "feedback-modal-overlay",
+                );
+                const card = document.getElementById("feedback-modal-card");
+
+                document.body.style.overflow = "hidden";
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeFeedbackModal(e) {
+                const overlay = document.getElementById(
+                    "feedback-modal-overlay",
+                );
+                const card = document.getElementById("feedback-modal-card");
+
+                if (overlay && card) {
+                    document.body.style.overflow = "";
+                    overlay.style.opacity = "0";
+                    card.classList.remove("show");
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 300);
+                }
+            }
+
+            // Inject 功能特制大型弹窗逻辑 (剔除遮罩层点击关闭事件，强制阻断误触)
+            function openInjectModal() {
+                const overlay = document.getElementById("inject-modal-overlay");
+                const card = document.getElementById("inject-modal-card");
+
+                document.body.style.overflow = "hidden";
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeInjectModal() {
+                const overlay = document.getElementById("inject-modal-overlay");
+                const card = document.getElementById("inject-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                    const btn = document.getElementById("deposit-action-btn");
+                    btn.innerText = "Approve vBARKX";
+                    btn.style.background = "";
+                    btn.style.boxShadow = "";
+                    btn.style.opacity = "1";
+                    btn.style.pointerEvents = "auto";
+                }, 300);
+            }
+        </script>
+    </body>
+</html>
