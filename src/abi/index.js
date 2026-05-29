@@ -11,6 +11,7 @@ import wVN2Artifact from "./wVN2.json" with { type: "json" };
 import vLPArtifact from "./vLP.json" with { type: "json" };
 import elitePoolArtifact from "./BarkXElitePool.json" with { type: "json" };
 import vBarkxArtifact from "./vBARKX.json" with { type: "json" };
+import incubatorArtifact from "./BarkXIncubator.json" with { type: "json" };
 
 function extractAbi(artifact) {
   return Array.isArray(artifact) ? artifact : artifact.abi ?? [];
@@ -29,3 +30,4 @@ export const WVN2Abi = extractAbi(wVN2Artifact);
 export const VLPAbi = extractAbi(vLPArtifact);
 export const BarkXElitePoolAbi = extractAbi(elitePoolArtifact);
 export const VBARKXAbi = extractAbi(vBarkxArtifact);
+export const BarkXIncubatorAbi = extractAbi(incubatorArtifact);

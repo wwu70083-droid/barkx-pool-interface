@@ -215,6 +215,7 @@ const navItems = computed(() => {
 const featuredPoolItems = computed(() => [
   { key: "e-pool", type: "route", to: "/e-pool", label: t("nav.ePool") },
   { key: "v-pool", type: "route", to: "/v-pool", label: t("nav.vPool"), gated: "whitelist" },
+  { key: "incubator", type: "route", to: "/incubator", label: t("nav.incubator") },
 ]);
 
 // Fetch SubPool whitelist status when wallet connects

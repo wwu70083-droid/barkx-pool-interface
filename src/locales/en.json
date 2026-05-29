@@ -298,61 +298,78 @@
     "incubator": {
       "title": "Incubator",
       "subtitle": "vBARKX-BARKX Gateway",
-      "snapshotTime": "UTC 0:00",
-      "poolBalance": "Pool: {amount}",
-      "dao": {
-        "status": "DAO: {status}",
-        "yes": "Yes",
-        "no": "No"
+      "updateTime": "00:45 UTC",
+      "oneToOne": "1 vBARKX = 1 BARKX",
+      "connectPrompt": "Connect your wallet to view your incubation data.",
+      "tabs": {
+        "normal": "Normal Incubation",
+        "leader": "Leader Incubation"
       },
-      "modal": {
+      "normalInfo": "Convert your injected vBARKX to BARKX based on your allocated quota. Any unused conversion quota for the day will be forfeited and does not roll over to the next day.",
+      "leaderInfo": "Leader Incubator maps the daily conversion quota from the revenue data of the OpenDAO Node Signal Model and Node Feedback Model. On any given day, a node's Dynamic Reward and Feedback Reward are automatically mapped to its daily conversion quota in the Leader Incubator. If the daily conversion quota is unused, it will accumulate automatically.",
+      "stats": {
+        "myInjection": "My Injection",
+        "avgWeighted": "30-Day Average Weighted",
+        "nodeWeight": "OpenDAO Node Weight",
+        "quotaShare": "Current Quota Share",
+        "globalQuota": "Global Quota Today",
+        "myQuota": "My Quota Today",
+        "dynamicReward": "Dynamic Reward",
+        "feedbackReward": "Feedback Reward",
+        "mappingEfficiency": "OpenDAO Mapping Efficiency",
+        "leaderQuotaGrowth": "Leader Quota Growth",
+        "totalUnused": "Total Unused Leader Quota"
+      },
+      "preview": {
+        "amountToIncubate": "Amount to Incubate",
+        "injected": "Injected: {amount} vBARKX",
+        "convertedAmount": "Converted Amount"
+      },
+      "buttons": {
+        "incubate": "Incubate to BARKX",
+        "insufficientInjection": "Insufficient Injection",
+        "lessThanOne": "Less than 1 BARKX",
+        "inject": "Inject vBARKX",
+        "approve": "Approve vBARKX",
+        "insufficientBalance": "Insufficient Balance"
+      },
+      "done": {
+        "normalTitle": "Normal Incubation Completed",
+        "leaderTitle": "Leader Incubation Completed",
+        "normalDesc": "You have already executed your conversion in the Normal Incubator for today.",
+        "leaderDesc": "You have already executed your conversion in the Leader Incubator for today.",
+        "comeBack": "Please come back tomorrow at {time}."
+      },
+      "inject": {
+        "title": "Inject vBARKX",
+        "info": "Inject your vBARKX to build your 30-day average balance.",
+        "amount": "Amount to Inject",
+        "warning": "Warning: Injection is irreversible. Injected vBARKX can only be converted, not withdrawn."
+      },
+      "confirm": {
         "title": "Confirm Incubation",
-        "messageBefore": "You are about to incubate",
-        "messageAfter": "from your deposited vBARKX into BARKX at a 1:1 ratio.",
+        "message": "You are about to convert {amount} BARKX from your injected vBARKX at a 1:1 ratio.",
         "confirm": "Confirm"
       },
-      "accessDenied": {
-        "title": "Access Denied",
-        "messageBefore": "Incubator services are exclusively available to registered OpenDAO members.",
-        "messageAction": "Please register your wallet with",
-        "messageAfter": "immediately to unlock access."
+      "weightModal": {
+        "title": "OpenDAO Node Weight",
+        "desc": "Your daily conversion quota is weighted by your OpenDAO Node Tier applied to your 30-Day Average Injection. A higher tier secures a larger share of the BARKX conversion quota.",
+        "colTier": "Node Tier",
+        "colWeight": "Node Weight"
       },
-      "tabs": {
-        "deposit": "Deposit",
-        "withdraw": "Withdraw",
-        "incubate": "Incubate"
+      "dynamicModal": {
+        "title": "Dynamic Reward Mapping",
+        "desc": "Your OpenDAO Node Tier sets the efficiency at which your Dynamic Reward is mapped into the leader's incubation quota.",
+        "colEfficiency": "Mapping Efficiency"
       },
-      "deposit": {
-        "infoBefore": "Deposit your vBARKX to build your 30-day average balance. Daily snapshots taken at",
-        "infoAfter": "determine your weight for the BARKX conversion quota in the next day.",
-        "amount": "Amount to Deposit",
-        "approve": "Approve vBARKX"
-      },
-      "withdraw": {
-        "info": "Withdraw your vBARKX at any time with no lock-up period. This will affect your average balance calculations in the next snapshot.",
-        "amount": "Amount to Withdraw",
-        "action": "Withdraw vBARKX (0.1% Fee)"
-      },
-      "incubate": {
-        "infoBefore": "Convert your deposited vBARKX to BARKX at",
-        "infoAfter": "based on your allocated quota. Any unused conversion quota for the day will be forfeited and does not roll over to the next day.",
-        "globalQuotaToday": "Global Quota Today",
-        "yourQuotaToday": "Your Quota Today",
-        "amount": "Amount to Incubate",
-        "convertedAmount": "Converted Amount",
-        "action": "Incubate to BARKX"
-      },
-      "status": {
-        "title": "Personal Status",
-        "myDeposit": "My Deposit",
-        "average30Day": "30-Day Average",
-        "yesterdaySnapshot": "Yesterday Snapshot",
-        "currentQuotaShare": "Current Quota Share"
+      "feedbackModal": {
+        "title": "Feedback Reward Mapping",
+        "desc": "Your OpenDAO Node Tier sets the efficiency at which your Feedback Reward is mapped into the leader's incubation quota.",
+        "colEfficiency": "Mapping Efficiency"
       },
       "leaderboard": {
-        "title": "Leaderboard",
-        "topQuota": "Top Quota",
-        "topIncubation": "Top Incubation"
+        "title": "Incubation Leaderboard",
+        "value": "{amount} BARKX"
       }
     },
     "swap": {

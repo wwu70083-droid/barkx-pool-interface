@@ -1,615 +1,598 @@
 <template>
   <MiningShell class="incubator-page-theme">
-    <div
-      v-if="showIncubateModal"
-      class="custom-modal-overlay"
-      @click="closeIncubateModal"
-    >
-      <div class="custom-modal cyan-theme" @click.stop>
-        <button class="custom-modal-close" type="button" :aria-label="$t('common.modals.close')" @click="closeIncubateModal">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-        <div class="custom-modal-title">{{ $t("pages.incubator.modal.title") }}</div>
-        <div class="custom-modal-text">
-          {{ $t("pages.incubator.modal.messageBefore") }}
-          <strong style="color: var(--cyan-bright)">{{ incubateOutputAmount }}</strong>
-          {{ $t("pages.incubator.modal.messageAfter") }}
-        </div>
-        <button class="btn-submit" type="button" style="margin-top: 20px" @click="closeIncubateModal">
-          {{ $t("pages.incubator.modal.confirm") }}
-        </button>
-      </div>
+    <!-- Page heading -->
+    <div style="text-align: center; margin-bottom: 20px">
+      <h1 style="font-size: 28px; color: var(--text-primary)">{{ $t("pages.incubator.title") }}</h1>
+      <p style="color: var(--text-muted); font-size: 14px">{{ $t("pages.incubator.subtitle") }}</p>
     </div>
 
-    <div style="text-align: center; margin-bottom: 20px; position: relative">
-      <h1 style="font-size: 28px; color: var(--text-primary)">
-        {{ $t("pages.incubator.title") }}
-      </h1>
-      <p style="color: var(--text-muted); font-size: 14px">
-        {{ $t("pages.incubator.subtitle") }}
-      </p>
-
-      <div
-        style="
-          position: absolute;
-          right: 0;
-          top: -10px;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          align-items: flex-end;
-        "
-      >
-        <button
-          class="sim-toggle-mini"
-          :class="{ 'danger-state': !hasDaoMembership }"
-          type="button"
-          @click="hasDaoMembership = !hasDaoMembership"
-        >
-          {{ $t("pages.incubator.dao.status", { status: hasDaoMembership ? $t("pages.incubator.dao.yes") : $t("pages.incubator.dao.no") }) }}
-        </button>
-      </div>
-    </div>
-
-    <div
-      v-if="!hasDaoMembership"
-      class="card"
-      style="
-        text-align: center;
-        border-style: dashed;
-        border-color: var(--red);
-        padding: 40px 20px;
-        margin-top: 20px;
-      "
-    >
-      <span
-        style="
-          font-size: 48px;
-          display: block;
-          margin-bottom: 20px;
-          filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.5));
-        "
-      >
-        <svg
-          width="56"
-          height="56"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          style="display: inline-block"
-        >
-          <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-      </span>
-      <h2 style="color: var(--text-primary); font-size: 22px; margin-bottom: 12px">
-        {{ $t("pages.incubator.accessDenied.title") }}
-      </h2>
-      <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6">
-        {{ $t("pages.incubator.accessDenied.messageBefore") }}<br />
-        {{ $t("pages.incubator.accessDenied.messageAction") }}
-        <a
-          href="https://opendao.cc/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="ext-link-inline"
-        >
-          OpenDAO
-        </a>
-        {{ $t("pages.incubator.accessDenied.messageAfter") }}
-      </p>
+    <!-- Not connected -->
+    <div v-if="!account" class="info-box" style="text-align: center">
+      {{ $t("pages.incubator.connectPrompt") }}
     </div>
 
     <template v-else>
       <div class="tabs">
-        <div class="tab" :class="{ active: activeTab === 'deposit' }" @click="activeTab = 'deposit'">
-          {{ $t("pages.incubator.tabs.deposit") }}
+        <div class="tab" :class="{ active: activeTab === 'normal' }" @click="activeTab = 'normal'">
+          {{ $t("pages.incubator.tabs.normal") }}
         </div>
-        <div class="tab" :class="{ active: activeTab === 'withdraw' }" @click="activeTab = 'withdraw'">
-          {{ $t("pages.incubator.tabs.withdraw") }}
-        </div>
-        <div class="tab" :class="{ active: activeTab === 'incubate' }" @click="activeTab = 'incubate'">
-          {{ $t("pages.incubator.tabs.incubate") }}
+        <div class="tab" :class="{ active: activeTab === 'leader' }" @click="activeTab = 'leader'">
+          {{ $t("pages.incubator.tabs.leader") }}
         </div>
       </div>
 
-      <div class="panel" :class="{ active: activeTab === 'deposit' }">
-        <div class="info-box">
-          {{ $t("pages.incubator.deposit.infoBefore") }}
-          <strong style="color: var(--cyan-bright)">{{ $t("pages.incubator.snapshotTime") }}</strong>
-          {{ $t("pages.incubator.deposit.infoAfter") }}
-        </div>
+      <!-- ───────────── Normal panel ───────────── -->
+      <div class="panel" :class="{ active: activeTab === 'normal' }">
+        <template v-if="!normalDone">
+          <div class="info-box">{{ $t("pages.incubator.normalInfo") }}</div>
 
-        <div class="input-group">
-          <div class="input-header">
-            <span>{{ $t("pages.incubator.deposit.amount") }}</span>
-            <span>{{ $t("common.balance", { amount: '12,000.00 vBARKX' }) }}</span>
-          </div>
-          <div class="input-row">
-            <input v-model="depositInput" type="text" inputmode="decimal" class="input-field" placeholder="0.00" />
-            <div class="asset-badge">vBARKX</div>
-          </div>
-          <div class="percent-btns">
-            <button class="p-btn" type="button" @click="depositInput = '12000.00'">
-              {{ $t("common.max") }}
-            </button>
-          </div>
-        </div>
-
-        <button class="btn-submit" type="button">
-          {{ $t("pages.incubator.deposit.approve") }}
-        </button>
-      </div>
-
-      <div class="panel" :class="{ active: activeTab === 'withdraw' }">
-        <div class="info-box amber">
-          {{ $t("pages.incubator.withdraw.info") }}
-        </div>
-
-        <div class="input-group">
-          <div class="input-header">
-            <span>{{ $t("pages.incubator.withdraw.amount") }}</span>
-            <span>{{ $t("pages.incubator.poolBalance", { amount: '25,000.00 vBARKX' }) }}</span>
-          </div>
-          <div class="input-row">
-            <input v-model="withdrawInput" type="text" inputmode="decimal" class="input-field" placeholder="0.00" />
-            <div class="asset-badge">vBARKX</div>
-          </div>
-          <div class="percent-btns">
-            <button class="p-btn" type="button" @click="withdrawInput = '25000.00'">
-              {{ $t("common.max") }}
-            </button>
-          </div>
-        </div>
-
-        <button class="btn-submit amber" type="button" style="margin-top: 16px">
-          {{ $t("pages.incubator.withdraw.action") }}
-        </button>
-      </div>
-
-      <div class="panel" :class="{ active: activeTab === 'incubate' }">
-        <div class="info-box">
-          {{ $t("pages.incubator.incubate.infoBefore") }}
-          <strong style="color: var(--cyan-bright); text-shadow: 0 0 10px var(--cyan-glow)">1:1</strong>
-          {{ $t("pages.incubator.incubate.infoAfter") }}
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-card-title">{{ $t("pages.incubator.incubate.globalQuotaToday") }}</div>
-            <div class="stat-card-value" style="color: var(--text-primary)">
-              500,000
+          <div class="card stat-card-block">
+            <div class="data-row">
+              <span class="data-lbl">{{ $t("pages.incubator.stats.myInjection") }}</span>
+              <span class="data-val" style="color: var(--cyan-bright)">{{ myInjection }}</span>
+            </div>
+            <div class="data-row">
+              <span class="data-lbl">{{ $t("pages.incubator.stats.avgWeighted") }}</span>
+              <span class="data-val">{{ avgWeighted }}</span>
+            </div>
+            <div class="data-row sub-row">
+              <span class="data-lbl">└ {{ $t("pages.incubator.stats.nodeWeight") }}</span>
+              <span class="data-val inline-info">
+                {{ nodeWeight }}
+                <svg class="info-icon" viewBox="0 0 24 24" @click="openModal('weight')">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </span>
+            </div>
+            <div class="data-row">
+              <span class="data-lbl">{{ $t("pages.incubator.stats.quotaShare") }}</span>
+              <span class="data-val">{{ quotaShare }}</span>
+            </div>
+            <div class="data-row">
+              <span class="data-lbl">{{ $t("pages.incubator.stats.globalQuota") }}</span>
+              <span class="data-val">{{ globalQuota }}</span>
+            </div>
+            <div class="data-row" style="border-bottom: none">
+              <span class="data-lbl" style="color: var(--green); font-weight: 600">{{ $t("pages.incubator.stats.myQuota") }}</span>
+              <span class="data-val green" style="font-weight: 700">{{ normalQuota }}</span>
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-title">{{ $t("pages.incubator.incubate.yourQuotaToday") }}</div>
-            <div class="stat-card-value green">1,250.00</div>
-          </div>
-        </div>
 
-        <div class="input-group" style="border-color: var(--cyan)">
-          <div class="input-header">
-            <span style="color: var(--cyan-bright); font-weight: 600">{{ $t("pages.incubator.incubate.amount") }}</span>
-            <span>{{ $t("pages.incubator.poolBalance", { amount: '25,000.00 vBARKX' }) }}</span>
-          </div>
-          <div class="input-row">
-            <input
-              v-model="incubateInput"
-              type="text"
-              inputmode="decimal"
-              class="input-field"
-              placeholder="0.00"
-              style="color: var(--cyan-bright)"
-              @input="normalizeIncubateInput"
-            />
-            <div class="asset-badge">vBARKX</div>
-          </div>
-          <div class="percent-btns">
-            <button class="p-btn" type="button" @click="incubateInput = '1250.00'">
-              {{ $t("common.max") }}
-            </button>
-          </div>
-        </div>
-
-        <div
-          style="
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 24px;
-            margin: 8px 0;
-          "
-        >
-          &darr;
-        </div>
-
-        <div class="input-group" style="margin-top: 8px">
-          <div class="input-header">
-            <span>{{ $t("pages.incubator.incubate.convertedAmount") }}</span>
-          </div>
-          <div class="input-row">
-            <input :value="incubateOutputAmount" type="text" class="input-field" placeholder="0.00" readonly />
-            <div class="asset-badge">BARKX</div>
-          </div>
-        </div>
-
-        <button class="btn-submit" type="button" style="margin-top: 16px" @click="openIncubateModal">
-          {{ $t("pages.incubator.incubate.action") }}
-        </button>
-      </div>
-
-      <div class="card" style="margin-top: 24px; border-color: var(--border-glow)">
-        <div class="card-title" style="color: var(--cyan-bright); border-bottom-color: var(--border-glow)">
-          {{ $t("pages.incubator.status.title") }}
-        </div>
-
-        <div class="data-row">
-          <span class="data-lbl">{{ $t("pages.incubator.status.myDeposit") }}</span>
-          <div style="text-align: right">
-            <div class="data-val" style="color: var(--cyan-bright)">
-              25,000.00 vBARKX
+          <div class="input-group" style="border-color: var(--cyan)">
+            <div class="input-header">
+              <span style="color: var(--cyan-bright); font-weight: 600">{{ $t("pages.incubator.preview.amountToIncubate") }}</span>
+              <span>{{ $t("pages.incubator.preview.injected", { amount: myInjection }) }}</span>
+            </div>
+            <div class="input-row">
+              <input :value="normalQuota" type="text" class="input-field" style="color: var(--cyan-bright)" readonly />
+              <div class="asset-badge">vBARKX</div>
             </div>
           </div>
-        </div>
 
-        <div class="data-row">
-          <span class="data-lbl">{{ $t("pages.incubator.status.average30Day") }}</span>
-          <div style="text-align: right">
-            <div class="data-val" style="color: var(--text-primary)">
-              18,450.00 vBARKX
+          <div class="icon-divider">↓</div>
+
+          <div class="input-group">
+            <div class="input-header">
+              <span>{{ $t("pages.incubator.preview.convertedAmount") }}</span>
+              <span style="color: var(--text-muted); font-size: 11px">{{ $t("pages.incubator.oneToOne") }}</span>
             </div>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">
-              {{ $t("pages.incubator.status.yesterdaySnapshot") }}
+            <div class="input-row">
+              <input :value="normalQuota" type="text" class="input-field" readonly />
+              <div class="asset-badge">BARKX</div>
             </div>
           </div>
-        </div>
 
-        <div class="data-row" style="border-bottom: none">
-          <span class="data-lbl">{{ $t("pages.incubator.status.currentQuotaShare") }}</span>
-          <div style="text-align: right">
-            <div class="data-val green">0.25%</div>
+          <button class="btn-submit" :disabled="normalBtn.disabled" :style="normalBtn.disabled ? disabledStyle : {}" @click="openConfirm('normal')">
+            {{ normalBtn.label }}
+          </button>
+          <button class="btn-submit amber" style="margin-top: 12px" @click="openInject">{{ $t("pages.incubator.buttons.inject") }}</button>
+        </template>
+
+        <div v-else class="done-state-panel">
+          <div class="done-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
           </div>
+          <div class="done-title">{{ $t("pages.incubator.done.normalTitle") }}</div>
+          <div class="done-desc">{{ $t("pages.incubator.done.normalDesc") }}<br />{{ $t("pages.incubator.done.comeBack", { time: $t("pages.incubator.updateTime") }) }}</div>
         </div>
       </div>
 
+      <!-- ───────────── Leader panel ───────────── -->
+      <div class="panel" :class="{ active: activeTab === 'leader' }">
+        <template v-if="!leaderDone">
+          <div class="info-box">{{ $t("pages.incubator.leaderInfo") }}</div>
+
+          <div class="card stat-card-block">
+            <div class="data-row">
+              <span class="data-lbl">{{ $t("pages.incubator.stats.dynamicReward") }}</span>
+              <span class="data-val">{{ dynamicReward }}</span>
+            </div>
+            <div class="data-row sub-row">
+              <span class="data-lbl">└ {{ $t("pages.incubator.stats.mappingEfficiency") }}</span>
+              <span class="data-val inline-info" style="color: var(--cyan-bright)">
+                {{ dynamicEff }}
+                <svg class="info-icon" style="color: var(--cyan-bright)" viewBox="0 0 24 24" @click="openModal('dynamic')">
+                  <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </span>
+            </div>
+            <div class="data-row">
+              <span class="data-lbl">{{ $t("pages.incubator.stats.feedbackReward") }}</span>
+              <span class="data-val">{{ feedbackReward }}</span>
+            </div>
+            <div class="data-row sub-row">
+              <span class="data-lbl">└ {{ $t("pages.incubator.stats.mappingEfficiency") }}</span>
+              <span class="data-val inline-info" style="color: var(--cyan-bright)">
+                {{ feedbackEff }}
+                <svg class="info-icon" style="color: var(--cyan-bright)" viewBox="0 0 24 24" @click="openModal('feedback')">
+                  <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </span>
+            </div>
+            <div class="data-row dashed-top">
+              <span class="data-lbl" style="color: var(--green)">{{ $t("pages.incubator.stats.leaderQuotaGrowth") }}</span>
+              <span class="data-val green">{{ leaderQuotaGrowth }}</span>
+            </div>
+            <div class="data-row" style="border-bottom: none">
+              <span class="data-lbl" style="color: var(--purple)">{{ $t("pages.incubator.stats.totalUnused") }}</span>
+              <span class="data-val" style="color: var(--purple); font-weight: 700">{{ leaderUnused }}</span>
+            </div>
+          </div>
+
+          <div class="input-group" style="border-color: var(--purple)">
+            <div class="input-header">
+              <span style="color: var(--purple); font-weight: 600">{{ $t("pages.incubator.preview.amountToIncubate") }}</span>
+              <span>{{ $t("pages.incubator.preview.injected", { amount: myInjection }) }}</span>
+            </div>
+            <div class="input-row">
+              <input :value="leaderUnused" type="text" class="input-field" style="color: var(--purple)" readonly />
+              <div class="asset-badge">vBARKX</div>
+            </div>
+          </div>
+
+          <div class="icon-divider">↓</div>
+
+          <div class="input-group">
+            <div class="input-header">
+              <span>{{ $t("pages.incubator.preview.convertedAmount") }}</span>
+              <span style="color: var(--text-muted); font-size: 11px">{{ $t("pages.incubator.oneToOne") }}</span>
+            </div>
+            <div class="input-row">
+              <input :value="leaderUnused" type="text" class="input-field" readonly />
+              <div class="asset-badge">BARKX</div>
+            </div>
+          </div>
+
+          <button class="btn-submit purple" :disabled="leaderBtn.disabled" :style="leaderBtn.disabled ? disabledStyle : {}" @click="openConfirm('leader')">
+            {{ leaderBtn.label }}
+          </button>
+          <button class="btn-submit amber" style="margin-top: 12px" @click="openInject">{{ $t("pages.incubator.buttons.inject") }}</button>
+        </template>
+
+        <div v-else class="done-state-panel">
+          <div class="done-icon" style="color: var(--purple); filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5))">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="done-title">{{ $t("pages.incubator.done.leaderTitle") }}</div>
+          <div class="done-desc">{{ $t("pages.incubator.done.leaderDesc") }}<br />{{ $t("pages.incubator.done.comeBack", { time: $t("pages.incubator.updateTime") }) }}</div>
+        </div>
+      </div>
+
+      <!-- ───────────── Leaderboard ───────────── -->
       <div class="collapsible-card">
         <div class="collapsible-header" @click="leaderboardOpen = !leaderboardOpen">
           <span style="display: flex; align-items: center; gap: 8px">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="18" y1="20" x2="18" y2="10"></line>
-              <line x1="12" y1="20" x2="12" y2="4"></line>
-              <line x1="6" y1="20" x2="6" y2="14"></line>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line>
             </svg>
             {{ $t("pages.incubator.leaderboard.title") }}
           </span>
-          <span class="chevron" :class="{ up: leaderboardOpen }">&#9660;</span>
+          <span class="chevron" :class="{ up: leaderboardOpen }">▼</span>
         </div>
         <div class="collapsible-content" :class="{ show: leaderboardOpen }">
-          <div class="sub-tab-container">
-            <button
-              class="sub-tab-btn"
-              :class="{ active: leaderboardTab === 'quota' }"
-              type="button"
-              @click="leaderboardTab = 'quota'"
-            >
-              {{ $t("pages.incubator.leaderboard.topQuota") }}
-            </button>
-            <button
-              class="sub-tab-btn"
-              :class="{ active: leaderboardTab === 'incubation' }"
-              type="button"
-              @click="leaderboardTab = 'incubation'"
-            >
-              {{ $t("pages.incubator.leaderboard.topIncubation") }}
-            </button>
-          </div>
-
-          <div class="sub-panel" :style="{ display: leaderboardTab === 'quota' ? 'block' : 'none' }">
-            <div class="lb-list">
-              <div v-for="item in quotaLeaderboard" :key="`quota-${item.rank}`" class="lb-item" :class="`top-${item.rank}`">
-                <span class="lb-rank">{{ item.rank }}</span>
-                <span class="lb-address">{{ item.address }}</span>
-                <span class="lb-value">{{ item.value }}</span>
-              </div>
+          <div class="lb-list">
+            <div v-for="item in leaderboard" :key="item.rank" class="lb-item" :class="`top-${item.rank}`">
+              <span class="lb-rank">{{ item.rank }}</span>
+              <span class="lb-address">{{ shorten(item.address) }}</span>
+              <span class="lb-value">{{ $t("pages.incubator.leaderboard.value", { amount: fmt(item.totalConvertedWei) }) }}</span>
             </div>
-          </div>
-
-          <div class="sub-panel" :style="{ display: leaderboardTab === 'incubation' ? 'block' : 'none' }">
-            <div class="lb-list">
-              <div v-for="item in incubationLeaderboard" :key="`incubation-${item.rank}`" class="lb-item" :class="`top-${item.rank}`">
-                <span class="lb-rank">{{ item.rank }}</span>
-                <span class="lb-address">{{ item.address }}</span>
-                <span class="lb-value">{{ item.value }}</span>
-              </div>
-            </div>
+            <div v-if="!leaderboard.length" class="lb-item"><span class="lb-address" style="color: var(--text-muted)">—</span></div>
           </div>
         </div>
       </div>
     </template>
+
+    <!-- ───────────── Confirm Incubation modal ───────────── -->
+    <div v-if="confirmModal" class="custom-modal-overlay" @click="confirmModal = false">
+      <div class="custom-modal cyan-theme" @click.stop>
+        <button class="custom-modal-close" type="button" @click="confirmModal = false">✕</button>
+        <div class="custom-modal-title">{{ $t("pages.incubator.confirm.title") }}</div>
+        <div class="custom-modal-text">{{ $t("pages.incubator.confirm.message", { amount: confirmAmount }) }}</div>
+        <button class="btn-submit" :disabled="converting" style="margin-top: 20px" @click="doConvert">
+          {{ $t("pages.incubator.confirm.confirm") }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ───────────── Inject modal ───────────── -->
+    <div v-if="injectModal" class="custom-modal-overlay" @click="closeInject">
+      <div class="custom-modal cyan-theme" @click.stop>
+        <button class="custom-modal-close" type="button" @click="closeInject">✕</button>
+        <div class="custom-modal-title">{{ $t("pages.incubator.inject.title") }}</div>
+        <div class="info-box" style="margin-top: 8px">{{ $t("pages.incubator.inject.info") }}</div>
+        <div class="input-group">
+          <div class="input-header">
+            <span>{{ $t("pages.incubator.inject.amount") }}</span>
+            <span>{{ $t("common.balance", { amount: `${walletVbarkx} vBARKX` }) }}</span>
+          </div>
+          <div class="input-row">
+            <input v-model="injectInput" type="text" inputmode="decimal" class="input-field" placeholder="0.00" />
+            <div class="asset-badge">vBARKX</div>
+          </div>
+          <div class="percent-btns">
+            <button class="p-btn" type="button" @click="injectInput = walletVbarkxRaw">{{ $t("common.max") }}</button>
+          </div>
+        </div>
+        <button class="btn-submit" :disabled="injectBtn.disabled || injecting" :style="injectBtn.disabled ? disabledStyle : {}" @click="doInject">
+          {{ injecting ? injectBtn.busy : injectBtn.label }}
+        </button>
+        <div class="info-box amber" style="margin-top: 16px; margin-bottom: 0">{{ $t("pages.incubator.inject.warning") }}</div>
+      </div>
+    </div>
+
+    <!-- ───────────── Info modals (tier tables) ───────────── -->
+    <div v-if="infoModal" class="custom-modal-overlay" @click="infoModal = null">
+      <div class="custom-modal cyan-theme" @click.stop>
+        <button class="custom-modal-close" type="button" @click="infoModal = null">✕</button>
+        <div class="custom-modal-title">{{ infoModalContent.title }}</div>
+        <div class="custom-modal-text">{{ infoModalContent.desc }}</div>
+        <table class="modal-table">
+          <thead><tr><th>{{ infoModalContent.colA }}</th><th>{{ infoModalContent.colB }}</th></tr></thead>
+          <tbody>
+            <tr v-for="row in infoModalContent.rows" :key="row.name"><td>{{ row.name }}</td><td>{{ row.value }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </MiningShell>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import MiningShell from "@/components/mining/MiningShell.vue";
+import { useMainStore } from "@/store";
+import { useApproval } from "@/composables/useApproval";
+import { useNotice } from "@/composables/useNotice";
+import {
+  getPublicClient,
+  getWalletClient,
+  waitForTx,
+  writeContractWithGasBuffer,
+  getGasOverrides,
+} from "@/composables/useContracts";
+import { BarkXIncubatorAbi, VBARKXAbi } from "@/abi";
+import { INCUBATOR_CONFIG } from "@/contracts/incubatorConfig";
+import { formatTokenAmount, truncateFixed, safeParseUnits, shortenAddress, parseContractErrorKey } from "@/utils/format";
+import {
+  getIncubatorProfile,
+  getIncubatorConfig,
+  getIncubatorLeaderboard,
+  requestNormalConvertSignature,
+  requestLeaderConvertSignature,
+} from "@/composables/useIncubatorBackend";
 
-const activeTab = ref("deposit");
-const hasDaoMembership = ref(true);
-const depositInput = ref("");
-const withdrawInput = ref("");
-const incubateInput = ref("");
-const showIncubateModal = ref(false);
+const { t } = useI18n({ useScope: "global" });
+const store = useMainStore();
+const { account } = storeToRefs(store);
+const { ensureErc20Approval } = useApproval();
+const { showNotice } = useNotice();
+
+const activeTab = ref("normal");
 const leaderboardOpen = ref(false);
-const leaderboardTab = ref("quota");
+const confirmModal = ref(false);
+const confirmMechanism = ref("normal");
+const injectModal = ref(false);
+const infoModal = ref(null); // 'weight' | 'dynamic' | 'feedback'
+const injectInput = ref("");
+const injecting = ref(false);
+const converting = ref(false);
 
-const quotaLeaderboard = [
-  { rank: 1, address: "0x8a...4f2", value: "12.45%" },
-  { rank: 2, address: "0x1b...e8c", value: "10.20%" },
-  { rank: 3, address: "0x5c...11a", value: "8.95%" },
-  { rank: 4, address: "0x3d...99b", value: "7.30%" },
-  { rank: 5, address: "0x9f...22c", value: "6.15%" },
-  { rank: 6, address: "0x2a...bb1", value: "5.40%" },
-  { rank: 7, address: "0x4e...78d", value: "4.85%" },
-  { rank: 8, address: "0x6b...44e", value: "4.20%" },
-  { rank: 9, address: "0x1c...a3f", value: "3.90%" },
-  { rank: 10, address: "0x7d...f2a", value: "3.50%" },
-];
+const profile = ref(null);
+const config = ref(null);
+const leaderboard = ref([]);
+const walletVbarkxRaw = ref("0");
 
-const incubationLeaderboard = [
-  { rank: 1, address: "0x8a...4f2", value: "452,100.00 BARKX" },
-  { rank: 2, address: "0x3d...99b", value: "385,450.00 BARKX" },
-  { rank: 3, address: "0x1b...e8c", value: "340,200.00 BARKX" },
-  { rank: 4, address: "0x9f...22c", value: "295,800.00 BARKX" },
-  { rank: 5, address: "0x5c...11a", value: "275,000.00 BARKX" },
-  { rank: 6, address: "0x2a...bb1", value: "240,500.00 BARKX" },
-  { rank: 7, address: "0x4e...78d", value: "210,300.00 BARKX" },
-  { rank: 8, address: "0x7d...f2a", value: "185,600.00 BARKX" },
-  { rank: 9, address: "0x6b...44e", value: "165,900.00 BARKX" },
-  { rank: 10, address: "0x1c...a3f", value: "150,200.00 BARKX" },
-];
+const disabledStyle = {
+  opacity: "0.5",
+  pointerEvents: "none",
+  background: "linear-gradient(135deg, #475569 0%, #334155 100%)",
+  boxShadow: "none",
+};
 
-const incubateOutputAmount = computed(() => {
-  const value = Number.parseFloat(incubateInput.value || "");
-  if (!Number.isFinite(value) || value <= 0) {
-    return "0.00";
-  }
+// ── helpers ──
+const WEI = 10n ** 18n;
+function fmt(wei) {
+  // Truncate to 2 decimals (spec: display values truncated to target precision).
+  return formatTokenAmount(wei ?? "0", 18, 2);
+}
+function shorten(a) {
+  return shortenAddress(a, 4);
+}
+function big(wei) {
+  try { return BigInt(wei ?? "0"); } catch { return 0n; }
+}
 
-  return value.toFixed(2);
+// ── display computeds ──
+const myInjection = computed(() => fmt(profile.value?.myInjectionWei));
+const avgWeighted = computed(() => fmt(profile.value?.nodeWeightedAvgInjectionWei));
+const nodeWeight = computed(() => `${truncateFixed((profile.value?.nodeWeightPct ?? 100) / 100, 2)}`);
+const quotaShare = computed(() => `${truncateFixed((profile.value?.nodeShare ?? 0) * 100, 2)}%`);
+const globalQuota = computed(() => fmt(profile.value?.globalQuotaWei));
+const normalQuota = computed(() => fmt(profile.value?.normalQuotaWei));
+const dynamicReward = computed(() => fmt(profile.value?.dynamicRewardWei));
+const dynamicEff = computed(() => `${profile.value?.dynamicMappingEfficiencyPct ?? 0}%`);
+const feedbackReward = computed(() => fmt(profile.value?.feedbackRewardWei));
+const feedbackEff = computed(() => `${profile.value?.feedbackMappingEfficiencyPct ?? 0}%`);
+const leaderQuotaGrowth = computed(() => fmt(profile.value?.leaderQuotaGrowthWei));
+const leaderUnused = computed(() => fmt(profile.value?.totalUnusedLeaderQuotaWei));
+const walletVbarkx = computed(() => fmt(walletVbarkxRaw.value));
+
+const normalDone = computed(() => Boolean(profile.value?.normalDoneToday));
+const leaderDone = computed(() => Boolean(profile.value?.leaderDoneToday));
+
+// ── button state machine (Insufficient Injection / Less than 1 BARKX / Incubate) ──
+function btnState(quotaWei) {
+  const quota = big(quotaWei);
+  const injection = big(profile.value?.myInjectionWei);
+  if (injection < quota) return { disabled: true, label: t("pages.incubator.buttons.insufficientInjection") };
+  if (quota < WEI) return { disabled: true, label: t("pages.incubator.buttons.lessThanOne") };
+  return { disabled: false, label: t("pages.incubator.buttons.incubate") };
+}
+const normalBtn = computed(() => btnState(profile.value?.normalQuotaWei));
+const leaderBtn = computed(() => btnState(profile.value?.totalUnusedLeaderQuotaWei));
+
+const confirmAmount = computed(() => fmt(confirmMechanism.value === "normal" ? profile.value?.normalQuotaWei : profile.value?.totalUnusedLeaderQuotaWei));
+
+// inject button: Approve vBARKX (no allowance) / Insufficient Balance / Inject vBARKX
+const injectBtn = computed(() => {
+  const amt = safeParseUnits(injectInput.value || "0", 18);
+  const bal = big(walletVbarkxRaw.value);
+  if (amt <= 0n) return { disabled: true, label: t("pages.incubator.buttons.inject"), busy: "..." };
+  if (amt > bal) return { disabled: true, label: t("pages.incubator.buttons.insufficientBalance"), busy: "..." };
+  return { disabled: false, label: t("pages.incubator.buttons.inject"), busy: t("components.approvalActionGroup.approving", { token: "vBARKX" }) };
 });
 
-function normalizeIncubateInput() {
-  if (!incubateInput.value.includes(".")) {
-    return;
+// ── info modal content ──
+const infoModalContent = computed(() => {
+  const tiers = config.value?.tiers ?? [];
+  if (infoModal.value === "weight") {
+    return {
+      title: t("pages.incubator.weightModal.title"),
+      desc: t("pages.incubator.weightModal.desc"),
+      colA: t("pages.incubator.weightModal.colTier"),
+      colB: t("pages.incubator.weightModal.colWeight"),
+      rows: tiers.map((x) => ({ name: x.name, value: truncateFixed(x.weightPct / 100, 2) })),
+    };
   }
-
-  const [integer, decimal] = incubateInput.value.split(".");
-  incubateInput.value = `${integer}.${(decimal || "").slice(0, 2)}`;
-}
-
-function openIncubateModal() {
-  if (incubateOutputAmount.value === "0.00") {
-    return;
+  if (infoModal.value === "dynamic") {
+    return {
+      title: t("pages.incubator.dynamicModal.title"),
+      desc: t("pages.incubator.dynamicModal.desc"),
+      colA: t("pages.incubator.weightModal.colTier"),
+      colB: t("pages.incubator.dynamicModal.colEfficiency"),
+      rows: tiers.map((x) => ({ name: x.name, value: `${x.dynamicEffPct}%` })),
+    };
   }
-
-  document.body.style.overflow = "hidden";
-  showIncubateModal.value = true;
-}
-
-function closeIncubateModal() {
-  document.body.style.overflow = "";
-  showIncubateModal.value = false;
-}
-
-onBeforeUnmount(() => {
-  document.body.style.overflow = "";
+  return {
+    title: t("pages.incubator.feedbackModal.title"),
+    desc: t("pages.incubator.feedbackModal.desc"),
+    colA: t("pages.incubator.weightModal.colTier"),
+    colB: t("pages.incubator.feedbackModal.colEfficiency"),
+    rows: tiers.map((x) => ({ name: x.name, value: `${x.feedbackEffPct}%` })),
+  };
 });
+
+// ── data loading ──
+async function loadProfile() {
+  if (!account.value) return;
+  try {
+    profile.value = await getIncubatorProfile(account.value);
+  } catch (e) {
+    console.error("[incubator] profile load failed", e);
+  }
+  try {
+    walletVbarkxRaw.value = (
+      await getPublicClient().readContract({
+        address: INCUBATOR_CONFIG.vbarkx,
+        abi: VBARKXAbi,
+        functionName: "balanceOf",
+        args: [account.value],
+      })
+    ).toString();
+  } catch (e) {
+    walletVbarkxRaw.value = "0";
+  }
+}
+async function loadStatic() {
+  try { config.value = await getIncubatorConfig(); } catch (e) { console.error(e); }
+  try { leaderboard.value = await getIncubatorLeaderboard(); } catch (e) { console.error(e); }
+}
+
+// ── actions ──
+function openModal(which) { infoModal.value = which; }
+function openInject() { injectInput.value = ""; injectModal.value = true; }
+function closeInject() { injectModal.value = false; }
+function openConfirm(mechanism) {
+  const btn = mechanism === "normal" ? normalBtn.value : leaderBtn.value;
+  if (btn.disabled) return;
+  confirmMechanism.value = mechanism;
+  confirmModal.value = true;
+}
+
+async function doInject() {
+  if (injectBtn.value.disabled || injecting.value) return;
+  const amount = safeParseUnits(injectInput.value, 18);
+  injecting.value = true;
+  try {
+    const ok = await ensureErc20Approval(INCUBATOR_CONFIG.vbarkx, VBARKXAbi, INCUBATOR_CONFIG.incubator, amount, "vBARKX");
+    if (!ok) throw new Error("approval failed");
+    const walletClient = getWalletClient();
+    const [acct] = await walletClient.getAddresses();
+    store.setWalletPendingState({ pending: true, text: t("pages.incubator.buttons.inject") });
+    const hash = await writeContractWithGasBuffer(walletClient, {
+      address: INCUBATOR_CONFIG.incubator,
+      abi: BarkXIncubatorAbi,
+      functionName: "inject",
+      args: [amount],
+      account: acct,
+      ...(await getGasOverrides()),
+    });
+    await waitForTx(hash);
+    injectModal.value = false;
+    await loadProfile();
+  } catch (e) {
+    showNotice(parseContractErrorKey(e) || e?.shortMessage || e?.message || "Inject failed");
+  } finally {
+    store.clearWalletPendingState();
+    injecting.value = false;
+  }
+}
+
+async function doConvert() {
+  if (converting.value) return;
+  converting.value = true;
+  const mechanism = confirmMechanism.value;
+  try {
+    const signed = mechanism === "normal"
+      ? await requestNormalConvertSignature(account.value)
+      : await requestLeaderConvertSignature(account.value);
+    const walletClient = getWalletClient();
+    const [acct] = await walletClient.getAddresses();
+    store.setWalletPendingState({ pending: true, text: t("pages.incubator.buttons.incubate") });
+    const hash = await writeContractWithGasBuffer(walletClient, {
+      address: INCUBATOR_CONFIG.incubator,
+      abi: BarkXIncubatorAbi,
+      functionName: "convert",
+      args: [BigInt(signed.amount), BigInt(signed.nonce), BigInt(signed.deadline), signed.signature],
+      account: acct,
+      ...(await getGasOverrides()),
+    });
+    await waitForTx(hash);
+    confirmModal.value = false;
+    await Promise.all([loadProfile(), loadStatic()]);
+  } catch (e) {
+    showNotice(parseContractErrorKey(e) || e?.shortMessage || e?.message || "Convert failed");
+  } finally {
+    store.clearWalletPendingState();
+    converting.value = false;
+  }
+}
+
+onMounted(() => {
+  loadStatic();
+  loadProfile();
+});
+// Reload when the wallet account changes.
+watch(account, () => loadProfile());
 </script>
 
 <style lang="less">
 .incubator-page-theme {
-  --cyan: #0284c7;
-  --cyan-glow: rgba(2, 132, 199, 0.4);
-  --cyan-bright: #38bdf8;
-  --bg-dark: #020617;
-  --bg-card: rgba(15, 23, 42, 0.95);
-  --bg-card-solid: #0f172a;
-  --border-dark: rgba(2, 132, 199, 0.2);
-  --border-glow: rgba(2, 132, 199, 0.4);
-  background: var(--bg-dark);
-}
-
-.incubator-page-theme .header {
-  background: rgba(2, 6, 23, 0.85) !important;
-}
-
-.incubator-page-theme .grid-bg {
-  background-image:
-    linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px) !important;
-}
-
-.incubator-page-theme .glow-bg {
-  background:
-    radial-gradient(ellipse at 20% 0%, rgba(2, 132, 199, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(56, 189, 248, 0.08) 0%, transparent 50%) !important;
+  --cyan: #38bdf8;
+  --cyan-bright: #00d4ff;
+  --cyan-glow: rgba(56, 189, 248, 0.5);
+  --purple: #a855f7;
+  --green: #22c55e;
+  --green-glow: rgba(34, 197, 94, 0.5);
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --border-dark: rgba(56, 189, 248, 0.12);
+  --border-glow: rgba(56, 189, 248, 0.3);
+  background: transparent;
 }
 
 .incubator-page-theme .tab.active {
-  background: rgba(2, 132, 199, 0.15) !important;
+  background: rgba(56, 189, 248, 0.15) !important;
+  border-color: var(--cyan) !important;
+  color: var(--cyan) !important;
 }
 
-.incubator-page-theme .info-box {
-  background: rgba(2, 132, 199, 0.05) !important;
-  border-left-color: var(--cyan) !important;
+.incubator-page-theme .stat-card-block {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  border: 1px solid var(--border-dark);
+  border-radius: 12px;
 }
-
-.incubator-page-theme .info-box.amber {
-  border-left-color: var(--amber) !important;
-  background: rgba(245, 158, 11, 0.05) !important;
+.incubator-page-theme .sub-row {
+  padding-left: 16px;
+  border-bottom: none !important;
+  font-size: 13px;
+  opacity: 0.85;
 }
-
-.incubator-page-theme .p-btn {
-  background: rgba(2, 132, 199, 0.1) !important;
-  border-color: rgba(2, 132, 199, 0.3) !important;
-  color: var(--cyan-bright) !important;
+.incubator-page-theme .dashed-top {
+  border-top: 1px dashed var(--border-dark);
+  margin-top: 6px;
+  padding-top: 12px;
 }
-
-.incubator-page-theme .p-btn:hover {
-  background: rgba(2, 132, 199, 0.2) !important;
+.incubator-page-theme .inline-info {
+  display: inline-flex;
+  align-items: center;
 }
-
-.incubator-page-theme .nav-link:hover,
-.incubator-page-theme .nav-link.active {
-  background: rgba(2, 132, 199, 0.1) !important;
-  color: var(--cyan-bright) !important;
-}
-
-.incubator-page-theme .btn-submit {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
-  color: #fff !important;
-  box-shadow: 0 0 20px rgba(2, 132, 199, 0.3) !important;
-}
-
-.incubator-page-theme .btn-submit.amber {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
-}
-
-.incubator-page-theme .brand-logo {
-  box-shadow: 0 0 10px rgba(2, 132, 199, 0.15) !important;
-}
-
-.incubator-page-theme .brand-logo:hover {
-  box-shadow: 0 0 15px rgba(2, 132, 199, 0.4) !important;
-}
-
-.incubator-page-theme .sim-toggle-mini {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid var(--green);
-  color: var(--green);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
+.incubator-page-theme .info-icon {
+  width: 14px;
+  height: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.incubator-page-theme .sim-toggle-mini.danger-state {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: var(--red);
-  color: var(--red);
-}
-
-.incubator-page-theme .ext-link-inline {
-  color: var(--cyan-bright);
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.incubator-page-theme .ext-link-inline:hover {
-  text-decoration: underline;
+  margin-left: 6px;
   color: #fff;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.incubator-page-theme .stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.incubator-page-theme .stat-card {
+/* done state */
+.incubator-page-theme .done-state-panel {
+  text-align: center;
+  padding: 40px 20px;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border-dark);
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
+  border-radius: 16px;
+  margin-top: 10px;
 }
-
-.incubator-page-theme .stat-card-title {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-}
-
-.incubator-page-theme .stat-card-value {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.incubator-page-theme .sub-tab-container {
-  display: flex;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-dark);
-  border-radius: 12px;
-  padding: 4px;
+.incubator-page-theme .done-icon {
+  color: var(--green);
   margin-bottom: 16px;
+  filter: drop-shadow(0 0 10px var(--green-glow));
 }
-
-.incubator-page-theme .sub-tab-btn {
-  flex: 1;
-  padding: 10px;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 14px;
+.incubator-page-theme .done-title {
+  font-size: 18px;
   font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.incubator-page-theme .done-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
-.incubator-page-theme .sub-tab-btn.active {
-  background: rgba(2, 132, 199, 0.15);
-  color: var(--cyan-bright);
-  box-shadow: 0 0 10px rgba(2, 132, 199, 0.2);
-}
-
-.incubator-page-theme .sub-panel {
-  animation: incubator-fade-in 0.3s ease;
-}
-
+/* collapsible leaderboard */
 .incubator-page-theme .collapsible-card {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border-dark);
   border-radius: 16px;
   margin-top: 24px;
-  margin-bottom: 24px;
   overflow: hidden;
-  transition: border-color 0.3s ease;
 }
-
-.incubator-page-theme .collapsible-card:hover {
-  border-color: var(--border-glow);
-}
-
 .incubator-page-theme .collapsible-header {
   padding: 16px 20px;
   display: flex;
@@ -621,32 +604,27 @@ onBeforeUnmount(() => {
   color: var(--cyan-bright);
   font-size: 15px;
 }
-
 .incubator-page-theme .collapsible-content {
-  padding: 0 20px 20px;
-  display: none;
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
 }
-
 .incubator-page-theme .collapsible-content.show {
-  display: block;
-  animation: incubator-fade-in 0.3s ease;
+  padding: 0 20px 20px;
+  max-height: 800px;
 }
-
 .incubator-page-theme .chevron {
   transition: transform 0.3s ease;
-  display: inline-block;
 }
-
 .incubator-page-theme .chevron.up {
   transform: rotate(180deg);
 }
-
 .incubator-page-theme .lb-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .incubator-page-theme .lb-item {
   display: flex;
   justify-content: space-between;
@@ -657,39 +635,29 @@ onBeforeUnmount(() => {
   border-radius: 12px;
   font-size: 14px;
 }
-
 .incubator-page-theme .lb-rank {
   font-family: "JetBrains Mono", monospace;
   color: var(--text-muted);
   width: 24px;
   font-weight: 600;
 }
-
 .incubator-page-theme .lb-address {
   font-family: "JetBrains Mono", monospace;
   color: var(--text-primary);
   flex: 1;
 }
-
 .incubator-page-theme .lb-value {
   font-family: "JetBrains Mono", monospace;
   color: var(--cyan-bright);
   font-weight: 600;
 }
+.incubator-page-theme .lb-item.top-1 .lb-rank { color: #fbbf24; }
+.incubator-page-theme .lb-item.top-2 .lb-rank { color: #94a3b8; }
+.incubator-page-theme .lb-item.top-3 .lb-rank { color: #b45309; }
 
-.incubator-page-theme .lb-item.top-1 .lb-rank {
-  color: #fbbf24;
-}
-
-.incubator-page-theme .lb-item.top-2 .lb-rank {
-  color: #94a3b8;
-}
-
-.incubator-page-theme .lb-item.top-3 .lb-rank {
-  color: #b45309;
-}
-
-.incubator-page-theme .custom-modal-overlay {
+/* modals */
+.incubator-page-theme .custom-modal-overlay,
+.custom-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
@@ -699,63 +667,59 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
-
-.incubator-page-theme .custom-modal {
-  width: 88%;
-  max-width: 360px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid var(--cyan);
+.custom-modal {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(15, 18, 25, 0.97);
+  border: 1px solid var(--cyan, #38bdf8);
   border-radius: 16px;
   padding: 24px;
   position: relative;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
 }
-
-.incubator-page-theme .custom-modal-close {
+.custom-modal-close {
   position: absolute;
-  top: 16px;
+  top: 14px;
   right: 16px;
-  color: var(--text-muted);
+  color: #64748b;
   cursor: pointer;
-  transition: color 0.3s;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: transparent;
   border: none;
-  padding: 0;
+  font-size: 18px;
+  line-height: 1;
 }
-
-.incubator-page-theme .custom-modal-close:hover {
-  color: var(--cyan-bright);
-}
-
-.incubator-page-theme .custom-modal-title {
+.custom-modal-close:hover { color: var(--cyan-bright, #00d4ff); }
+.custom-modal-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #f1f5f9;
   margin-bottom: 16px;
   padding-right: 24px;
 }
-
-.incubator-page-theme .custom-modal-text {
+.custom-modal-text {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: #94a3b8;
   line-height: 1.6;
 }
-
-@keyframes incubator-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 13px;
 }
+.modal-table th {
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 8px 6px;
+  color: #00d4ff;
+  font-weight: 600;
+  text-align: left;
+}
+.modal-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 6px;
+  color: #94a3b8;
+}
+.modal-table tr:last-child td { border-bottom: none; }
 </style>
