@@ -344,12 +344,16 @@
         "title": "Inject vBARKX",
         "info": "Inject your vBARKX to build your 30-day average balance.",
         "amount": "Amount to Inject",
-        "warning": "Warning: Injection is irreversible. Injected vBARKX can only be converted, not withdrawn."
+        "warning": "Warning: Injection is irreversible. Injected vBARKX can only be converted, not withdrawn.",
+        "success": "Injection succeeded. {amount} vBARKX has been injected.",
+        "failure": "Failed."
       },
       "confirm": {
         "title": "Confirm Incubation",
         "message": "You are about to convert {amount} BARKX from your injected vBARKX at a 1:1 ratio.",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "success": "Incubation succeeded. {amount} BARKX has been converted.",
+        "failure": "Failed."
       },
       "weightModal": {
         "title": "OpenDAO Node Weight",

@@ -236,12 +236,17 @@
             <div class="asset-badge">vBARKX</div>
           </div>
           <div class="percent-btns">
-            <button class="p-btn" type="button" @click="injectInput = walletVbarkxRaw">{{ $t("common.max") }}</button>
+            <button class="p-btn" type="button" @click="setInjectMax">{{ $t("common.max") }}</button>
           </div>
         </div>
-        <button class="btn-submit" :disabled="injectBtn.disabled || injecting" :style="injectBtn.disabled ? disabledStyle : {}" @click="doInject">
-          {{ injecting ? injectBtn.busy : injectBtn.label }}
-        </button>
+        <ApprovalActionGroup
+          :requirements="injectRequirements"
+          :check-handler="checkInjectApproval"
+          :approve-handler="handleInjectApprove"
+          :action-label="injectActionLabel"
+          :action-disabled="injectActionDisabled"
+          @action="doInject"
+        />
         <div class="info-box amber" style="margin-top: 16px; margin-bottom: 0">{{ $t("pages.incubator.inject.warning") }}</div>
       </div>
     </div>
@@ -265,9 +270,11 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
+import { formatUnits, maxUint256 } from "viem";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import MiningShell from "@/components/mining/MiningShell.vue";
+import ApprovalActionGroup from "@/components/mining/ApprovalActionGroup.vue";
 import { useMainStore } from "@/store";
 import { useApproval } from "@/composables/useApproval";
 import { useNotice } from "@/composables/useNotice";
@@ -280,7 +287,7 @@ import {
 } from "@/composables/useContracts";
 import { BarkXIncubatorAbi, VBARKXAbi } from "@/abi";
 import { INCUBATOR_CONFIG } from "@/contracts/incubatorConfig";
-import { formatTokenAmount, truncateFixed, safeParseUnits, shortenAddress, parseContractErrorKey } from "@/utils/format";
+import { formatTokenAmount, truncateFixed, safeParseUnits, shortenAddress } from "@/utils/format";
 import {
   getIncubatorProfile,
   getIncubatorConfig,
@@ -302,7 +309,6 @@ const confirmMechanism = ref("normal");
 const injectModal = ref(false);
 const infoModal = ref(null); // 'weight' | 'dynamic' | 'feedback'
 const injectInput = ref("");
-const injecting = ref(false);
 const converting = ref(false);
 
 const profile = ref(null);
@@ -361,14 +367,37 @@ const leaderBtn = computed(() => btnState(profile.value?.totalUnusedLeaderQuotaW
 
 const confirmAmount = computed(() => fmt(confirmMechanism.value === "normal" ? profile.value?.normalQuotaWei : profile.value?.totalUnusedLeaderQuotaWei));
 
-// inject button: Approve vBARKX (no allowance) / Insufficient Balance / Inject vBARKX
-const injectBtn = computed(() => {
-  const amt = safeParseUnits(injectInput.value || "0", 18);
-  const bal = big(walletVbarkxRaw.value);
-  if (amt <= 0n) return { disabled: true, label: t("pages.incubator.buttons.inject"), busy: "..." };
-  if (amt > bal) return { disabled: true, label: t("pages.incubator.buttons.insufficientBalance"), busy: "..." };
-  return { disabled: false, label: t("pages.incubator.buttons.inject"), busy: t("components.approvalActionGroup.approving", { token: "vBARKX" }) };
-});
+// Inject action button (approval handled separately by ApprovalActionGroup).
+const injectRequirements = [{ id: "incubator:vbarkx", label: "vBARKX" }];
+const injectAmountWei = computed(() => safeParseUnits(injectInput.value || "0", 18));
+const injectInsufficient = computed(() => injectAmountWei.value > big(walletVbarkxRaw.value));
+const injectActionDisabled = computed(() => injectAmountWei.value <= 0n || injectInsufficient.value);
+const injectActionLabel = computed(() =>
+  injectInsufficient.value ? t("pages.incubator.buttons.insufficientBalance") : t("pages.incubator.buttons.inject"),
+);
+
+// Approve-first: check allowance up front; default to NOT approved on any error.
+async function checkInjectApproval() {
+  if (!account.value) return false;
+  try {
+    const allowance = await getPublicClient().readContract({
+      address: INCUBATOR_CONFIG.vbarkx,
+      abi: VBARKXAbi,
+      functionName: "allowance",
+      args: [account.value, INCUBATOR_CONFIG.incubator],
+    });
+    return allowance > 0n;
+  } catch {
+    return false;
+  }
+}
+async function handleInjectApprove() {
+  return ensureErc20Approval(INCUBATOR_CONFIG.vbarkx, VBARKXAbi, INCUBATOR_CONFIG.incubator, maxUint256, "vBARKX");
+}
+
+function setInjectMax() {
+  injectInput.value = formatUnits(big(walletVbarkxRaw.value), 18);
+}
 
 // ── info modal content ──
 const infoModalContent = computed(() => {
@@ -438,12 +467,10 @@ function openConfirm(mechanism) {
 }
 
 async function doInject() {
-  if (injectBtn.value.disabled || injecting.value) return;
-  const amount = safeParseUnits(injectInput.value, 18);
-  injecting.value = true;
+  if (injectActionDisabled.value) return;
+  const amount = injectAmountWei.value;
+  const injectedDisplay = fmt(amount.toString());
   try {
-    const ok = await ensureErc20Approval(INCUBATOR_CONFIG.vbarkx, VBARKXAbi, INCUBATOR_CONFIG.incubator, amount, "vBARKX");
-    if (!ok) throw new Error("approval failed");
     const walletClient = getWalletClient();
     const [acct] = await walletClient.getAddresses();
     store.setWalletPendingState({ pending: true, text: t("pages.incubator.buttons.inject") });
@@ -458,11 +485,11 @@ async function doInject() {
     await waitForTx(hash);
     injectModal.value = false;
     await loadProfile();
+    showNotice({ outcome: "success", text: t("pages.incubator.inject.success", { amount: injectedDisplay }) });
   } catch (e) {
-    showNotice(parseContractErrorKey(e) || e?.shortMessage || e?.message || "Inject failed");
+    showNotice({ outcome: "failure", text: t("pages.incubator.inject.failure") });
   } finally {
     store.clearWalletPendingState();
-    injecting.value = false;
   }
 }
 
@@ -476,6 +503,7 @@ async function doConvert() {
       : await requestLeaderConvertSignature(account.value);
     const walletClient = getWalletClient();
     const [acct] = await walletClient.getAddresses();
+    const convertedDisplay = fmt(signed.amount);
     store.setWalletPendingState({ pending: true, text: t("pages.incubator.buttons.incubate") });
     const hash = await writeContractWithGasBuffer(walletClient, {
       address: INCUBATOR_CONFIG.incubator,
@@ -488,8 +516,9 @@ async function doConvert() {
     await waitForTx(hash);
     confirmModal.value = false;
     await Promise.all([loadProfile(), loadStatic()]);
+    showNotice({ outcome: "success", text: t("pages.incubator.confirm.success", { amount: convertedDisplay }) });
   } catch (e) {
-    showNotice(parseContractErrorKey(e) || e?.shortMessage || e?.message || "Convert failed");
+    showNotice({ outcome: "failure", text: t("pages.incubator.confirm.failure") });
   } finally {
     store.clearWalletPendingState();
     converting.value = false;
