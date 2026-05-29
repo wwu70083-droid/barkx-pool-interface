@@ -139,6 +139,8 @@
 * timeSnapshot
 * userAddress
 * tier: 1 / 2 / 3 / 4 / 5
+* incomeToday：用户当日的 Dynamic Reward，此收益类型在 OpenDAO 生产版本已经上线
+* feedbackToday：用户当日的 Feedback Reward，此收益类型在 OpenDAO 生产版本尚未上线，当前无法请求，但其 Partner API 规范与 incomeToday 一致
 
 > 拉取失败可重试 5 次。如果在 00:40 UTC 之前未成功，可以用旧数据计算，但必须在管理员界面报告。
 
