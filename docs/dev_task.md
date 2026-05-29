@@ -1,27 +1,19 @@
 # Dev Task
 
-初步视觉验证成功。
+我正在开始业务测试，逐步发现问题中。
 
-https://barkx-pool.westworld.org 和 https://incubator-admin.westworld.org 都可以正常访问了。
+## 用户前端
 
-你可以记载 serving setup 了。
+1. 在 Inject vBARKX modal 中点击 MAX，似乎是按照钱包余额扩大 18 个 0 了，检查此处的精度转换问题。
+2. 在 Inject vBARKX modal 中，你的实现是点击 Inject 后开始 Approve，但这不符合整个生产版本已经落地的 Approve 风格。在 BarkX Pool Interface 的其他部分，页面会始终优先检测代币是否被 Approve 过，如果没有，按钮会直接显示 Approve vBARKX，而不显示 Inject vBARKX。如果因网络延迟等原因没能获取到 Approve 状态，也会直接以未 Approve 为缺省值，显示需要 Approve。去其他页面读一下现有逻辑，复刻过来。
+3. 因 Approve 而调用钱包后，取消操作，发现 toast 为空白。去现有生产代码中为各种情形搜索 已经存在的 toast 编排，适配过来。对于 Incubator 专用的 toast 文案，现提供：
 
-业务测试稍后进行。
+### Inject 专用
 
----
+* 成功注入：Injection succeeded. XX.XX vBARKX has been injected.
+* 失败注入：Failed.
 
-一个明显错误：测试代币合约地址配置
+### Confirm Incubation 专用
 
-在 Settings 功能的 Smart Contracts 面板，我可以看到 BarkX Pool Interface 目前的环境配置。抛开本测试用不到的 USDT，本测试需要的 BARKX 和 vBARKX 地址都不是 SPEC 规定的地址，似乎都是前序开发人员留下的测试代币配置。
-
-需要更正为我们所用的测试代币。
-
----
-
-在 admin dashboard，我看到 On-chain approver=0x29204C012bB48806f3A2bF45591Aa924dA83F9C6，但目前我们难道不应该用 owner，也就是 0x5bC95902F404310020F6673049a89F00d5de0C2a 作为 approver 吗？
-
-我没有 0x29204C012bB48806f3A2bF45591Aa924dA83F9C6 的控制权。
-
----
-
-我发现我虽然有私钥，但我并没有你所生成的 owner 的 keystore 密码，所以每次重启后都必须由你代劳 unlock 后端。
+* 成功转换：Incubation succeeded. XX.XX BARKX has been converted.
+* 失败转换：Failed.
