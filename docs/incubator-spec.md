@@ -2,10 +2,10 @@
 
 孵化池是将 vBARKX 转换为 BARKX 的设施，运行在 Arbitrum One，包含：
 
-1. 一个 incubator 智能合约，会接收和销毁 vBARKX，以及预存 BARKX 用于转换输出。
-2. 一个 incubator-backend 后端，主要负责管理转换配额，并为转换请求签名。
-3. 一个 incubator-frontend 用户前端，作为一个新的子功能整合在现有 BarkX Pool dApp 中。
-4. 一个 incubator-frontend 管理前端，全新搭建。
+1. 智能合约，会接收和销毁 vBARKX，以及预存 BARKX 用于转换输出。
+2. 后端，主要负责管理转换配额，并为转换请求签名。
+3. 用户前端，作为一个新的子功能整合在现有 BarkX Pool dApp 中。
+4. 管理前端，全新搭建。
 
 开发者先通过 `incubator-user-guide.md` 理解孵化池的所有主要业务功能事实，排除矛盾和问题，然后按照本 SPEC 和讨论后的需求细节编纂 `dev_guide.md` 以进行开发。
 
@@ -17,7 +17,7 @@
 
 1. 仔细分析静态原型 `incubator_sample.html` 和 `style.css`，拆除静态模拟、接入真实逻辑，同时必须保证原型中定义的所有样式被完好保留和呈现，生成产物 `incubator.html`。
 2. 仔细分析生产版本的 BarkX Pool dApp 仓库 `barkx-pool-interface`，将产物 `incubator.html` 转生产版本的框架实现，融合生产版本的所有配套（wallet、approve、toast 等），保持服从和对齐生产版本。
-3. 将产物纳入生产版本侧导航菜单位置：Featured Pools/Incubator，位于 BarkX VIP Pool 下方。代码直接融合到仓库 `barkx-pool-interface` 的 main。
+3. 将产物纳入生产版本侧导航菜单位置：Featured Pools/Incubator，位于 BarkX VIP Pool 下方。
 4. 确保现有生产版本的其他功能和样式完全不发生改变。（Incubator 业务本身与生产版本其他功能高度解耦）
 5. 所有数值在显示时，按预期目标精度截断。
 6. 最终验收之前只做英文版界面。
@@ -42,7 +42,7 @@
     * Button - **Confirm**：请求后端签名，调用合约
 * 信息 Modal - **OpenDAO Node Weight**
     * **Node Weight**：读后端配置表
-* 当日转换完成状态
+* 当日转换完成状态：Normal Incubation Completed
 
 #### Leader Incubation
 
@@ -64,15 +64,18 @@
     * **Mapping Efficiency**：读后端配置表
 * 信息 Modal - **Feedback Reward Mapping**
     * **Mapping Efficiency**：读后端配置表
-* 当日转换完成状态
+* 当日转换完成状态：Leader Incubation Completed
 
 #### 通用
 
-* Button - **Incubate to BARKX**：打开 **Confirm Incubation** Modal；如果 **My Injection** 小于 **Amount to Incubate**，按钮内容为 **Insufficient Injection**，无法点击
+* Button - **Incubate to BARKX**
+    * 用于打开 **Confirm Incubation** 交互 Modal
+    * 如果 **My Injection** 小于当前机制的 **Amount to Incubate**，按钮内容为 **Insufficient Injection**，无法点击，无法打开 Modal
+    * 如果当前机制的 **Amount to Incubate** 小于 1，按钮内容为 **Less than 1 BARKX**，无法点击，无法打开 Modal
 * 交互 Modal - **Inject vBARKX**
     * **Amount to Inject**：用户填写
     * **Balance**：钱包中的 vBARKX 余额
-    * Button - **Inject vBARKX**：总是检测地址的代币授权，如果没有授权，按钮内容是 **Approve vBARKX**；如果钱包中的 vBARKX 余额小于 **Amount to Inject**，按钮内容为 **Insufficient Balance**，无法点击
+    * Button - **Inject vBARKX**：总是检测地址的代币授权，如果没有授权，按钮内容是 **Approve vBARKX**；如果钱包中的 vBARKX 余额小于 **Amount to Inject**，按钮内容为 **Insufficient Balance**，无法点击，无法调用钱包
 * **Leaderboard**：生涯转换得到 BARKX 数量最多的前十名用户，读后端
 
 ## Incubator Smart Contract
@@ -112,7 +115,7 @@
 * **userTotalInjection**：用户调用 `inject` 消耗的 vBARKX 生涯总量，完成时写合约
 * **userTotalConversion**：用户调用 `convert` 使合约输出的 BARKX 生涯总量，完成时写合约
 
-## Incubator Smart Backend
+## Incubator Backend
 
 开发后端前，先分析生产版本的 BarkX Pool dApp 仓库 `BarkX-Pool-Interface` 中实现的接口，推测 BarkX Pool 后端开发规范，让 Incubator 的接口开发尽量贴近生产风格。
 
@@ -155,7 +158,7 @@
 
 借鉴 `opendao-backend` 的 Partner API 方案，由预置 token 鉴权，提供快照和实时数据接口。
 
-每日 00:45 UTC 快照一次，数据保留 7 天。（Data Fusion 在 01:00 UTC 拉取快照）
+每日 00:45 UTC 快照一次，数据保留 7 天。（已知 Data Fusion 在 01:00 UTC 拉取快照）
 
 #### 顶层
 
@@ -187,7 +190,7 @@
 
 ## Incubator Admin Frontend
 
-照搬 `opendao-admin` 前端，改造后使用。
+照搬 `opendao-admin` 前端，改造后使用。内容包括但不限于：
 
 * Dashboard：解锁后端
 * Users
@@ -247,3 +250,11 @@
 在测试时，`incubator.html` 被装配到完整的 `barkx-pool-interface` 中，但只有 `incubator.html` 的功能能正常运行，其他功能访问不到数据，这是正常现象。
 
 只为 `incubator.html` 配置其必须的环境配置即可。
+
+## 仓库结构
+
+1. `incubator.html` 直接融合到仓库 `barkx-pool-interface` 的 main。
+    1. 文档统一在 `barkx-pool-interface/docs`。
+2. `incubator-admin.html` 推送到仓库 `barkx-incubator-admin`。
+3. 后端代码推送到仓库 `barkx-incubator-backend`。
+4. 合约代码推送到仓库 `barkx-incubator-contract`。
