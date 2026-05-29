@@ -1,0 +1,1002 @@
+{
+  "app": {
+    "name": "BarkX Mining",
+    "brand": "BarkX"
+  },
+  "common": {
+    "modals": {
+      "close": "Đóng",
+      "nodeStatus": {
+        "title": "Trạng thái nút",
+        "active": "Nút hoạt động",
+        "inactive": "Nút không hoạt động",
+        "currentStatus": "Tình trạng hiện tại:",
+        "howToMaintain": "Làm cách nào để duy trì trạng thái Hoạt động?",
+        "descriptionHtml": "Một nút được xem xét <strong style=\"color: var(--green);\">Đang hoạt động</strong> nếu nó duy trì một <strong>Vị trí 360 ngày</strong> trongBarkX Pool. Điều này có nghĩa là nắm giữ ít nhất <strong>1VN</strong> và bất kỳ số lượng nào <strong>LPmã thông báo</strong> được cấu hình cho chu kỳ khóa 360 ngày. Tài sản đã mở khóa trong chu kỳ này vẫn được tính vào trạng thái hoạt động."
+      },
+      "compoundEligibility": {
+        "title": "Đủ điều kiện kết hợp",
+        "lifetimeRatio": "Tỷ lệ gộp trọn đời:",
+        "metricHint": "Số liệu này thể hiện tỷ lệ phần trăm trong tổng số phần thưởngBARKXmà bạn đã nhận từBarkX Poolđã được tái đầu tư vào mã thông báoLP.",
+        "rulesTitle": "Quy tắc huy chương tổng hợp:",
+        "rulesHtml": "BarkAIđánh giá tỷ lệ này cho mỗi người dùng 7 ngày một lần. Nếu tỷ lệ của bạn là <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> ở lần chụp nhanh tiếp theo, bạn sẽ được trao Huy chương tổng hợp, mở khóa hệ số nhân lợi nhuận có hiệu lực trong 7 ngày tiếp theo."
+      }
+    },
+    "balance": "Số dư:{amount}",
+    "unlocked": "Đã mở khóa:{amount}",
+    "max": "TỐI ĐA",
+    "lockPeriods": {
+      "hours24": "24 giờ",
+      "days90": "90 ngày",
+      "days360": "360 ngày"
+    },
+    "duration": {
+      "hours24": "24 giờ",
+      "day": "{count} Ngày",
+      "days": "{count} Ngày",
+      "hour": "{count} Giờ",
+      "hours": "{count} Giờ",
+      "minute": "{count} Phút",
+      "minutes": "{count} Phút",
+      "lessThanMinute": "< 1 phút"
+    }
+  },
+  "routes": {
+    "titles": {
+      "dashboard": "Bảng điều khiển",
+      "swap": "Hoán đổi",
+      "liquidity": "Thanh khoản",
+      "pool": "BarkX Pool",
+      "ePool": "BarkX Elite Pool",
+      "vPool": "BarkX VIP Pool",
+      "incubator": "Vườn ươm",
+      "nodeBoost": "Node Boost",
+      "barkdao": "BarkDAO",
+      "settings": "Cài đặt",
+      "noticeTest": "Kiểm tra thông báo BarkX Pool"
+    }
+  },
+  "nav": {
+    "dashboard": "Bảng điều khiển",
+    "swap": "Hoán đổi",
+    "liquidity": "Thanh khoản",
+    "pool": "BarkX Pool",
+    "featuredPools": "Pool nổi bật",
+    "ePool": "BarkX Elite Pool",
+    "vPool": "BarkX VIP Pool",
+    "incubator": "Vườn ươm",
+    "nodeBoost": "Node Boost",
+    "vn": "Vector Nexus",
+    "barkdao": "BarkDAO",
+    "partnership": "Đối tác",
+    "openDao": "OpenDAO",
+    "settings": "Cài đặt"
+  },
+  "wallet": {
+    "install": "Cài ví",
+    "connect": "Kết nối ví",
+    "connecting": "Đang kết nối...",
+    "reconnect": "Kết nối lại ví",
+    "switch": "Chuyển {chain}",
+    "switchTo": "Chuyển sang {chain}",
+    "target": "Mục tiêu: {chain}",
+    "unknownNetwork": "Mạng không xác định",
+    "networkSwitchHint": "{network} · chuyển sang {chain}",
+    "notConnected": "Ví chưa kết nối",
+    "noInjected": "Không có ví injected",
+    "disconnectHint": "Hãy ngắt kết nối trong tiện ích ví nếu bạn muốn thu hồi quyền truy cập.",
+    "pending": "Đang xử lý...",
+    "errors": {
+      "noInjected": "Không tìm thấy ví. Vui lòng cài MetaMask hoặc ví tương thích.",
+      "noAccount": "Không nhận được tài khoản ví.",
+      "rejected": "Bạn đã hủy yêu cầu ví.",
+      "addChain": "Vui lòng thêm {chain} vào ví rồi thử lại.",
+      "untrustedHost": "Môi trường hiện tại không đáng tin cậy. Vui lòng mở lại từ nguồn được chấp thuận.",
+      "switchNetwork": "Vui lòng chuyển sang {chain}.",
+      "generic": "Kết nối ví thất bại. Vui lòng thử lại."
+    }
+  },
+  "components": {
+    "swapOptions": {
+      "slippage": {
+        "low": "0.1%",
+        "medium": "0.5%",
+        "high": "1.0%"
+      },
+      "slippageTolerance": "Khả năng chịu trượt",
+      "transactionDeadline": "Hạn chót giao dịch",
+      "minutes": "phút",
+      "expertMode": "Chế độ chuyên gia",
+      "expertModeHint": "Cho phép giao dịch có độ trượt giá cao",
+      "custom": "tùy chỉnh"
+    },
+    "approvalActionGroup": {
+      "connectWallet": "Kết nối ví",
+      "approve": "Phê duyệt{token}",
+      "approving": "Đang phê duyệt{token}...",
+      "checking": "Đang kiểm tra..."
+    },
+    "pendingNotice": {
+      "default": "Đang chờ xử lý..."
+    },
+    "collapsibleCard": {
+      "poolStatus": "Trạng thái nhóm",
+      "options": "Tùy chọn",
+      "swapOptions": "Tùy chọn hoán đổi"
+    },
+    "poolStatus": {
+      "totalLiquidity": "Tổng thanh khoản",
+      "lpMinted": "LPđúc",
+      "barkxReserve": "BARKXDự trữ",
+      "usdtReserve": "USDTDự trữ"
+    }
+  },
+  "pages": {
+    "ePool": {
+      "depositVbarkx": {
+        "infoAfter": ".",
+        "infoBefore": "GửivBARKXcủa bạn bằngUSDTđể tự động đúcLP. Tất cảvBARKXbiến thànhBARKXtại ",
+        "depositVbarkx": "Gửi tiềnvBARKX",
+        "convertToDeposit": "Chuyển đổi sang tiền gửi",
+        "pairingWith": "Ghép nối với",
+        "predictedLp": "Dự đoánLPSố tiền",
+        "action": "Gửi tiềnvBARKX+USDT",
+        "pending": "Gửi tiềnvBARKX+USDT...",
+        "minimum": "Tối thiểu{amount}vBARKX",
+        "success": "vBARKXđã gửi thành công.",
+        "failure": "vBARKXgửi tiền không thành công.",
+        "paused": "Khoản tiền gửivBARKXhiện đang bị tạm dừng.",
+        "depositVnFirst": "Gửi tiềnVNtrước để mở khóa dung lượngLP.",
+        "priceUnavailable": "GiáBARKXhiện không có sẵn.",
+        "insufficientUsdt": "Số dưUSDTkhông đủ.",
+        "capExceeded": "LPĐã vượt quá giới hạn hiệu quả."
+      },
+      "title": "BarkX Elite Pool",
+      "subtitle": "Khai thác thanh khoản cho Câu lạc bộ Elite",
+      "tabs": {
+        "depositVn": "Gửi tiềnVN",
+        "depositVbarkx": "Gửi tiềnvBARKX",
+        "withdraw": "Rút tiền",
+        "rewards": "Phần thưởng"
+      },
+      "common": {
+        "apr": "APR",
+        "nodeBoostTitle": "Xem bảng phân tích tăng cường nút",
+        "lockPeriod": "Thời gian khóa",
+        "unlockLater": "Mở khóa{lockPeriod}sau.",
+        "barkxPrice": "BARKXGiá:{price}USDT"
+      },
+      "depositVn": {
+        "info": "ChỉVNmới mới có thể được chấp nhận để mở rộngLPGiới hạn hiệu dụng trongBarkX Elite Pool. Tất cảVNmới được gửi ở đây sẽ vẫn mới và vẫn có thể được sử dụng trongBarkX Poolđể nhận tiền thưởngBARKX.",
+        "depositNewVn": "Gửi tiền mớiVN",
+        "capIncrease": "LPTăng giới hạn hiệu quả",
+        "action": "Gửi tiềnVN",
+        "pending": "Đang gửi tiềnVN...",
+        "success": "VNđã gửi thành công.",
+        "failure": "VNgửi tiền không thành công.",
+        "paused": "Khoản tiền gửiVNhiện đang bị tạm dừng."
+      },
+      "withdraw": {
+        "info": "Chọn hồ sơ tiền gửi đã mở khóa để rút tài sản của bạn.LPGiới hạn hiệu quả và sức mạnh khai thác của bạn sẽ giảm tương ứng.",
+        "selectAllCurrentPage": "Chọn tất cả trên trang hiện tại",
+        "statusUnlocked": "ĐÃ MỞ KHÓA",
+        "selectedSummary": "Đã chọn để rút tiền (Tổng hợp)",
+        "totalVn": "Tổng cộngVN",
+        "totalLp": "Tổng cộngLP",
+        "capDecrease": "LPGiảm giới hạn",
+        "withdrawSelected": "Rút tiền đã chọn",
+        "withdrawPending": "Đang rút tài sản đã chọn...",
+        "withdrawSuccess": "Đã rút tài sản đã chọn.",
+        "withdrawFailure": "Rút tiền không thành công.",
+        "vnPaused": "VNviệc rút tiền hiện đang bị tạm dừng.",
+        "lpPaused": "LPviệc rút tiền hiện đang bị tạm dừng.",
+        "withdrawLpFirst": "RútLPtrước hoặc chọn ít nhómVNhơn."
+      },
+      "rewards": {
+        "info": "Nhận phần thưởng Elite trực tiếp vào ví của bạn. Không áp dụng phí!",
+        "autoAccumulated": "Phần thưởng được tự động tích lũy sau mỗi 24 giờ.",
+        "pendingRewards": "Phần thưởng đang chờ xử lý",
+        "directClaim": "Yêu cầu trực tiếp",
+        "feeRate": "Mức phí",
+        "receivingAmount": "Số tiền nhận",
+        "claimToWallet": "Yêu cầu ví",
+        "lessThanOneAction": "Ít hơn 1BARKX",
+        "claimPending": "Đòi phần thưởng...",
+        "claimSuccess": "Đã xác nhận{amount}BARKX.",
+        "claimFailure": "Yêu cầu không thành công."
+      },
+      "depositStatus": {
+        "title": "Tình trạng cá nhân",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPMã thông báo",
+        "lpCap": "LPGiới hạn hiệu quả",
+        "unusedCap": "{amount}LPMũ chưa sử dụng",
+        "note": "Bạn có dung lượngLPchưa sử dụng.",
+        "cta": "Gửi thêmLP",
+        "tail": "để tối đa hóa sức mạnh khai thác!",
+        "estimate": "Ước tính"
+      },
+      "estimate": {
+        "title": "LPƯớc tính",
+        "emptyMessage": "LPGiới hạn hiệu dụng hiện có của bạn quá nhỏ để hỗ trợ ước tính.",
+        "emptyActionBefore": "Vui lòng gửi ít nhất",
+        "emptyActionAfter": "để mở rộng Giới hạn hiệu dụngLPcủa bạn trước khi ước tính các yêu cầu về thanh khoản.",
+        "barkxPrice": "BARKXGiá",
+        "plannedLp": "Đã lên kế hoạchLP",
+        "assetsRequired": "Tài sản ước tính cần thiết"
+      },
+      "leaderboard": {
+        "title": "Bảng xếp hạng",
+        "topBurn": "Đốt cháy hàng đầu",
+        "topDeposit": "Tiền gửi hàng đầu"
+      },
+      "time": {
+        "fallback": "180 ngày",
+        "day": "{count} Ngày",
+        "days": "{count} Ngày",
+        "hour": "{count} Giờ",
+        "hours": "{count} Giờ",
+        "minute": "{count} Phút",
+        "minutes": "{count} Phút",
+        "lessThanMinute": "< 1 phút"
+      },
+      "errors": {
+        "belowMinDeposit": "Dưới mức tiền gửi tối thiểuvBARKX.",
+        "insufficientBalance": "Không đủ cân bằng.",
+        "invalidBucket": "Lựa chọn nhóm không hợp lệ.",
+        "invalidParam": "Thông số giao dịch không hợp lệ.",
+        "invalidSignature": "Chữ ký yêu cầu không hợp lệ.",
+        "lpCapExceeded": "LPĐã vượt quá giới hạn hiệu quả.",
+        "noVnStaked": "Gửi tiềnVNtrước để mở khóa dung lượngLP.",
+        "nothingToWithdraw": "Không có gì để rút.",
+        "paused": "Hành động này hiện đang bị tạm dừng.",
+        "signatureExpired": "Chữ ký yêu cầu đã hết hạn.",
+        "slippageExceeded": "Trượt vượt quá. Vui lòng thử lại.",
+        "stillLocked": "Tài sản đã chọn vẫn bị khóa.",
+        "zeroAmount": "Số tiền phải lớn hơn 0."
+      }
+    },
+    "barkdao": {
+      "incentive": {
+        "zeroFee": "0%",
+        "title": "Khuyến khích nút",
+        "qualified": "đủ điều kiện",
+        "unqualified": "Không đủ tiêu chuẩn",
+        "pending": "ĐANG CHỜ ƯU ĐÃI",
+        "infoStart": "Hợp nhất Ưu đãi nút tích lũy của bạn vàoBarkX Poolcủa bạn ",
+        "pendingRewards": "Phần thưởng đang chờ xử lý",
+        "infoMiddle": " để yêu cầu bồi thường hoặc gộp. ",
+        "infoEnd": " áp dụng phí!",
+        "reqTitle": "Yêu cầu trình độ:",
+        "reqText": "Các ưu đãi mạng của bạn đang tích lũy một cách an toàn, nhưng để hợp nhất chúng, bạn phải duy trì vị thế hoạt động trong 360 ngày (giữ 1VN+LP) trongBarkX Pool. Tài sản đã mở khóa vẫn còn hiệu lực.",
+        "mergeTitle": "Hợp nhất để thưởng",
+        "feeRate": "Mức phí",
+        "receiving": "Số tiền nhận",
+        "mergingAmount": "Số tiền hợp nhất",
+        "merge": "Hợp nhất để thưởng",
+        "merging": "Hợp nhất...",
+        "mergedSuccess": "Đã hợp nhất thành công",
+        "goToRewards": "Đi tới Phần thưởng",
+        "claiming": "Đang yêu cầu...",
+        "claim": "Yêu cầu ví"
+      },
+      "subtitle": "Mạng lưới lãnh đạo nút",
+      "actionRequired": "Hành động bắt buộc",
+      "tabs": {
+        "invite": "Mời",
+        "network": "Mạng",
+        "incentive": "Khuyến khích"
+      },
+      "unregistered": {
+        "title": "Bạn chưa tham giaBarkDAO.",
+        "desc": "Để tham gia vào mạng, bạn phải đăng ký địa chỉ ví của Node Leader. Điều này thiết lập vị trí của bạn trong hệ thống phân cấpBarkDAO.",
+        "warningTitle": "CẢNH BÁO QUAN TRỌNG:",
+        "warningText": "Địa chỉ lãnh đạo bạn nhập bên dưới KHÔNG THỂ THAY ĐỔI sau khi đăng ký trên hợp đồng thông minh. Vui lòng kiểm tra kỹ và đảm bảo địa chỉ chính xác 100% trước khi xác nhận.",
+        "leaderLabel": "Địa chỉ ví của lãnh đạo",
+        "feeLabel": "Phí đăng ký",
+        "feeSub": "Đây là phí giao thức, không bao gồm mạng tiêu chuẩnGas.",
+        "register": "Xác nhận & Đăng ký",
+        "registerPending": "Đang đăng ký...",
+        "registerSuccess": "Đăng ký hoàn tất. Tư cách thành viênBarkDAOhiện đang hoạt động.",
+        "registerFailure": "Đăng ký không thành công. Vui lòng thử lại.",
+        "contractNotConfigured": "Địa chỉ hợp đồngBarkDAOkhông được định cấu hình trong môi trường này.",
+        "registerDisabled": "Việc đăng ký hiện đang bị tạm dừng.",
+        "paymentDisabled": "ETHđăng ký hiện không có sẵn.",
+        "rootForbidden": "Bạn không thể đăng ký trực tiếp theo địa chỉ gốc.",
+        "parentNotFound": "Địa chỉ của người lãnh đạo chưa được đăng ký trongBarkDAO.",
+        "parentDisabled": "Địa chỉ lãnh đạo này hiện không chấp nhận thành viên mới.",
+        "alreadyRegistered": "Ví này đã được đăng ký trongBarkDAO."
+      },
+      "invite": {
+        "badge": "Thành viên tích cực",
+        "title": "Chào mừng đến với Mạng Nút của bạn",
+        "desc": "Bạn đã đăng ký chính thức vàoBarkDAO. Mời người khác tham gia mạng của bạn bằng cách chia sẻ địa chỉ ví của bạn. Khi họ đăng ký, họ phải nhập địa chỉ của bạn với tư cách là người lãnh đạo của họ.",
+        "addressLabel": "Địa chỉ ví của bạn (Dành cho lời mời)",
+        "invitedByLabel": "Được mời bởi",
+        "copy": "Sao chép địa chỉ",
+        "copied": "Đã sao chép!"
+      },
+      "network": {
+        "title": "Trực quan hóa BarkX",
+        "howToExplore": "Cách khám phá",
+        "viewLabel": "Lượt xem:{label}",
+        "permissions": {
+          "max": "Tối đa (20↑ / 20↓)",
+          "medium": "Trung bình (20↑ / 3↓)",
+          "min": "Tối thiểu (1↑ / 1↓)"
+        },
+        "guideTitle": "Hướng dẫn khám phá",
+        "guideDrag": "Kéo",
+        "guideDragDesc": "canvas để xoay.",
+        "guideTap": "Nhấn vào",
+        "guideTapDesc": "một nút để xem địa chỉ của nó. Nhấn vào khoảng trống để đóng.",
+        "guideDouble": "Nhấn đúp",
+        "guideDoubleDesc": "các nút vững chắc để mở rộng.",
+        "guideLimit": "Giới hạn:",
+        "guideLimitDesc": "Bạn có thể khám phá tối đa{levels}cấp độ từ nút của mình.",
+        "legend": "Truyền thuyết",
+        "legendRoot": "Gốc",
+        "legendHigher": "Lãnh đạo cấp cao",
+        "legendDirect": "Lãnh đạo trực tiếp",
+        "legendYou": "bạn",
+        "legendSub": "Mạng con",
+        "legendSingle": "Nút đơn",
+        "legendCluster": "Các nút đơn được nhóm lại"
+      },
+      "signal": {
+        "title": "Sự cố tín hiệu mạng",
+        "about": "Giới thiệu về Mạng BarkX và các ưu đãi:",
+        "rule1": "1. Hiệu quả khuyến khích của bạn phụ thuộc vào quy mô của mạng lưới hạ nguồn của bạn.",
+        "rule2": "2. Cường độ tín hiệu giảm dần theo khoảng cách. Mỗi cấp độ tiếp theo giữ lại 70% của cấp độ trước đó.",
+        "rule3": "3. Tín hiệu của nút có thể đạt độ sâu tối đa 20 cấp.",
+        "colStrength": "Cường độ tín hiệu",
+        "colDistance": "Khoảng cách",
+        "colNodes": "Nút hoạt động",
+        "colContribution": "Đóng góp",
+        "unauthorized": "Dữ liệu trái phép",
+        "summary": "Tóm tắt / Tổng số:"
+      }
+    },
+    "settings": {
+      "title": "Cài đặt",
+      "subtitle": "Tùy chọn & Liên kết",
+      "wallet": {
+        "title": "Ví",
+        "copy": "Sao chép",
+        "copied": "Đã sao chép",
+        "switchWallet": "Chuyển ví",
+        "disconnect": "Ngắt kết nối"
+      },
+      "contracts": {
+        "title": "Hợp đồng thông minh",
+        "copy": "Sao chép địa chỉ hợp đồng"
+      },
+      "display": {
+        "title": "Hiển thị",
+        "language": "Ngôn ngữ",
+        "selectLanguage": "Chọn ngôn ngữ",
+        "en": "EN",
+        "cn": "CN"
+      },
+      "about": {
+        "title": "Giới thiệu",
+        "version": "Phiên bản",
+        "tutorial": "Hướng dẫn",
+        "docs": "Tài liệu",
+        "discord": "Discord"
+      }
+    },
+    "dashboard": {
+      "title": "Trang tổng quan",
+      "subtitle": "BARKXKhai thác thanh khoản",
+      "metrics": {
+        "price": "BARKX/USDTGiá",
+        "apy": "APR",
+        "marketCap": "BARKXVốn hóa thị trường"
+      },
+      "nodeWeight": {
+        "title": "Trọng lượng nút",
+        "yesterdayWeight": "Cân nặng của ngày hôm qua:",
+        "fetchedFrom": "Giá trị này được lấy một cách an toàn từ",
+        "sourceName": "OpenDAOAPI",
+        "multiplierBefore": "Nó hoạt động như một hệ số nhân được áp dụng trực tiếp cho",
+        "averageBalance": "Số dư trung bình 30 ngày",
+        "multiplierAfter": ". Hệ số trọng số cao hơn sẽ khuếch đại đáng kể tỷ lệ cạnh tranh của bạn trong ảnh chụp nhanh hàng ngày, đảm bảo phần lớn hơn trong hạn ngạch chuyển đổiBARKX.",
+        "learnBefore": "Để tìm hiểu cách tăng Trọng lượng nút của bạn, vui lòng truy cập",
+        "linkText": "OpenDAO",
+        "learnAfter": "cho các yêu cầu chi tiết."
+      },
+      "mainPool": {
+        "title": "BarkX Poolcủa tôi",
+        "detailsTitle": "BarkX PoolChi tiết của tôi",
+        "boostedApr": "Đã tăng cườngAPR",
+        "boostedApy": "Đã tăng cườngAPY",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPMã thông báo",
+        "pendingRewards": "Phần thưởng đang chờ xử lý",
+        "totalAchieved": "Tổng số đạt được"
+      },
+      "elitePool": {
+        "title": "BarkX Elite Poolcủa tôi"
+      },
+      "vipPool": {
+        "title": "BarkX VIP Poolcủa tôi",
+        "apr": "APR"
+      },
+      "incubator": {
+        "title": "Vườn ươm của tôi",
+        "myDeposit": "Khoản tiền gửi của tôi",
+        "average30Day": "Trung bình 30 ngày",
+        "myQuotaToday": "Hạn ngạch của tôi hôm nay",
+        "totalIncubated": "Tổng số đã ủ"
+      },
+      "cards": {
+        "newVn": "VNmới",
+        "newVnInWallet": "VNmới trong Ví",
+        "usedVn": "Đã sử dụngVN",
+        "usedVnInWallet": "Đã sử dụngVNtrong Ví",
+        "barkx": "BARKX",
+        "barkxInWallet": "BARKXtrong Ví",
+        "lpToken": "LPMã thông báo",
+        "lpTokenInWallet": "LPMã thông báo trong Ví",
+        "pendingRewards": "Phần thưởng đang chờ xử lý",
+        "achievedRewards": "Phần thưởng đạt được",
+        "inWallet": "trong Ví"
+      },
+      "depositStatus": {
+        "title": "Trạng thái tiền gửi của tôi",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPMã thông báo",
+        "lpCap": "LPGiới hạn hiệu quả",
+        "lpCapUnused": "{amount}LPMũ chưa sử dụng",
+        "note": "Bạn có dung lượngLPchưa sử dụng.",
+        "cta": "Gửi thêmLP",
+        "tail": "để tối đa hóa sức mạnh khai thác!",
+        "noteOver70": "Bạn đã sử dụng hơn 70% dung lượngLPcủa mình. Hãy nhớ luôn chừa một khoảng trống để ghép."
+      },
+      "assetsInWallet": {
+        "title": "Tài sản trong Ví",
+        "overviewTitle": "Tổng quan về tài sản hoàn chỉnh",
+        "newVn": "Vector Nexusmới",
+        "usedVn": "Đã sử dụngVector Nexus",
+        "usedVn1": "Đã sử dụngVector Nexustôi",
+        "usedVn2": "Đã sử dụngVector NexusII",
+        "barkx": "BARKXMã thông báo",
+        "vbarkx": "vBARKXMã thông báo",
+        "lp": "LPMã thông báo",
+        "vlp": "vLPMã thông báo"
+      },
+      "poolRewards": {
+        "title": "BarkX PoolPhần thưởng",
+        "pendingMining": "Phần thưởng khai thác đang chờ xử lý",
+        "totalAchieved": "Tổng số đạt được"
+      },
+      "vipPoolRewards": {
+        "title": "BarkX VIP PoolPhần thưởng",
+        "pendingMining": "Phần thưởng khai thác đang chờ xử lý",
+        "totalAchieved": "Tổng số đạt được"
+      }
+    },
+    "incubator": {
+      "title": "Vườn ươm",
+      "subtitle": "vBARKX-BARKXCổng",
+      "snapshotTime": "UTC 0:00",
+      "poolBalance": "Bể bơi:{amount}",
+      "dao": {
+        "status": "DAO:{status}",
+        "yes": "Có",
+        "no": "Không"
+      },
+      "modal": {
+        "title": "Xác nhận ủ",
+        "messageBefore": "Bạn sắp ấp",
+        "messageAfter": "từvBARKXđã gửi của bạn vàoBARKXtheo tỷ lệ 1:1.",
+        "confirm": "Xác nhận"
+      },
+      "accessDenied": {
+        "title": "Truy cập bị từ chối",
+        "messageBefore": "Dịch vụ vườn ươm chỉ dành riêng cho thành viênOpenDAOđã đăng ký.",
+        "messageAction": "Vui lòng đăng ký ví của bạn với",
+        "messageAfter": "ngay lập tức để mở khóa quyền truy cập."
+      },
+      "tabs": {
+        "deposit": "Gửi tiền",
+        "withdraw": "Rút tiền",
+        "incubate": "Ủ"
+      },
+      "deposit": {
+        "infoBefore": "GửivBARKXcủa bạn để tạo số dư trung bình trong 30 ngày của bạn. Ảnh chụp nhanh hàng ngày được chụp vào lúc",
+        "infoAfter": "xác định trọng số của bạn cho hạn ngạch chuyển đổiBARKXvào ngày tiếp theo.",
+        "amount": "Số tiền cần gửi",
+        "approve": "Phê duyệtvBARKX"
+      },
+      "withdraw": {
+        "info": "RútvBARKXcủa bạn bất cứ lúc nào mà không cần thời gian khóa. Điều này sẽ ảnh hưởng đến tính toán số dư trung bình của bạn trong ảnh chụp nhanh tiếp theo.",
+        "amount": "Số tiền cần rút",
+        "action": "Rút tiềnvBARKX(Phí 0,1%)"
+      },
+      "incubate": {
+        "infoBefore": "Chuyển đổivBARKXđã ký gửi của bạn thànhBARKXtại",
+        "infoAfter": "dựa trên hạn ngạch được phân bổ của bạn. Mọi hạn ngạch chuyển đổi chưa sử dụng trong ngày sẽ bị mất và không được chuyển sang ngày tiếp theo.",
+        "globalQuotaToday": "Hạn ngạch toàn cầu ngày nay",
+        "yourQuotaToday": "Hạn ngạch của bạn hôm nay",
+        "amount": "Số lượng cần ủ",
+        "convertedAmount": "Số tiền được chuyển đổi",
+        "action": "Ủ đếnBARKX"
+      },
+      "status": {
+        "title": "Tình trạng cá nhân",
+        "myDeposit": "Khoản tiền gửi của tôi",
+        "average30Day": "Trung bình 30 ngày",
+        "yesterdaySnapshot": "Ảnh chụp ngày hôm qua",
+        "currentQuotaShare": "Chia sẻ hạn ngạch hiện tại"
+      },
+      "leaderboard": {
+        "title": "Bảng xếp hạng",
+        "topQuota": "Hạn ngạch hàng đầu",
+        "topIncubation": "Ươm mầm hàng đầu"
+      }
+    },
+    "swap": {
+      "title": "Hoán đổi",
+      "subtitle": "Uniswap V2•Arbitrum One",
+      "pay": "Bạn trả tiền",
+      "receive": "Bạn nhận được",
+      "rate": "tỷ lệ",
+      "priceImpact": "Tác động giá",
+      "minimumReceived": "Tối thiểu nhận được",
+      "networkFee": "Phí mạng",
+      "action": "Hoán đổi",
+      "priceImpactTooHigh": "Tác động giá quá cao",
+      "pending": "Hoán đổi..."
+    },
+    "liquidity": {
+      "title": "Thanh khoản",
+      "subtitle": "Cung cấp tính thanh khoảnBARKX-USDT",
+      "tabs": {
+        "add": "Thêm thanh khoản",
+        "remove": "Xóa thanh khoản"
+      },
+      "add": {
+        "tokenA": "Mã thông báo A",
+        "tokenB": "Mã thông báo B",
+        "receive": "Bạn sẽ nhận được",
+        "shareOfPool": "Chia sẻ hồ bơi",
+        "action": "Thêm thanh khoản",
+        "pending": "Thêm thanh khoản..."
+      },
+      "remove": {
+        "lpAmount": "LPSố lượng mã thông báo",
+        "receive": "Bạn sẽ nhận được",
+        "action": "Xóa thanh khoản",
+        "pending": "Loại bỏ thanh khoản..."
+      }
+    },
+    "pool": {
+      "title": "BarkX Pool",
+      "subtitle": "BARKX-USDTKhai thác thanh khoản",
+      "personalBoostedApy": "Tăng cường cá nhân của bạnAPY",
+      "common": {
+        "nodeBoostTitle": "Xem bảng phân tích tăng cường nút"
+      },
+      "tabs": {
+        "depositVn": "Gửi tiềnVN",
+        "depositMore": "Gửi tiền thêm",
+        "withdraw": "Rút tiền",
+        "rewards": "Phần thưởng"
+      },
+      "depositVn": {
+        "info": "GửiVNmới của bạn bằngUSDTđể tự động đúcLP. Nhận{bonus}BARKXtiền thưởng cho mỗiVN!",
+        "infoBefore": "GửiVNmới của bạn bằngUSDTđể tự động đúcLP. Nhận ",
+        "infoAfter": " tiền thưởng cho mỗiVN!",
+        "currentApy": "APR",
+        "lockPeriod": "Thời gian khóa",
+        "depositNewVn": "Gửi tiền mớiVN",
+        "bonusToDeposit": "Tiền thưởng để gửi tiền",
+        "barkxPrice": "BARKXGiá:{price}USDT",
+        "pairingWith": "Ghép nối với",
+        "predictedLp": "Dự đoánLPSố tiền",
+        "action": "Gửi tiềnVN+LP",
+        "pending": "Gửi tiềnVN+LP...",
+        "unlockDate": "Ngày mở khóa:{date}"
+      },
+      "depositMore": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "wvnInfo": "GửiVNđã sử dụng của bạn để mở rộngLPGiới hạn hiệu dụng.",
+        "lpInfo": "GửiLPcủa bạn để tăng sức mạnh khai thác.",
+        "depositUsedVn": "Tiền gửi đã sử dụngVN",
+        "depositLp": "Gửi tiềnLP",
+        "capIncrease": "LPTăng giới hạn hiệu quả",
+        "unlockLater": "Mở khóa{lockPeriod}sau.",
+        "depositWvnAction": "Gửi tiềnwVN",
+        "depositWvnPending": "Đang gửi tiềnwVN...",
+        "depositLpAction": "Gửi tiềnLP",
+        "depositLpPending": "Đang gửi tiềnLP..."
+      },
+      "withdraw": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "tabWvnLp": "360 ngày",
+        "tabWvnOrLp": "24 giờ",
+        "tabLpOnly": "90 ngày",
+        "info": "Chọn hồ sơ tiền gửi đã mở khóa để rút tài sản của bạn.LPGiới hạn hiệu quả và sức mạnh khai thác của bạn sẽ giảm tương ứng.",
+        "miningPower": "Sức mạnh khai thác",
+        "selectAll": "Chọn tất cả trên trang hiện tại",
+        "noRecords": "Không có hồ sơ mở khóa",
+        "unlocked": "ĐÃ MỞ KHÓA",
+        "locked": "ĐÃ KHÓA",
+        "confirming": "XÁC NHẬN",
+        "selectedSummary": "Đã chọn để rút tiền (Tổng hợp)",
+        "totalWvn": "Tổng cộngwVN",
+        "totalLp": "Tổng cộngLP",
+        "capDecrease": "LPGiảm giới hạn",
+        "withdrawSelected": "Rút tiền đã chọn",
+        "withdrawPending": "Đang rút...",
+        "successMessage": "Việc rút tiền đã hoàn tất.",
+        "wvnInfo": "RútVNđã được mở khóa khỏi nhóm.LPGiới hạn hiệu dụng của bạn sẽ giảm.",
+        "lpInfo": "RútLPđã được mở khóa khỏi nhóm. Sức mạnh khai thác của bạn sẽ giảm.",
+        "withdrawWvn": "Rút tiềnwVN",
+        "withdrawLp": "Rút tiềnLP",
+        "withdrawWvnAction": "Rút tiềnwVN",
+        "withdrawWvnPending": "Đang rútwVN...",
+        "withdrawLpAction": "Rút tiềnLP",
+        "withdrawLpPending": "Đang rútLP..."
+      },
+      "rewards": {
+        "info": "Nhận phần thưởng vào ví của bạn hoặc gộp nó thànhLPmới để tiết kiệm{discount}phí!",
+        "infoBefore": "Nhận phần thưởng vào ví của bạn hoặc gộp nó thànhLPmới để tiết kiệm ",
+        "infoAfter": " về phí!",
+        "autoAccumulated": "Phần thưởng được tự động tích lũy sau mỗi 24 giờ.",
+        "pendingRewards": "Phần thưởng đang chờ xử lý",
+        "directClaim": "Yêu cầu trực tiếp",
+        "feeRate": "Mức phí",
+        "receivingAmount": "Số tiền nhận",
+        "directClaimAction": "Yêu cầu trực tiếp",
+        "lessThanOneAction": "Ít hơn 1BARKX",
+        "directClaimPending": "Đang yêu cầu...",
+        "compoundTitle": "Hợp chất thànhLP",
+        "lockPeriod": "Thời gian khóa",
+        "utilizedAmount": "Số tiền đã sử dụng",
+        "predictedLp": "Dự đoánLPSố tiền",
+        "compoundAction": "hợp chất",
+        "compoundPending": "Hợp chất...",
+        "lockedUntil": "LPBị khóa cho đến:{date}"
+      },
+      "depositStatus": {
+        "title": "Tình trạng cá nhân",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPMã thông báo",
+        "lpCap": "LPGiới hạn hiệu quả",
+        "unusedCap": "{amount}LPMũ chưa sử dụng",
+        "note": "Bạn có dung lượngLPchưa sử dụng.",
+        "cta": "Gửi thêmLP",
+        "tail": "để tối đa hóa sức mạnh khai thác!",
+        "estimate": "Ước tính",
+        "noteOver70": "Bạn đã sử dụng hơn 70% dung lượngLPcủa mình. Hãy nhớ luôn chừa một khoảng trống để ghép."
+      },
+      "estimate": {
+        "title": "LPƯớc tính",
+        "emptyMessage": "LPGiới hạn hiệu dụng hiện có của bạn quá nhỏ để hỗ trợ ước tính.",
+        "emptyActionBefore": "Vui lòng gửi ít nhất",
+        "emptyActionAfter": "để mở rộng Giới hạn hiệu dụngLPcủa bạn trước khi ước tính các yêu cầu về thanh khoản.",
+        "barkxPrice": "BARKXGiá",
+        "plannedLp": "Đã lên kế hoạchLP",
+        "assetsRequired": "Tài sản ước tính cần thiết"
+      }
+    },
+    "vPool": {
+      "badge": "Thành viên chỉ mời",
+      "viewInvitation": "Xem lời mời",
+      "title": "BarkX VIP Pool",
+      "subtitle": "vLPNhóm khai thác",
+      "notWhitelisted": "Địa chỉ của bạn không nằm trong danh sách trắng cho Nhóm VIP. Hãy liên hệ với nhóm để nộp đơn.",
+      "invitation": {
+        "changeLanguage": "Bấm để thay đổi ngôn ngữ",
+        "lines": {
+          "greeting": "Quý khách,",
+          "welcome": "Chào mừng bạn đến vớiBarkX VIP Poolđộc quyền.",
+          "contribution": "Những đóng góp đáng chú ý và sự tin tưởng kiên định của bạn đã giúp bạn nổi bật trong hệ sinh thái của chúng tôi. Như một minh chứng cho địa vị của bạn, khu bảo tồn tư nhân này được thiết kế để tối đa hóa tài sản của bạn với mức lợi tức cao nhất của chúng tôi.",
+          "honor": "Đó là niềm vinh dự sâu sắc của chúng tôi khi được phục vụ bạn.",
+          "rewards": "Hãy tận hưởng phần thưởng đặc biệt của bạn."
+        },
+        "signature": "Trân trọng"
+      },
+      "tabs": {
+        "depositVn": "Gửi tiềnVN",
+        "depositVlp": "Gửi tiềnvLP",
+        "withdraw": "Rút tiền",
+        "rewards": "Phần thưởng"
+      },
+      "common": {
+        "vipApy": "APR",
+        "lockPeriod": "Thời gian khóa",
+        "unlockLater": "Mở khóa{lockPeriod}sau."
+      },
+      "depositVn": {
+        "info": "GửiVNcủa bạn để mở rộngvLPGiới hạn hiệu dụng.",
+        "vn": "VN",
+        "wvn": "wVN",
+        "wvn2": "wVN2",
+        "depositNewVn": "Gửi tiền mớiVN",
+        "depositWvn": "Gửi tiềnwVN",
+        "depositWvn2": "Gửi tiềnwVN2",
+        "capIncrease": "vLPTăng giới hạn",
+        "depositVnAction": "Gửi tiềnVN",
+        "depositVnPending": "Đang gửi tiềnVN...",
+        "depositWvnAction": "Gửi tiềnwVN",
+        "depositWvnPending": "Đang gửi tiềnwVN...",
+        "depositWvn2Action": "Gửi tiềnwVN2",
+        "depositWvn2Pending": "Đang gửi tiềnwVN2...",
+        "depositVnSuccess": "Việc gửi tiền đã hoàn tất.vLPGiới hạn hiệu dụng của bạn đã mở rộng.",
+        "depositVnFailure": "Gửi tiền không thành công. Vui lòng thử lại.",
+        "depositWvnSuccess": "Việc gửi tiền đã hoàn tất.vLPGiới hạn hiệu dụng của bạn đã mở rộng.",
+        "depositWvnFailure": "Gửi tiền không thành công. Vui lòng thử lại.",
+        "depositWvn2Success": "Việc gửi tiền đã hoàn tất.vLPGiới hạn hiệu dụng của bạn đã mở rộng.",
+        "depositWvn2Failure": "Gửi tiền không thành công. Vui lòng thử lại.",
+        "vnCapReached": "Không thành công.VNCá nhân đã đạt đủ năng lực.",
+        "unlockLater": "Mở khóa{lockPeriod}sau."
+      },
+      "depositVlp": {
+        "info": "GửivLPcủa bạn để tăng sức mạnh khai thác.",
+        "unlockLater": "Mở khóa{lockPeriod}sau.",
+        "depositVlp": "Gửi tiềnvLP",
+        "action": "Gửi tiềnvLP",
+        "pending": "Đang gửi tiềnvLP...",
+        "depositVlpSuccess": "Việc gửi tiền đã hoàn tất. Bây giờ bạn có nhiều sức mạnh khai thác hơn.",
+        "depositVlpFailure": "Gửi tiền không thành công. Vui lòng thử lại."
+      },
+      "withdraw": {
+        "info": "Chọn hồ sơ tiền gửi đã mở khóa để rút tài sản của bạn.vLPGiới hạn hiệu quả và sức mạnh khai thác của bạn sẽ giảm tương ứng.",
+        "selectAllCurrentPage": "Chọn tất cả trên trang hiện tại",
+        "noUnlockedRecords": "Không tìm thấy hồ sơ đã mở khóa.",
+        "statusUnlocked": "Đã mở khóa",
+        "selectedSummary": "Đã chọn để rút tiền (Tổng hợp)",
+        "totalWvn2": "Tổng cộngwVN2",
+        "totalVlp": "Tổng cộngvLP",
+        "capDecrease": "vLPGiảm giới hạn",
+        "statusLocked": "Đã khóa",
+        "statusConfirming": "XÁC NHẬN",
+        "withdrawSelected": "Rút tiền đã chọn",
+        "withdrawPending": "Đang rút...",
+        "withdrawSuccess": "Rút tiền hoàn tất.vLPGiới hạn hiệu dụng của bạn đã giảm.",
+        "withdrawFailure": "Rút tiền không thành công. Vui lòng thử lại.",
+        "withdrawFailureCapExceeded": "Rút tiền không thành công. Việc rútwVN2sẽ vượt quá Giới hạn hiệu dụngvLPcủa bạn. Trước tiên hãy rút một sốvLP."
+      },
+      "rewards": {
+        "info": "Nhận phần thưởng VIP trực tiếp vào ví của bạn. Không áp dụng phí!",
+        "autoAccumulated": "Phần thưởng được tự động tích lũy sau mỗi 24 giờ.",
+        "pendingRewards": "Phần thưởng đang chờ xử lý",
+        "directClaim": "Yêu cầu trực tiếp",
+        "feeRate": "Mức phí",
+        "receivingAmount": "Số tiền nhận",
+        "claimToWallet": "Yêu cầu ví",
+        "lessThanOneAction": "Ít hơn 1BARKX",
+        "claimPending": "Đòi phần thưởng...",
+        "claimSuccess": "Đã nhận{amount}BARKXvào ví của bạn.",
+        "claimFailure": "Yêu cầu không thành công. Vui lòng thử lại.",
+        "noDeposits": "Không tìm thấy khoản tiền gửi đủ điều kiện để yêu cầu bồi thường."
+      },
+      "depositStatus": {
+        "title": "Tình trạng cá nhân",
+        "personalCapacity": "Cá nhânVNNăng lực",
+        "vlpToken": "vLPMã thông báo",
+        "vlpCap": "vLPGiới hạn hiệu quả",
+        "unusedCap": "{amount}vLPMũ chưa sử dụng",
+        "note": "Bạn có dung lượngvLPchưa sử dụng.",
+        "cta": "Gửi thêmvLP",
+        "tail": "để tối đa hóa sức mạnh khai thác!"
+      }
+    },
+    "nodeBoost": {
+      "title": "Tăng cường nút",
+      "subtitle": "Quản lý tăng cường cá nhân",
+      "days": "Ngày",
+      "status": {
+        "noRecord": "Chưa tìm thấy bản ghiBarkX Poolnào cho ví này. Gửi tiền vào nhóm trước để mở khóa các mức tăng được cá nhân hóa.",
+        "loadFailed": "Không thể làm mới dữ liệu Node Boost. Trang đang hiển thị các giá trị dự phòng an toàn."
+      },
+      "toggle": {
+        "emptyState": "Chuyển đổi trạng thái trống",
+        "mockData": "Xem: Dữ liệu giả"
+      },
+      "modal": {
+        "close": "Đóng phương thức"
+      },
+      "totalCard": {
+        "title": "BarkX PoolCơ sởAPRHệ số nhân"
+      },
+      "active": {
+        "title": "Phân tích tăng cường hoạt động",
+        "empty": "Không tìm thấy mức tăng hoạt động nào cho tài khoản này."
+      },
+      "available": {
+        "title": "Tăng cường có sẵn để mở khóa",
+        "allUnlocked": "Bạn hiện sở hữu tất cả các tăng cường có sẵn!"
+      },
+      "boosts": {
+        "permanent": {
+          "name": "Tăng cường vĩnh viễn",
+          "meta": "Đặc quyền tài khoản trọn đời"
+        },
+        "leadership": {
+          "name": "Tăng Huy chương Lãnh đạo",
+          "expiresIn": "Hết hạn vào:",
+          "unlockHint": "Xây dựng mạng nút BarkX của bạn",
+          "upTo": "Lên tới{rate}"
+        },
+        "compound": {
+          "name": "Tăng huy chương tổng hợp",
+          "nextEvaluation": "Đánh giá tiếp theo trong:",
+          "globalEvaluation": "Đánh giá toàn cầu trong:",
+          "evaluatedRatio": "Tỷ lệ đánh giá lần cuối:",
+          "weeklyEvaluation": "Đánh giá toàn cầu hàng tuần",
+          "liveRatio": "Tỷ lệ hợp chất sống:",
+          "upTo": "Lên tới{rate}"
+        },
+        "device": {
+          "name": "Tăng cường thiết bị",
+          "meta": "Phần thưởng phần cứng thông minh đủ điều kiện"
+        },
+        "penalty": {
+          "name": "Điều chỉnh hình phạt",
+          "meta": "Điều chỉnh kiểm soát rủi ro giao thức"
+        }
+      },
+      "modals": {
+        "permanent": {
+          "title": "Tăng cường vĩnh viễn",
+          "text": "Cảm ơn bạn vì sự đóng góp to lớn của bạn cho hệ sinh tháiBarkAI. Đây là vinh dự cả đời của bạn."
+        },
+        "leadership": {
+          "title": "Tăng Huy chương Lãnh đạo",
+          "text": "Khả năng lãnh đạo gần đây của bạn trong việc xây dựng mạng nút BarkX đã giúp bạn giành được huy chương này."
+        },
+        "compound": {
+          "title": "Tăng huy chương tổng hợp",
+          "text": "Nếu tỷ lệ gộp trọn đời của bạn trongBarkX Poolvẫn ở trên <strong>{threshold}%</strong>, bạn sẽ tiếp tục kiếm được huy chương này vào ngày đánh giá tiếp theo. Tỷ lệ gộp của bạn ở lần đánh giá cuối cùng là <strong style=\"color: var(--amber);\">{ratio}%</strong>."
+        },
+        "device": {
+          "title": "Tăng cường thiết bị",
+          "text": "Mức tăng này được dành riêng cho các ưu đãi phần cứng thông minh đủ điều kiện.APIcông khai hiện tại chỉ hiển thị tỷ lệ áp dụng chứ không hiển thị chi tiết về tiêu chuẩn."
+        },
+        "penalty": {
+          "title": "Điều chỉnh hình phạt",
+          "text": "Tỷ lệ phạt là điều chỉnh kiểm soát rủi ro giao thức được áp dụng cho hệ số nhân Node Boost cuối cùng của bạn. Giá trị âm làm giảm hệ số nhân lợi nhuận hiệu quả của bạn."
+        },
+        "protocol": {
+          "title": "Thông số bảo mật giao thức",
+          "text": "Hệ số nhân lợi nhuận tổng hợp được giới hạn ở mức <strong style=\"color: var(--amber);\">x2,00</strong>. Phần thưởng tích lũy vượt quá +100% sẽ bị cắt bớt để đảm bảo tính bền vững của mạng và tuân thủ các giao thức quản lý rủi ro nghiêm ngặt của công cụ tăng tốc."
+        }
+      }
+    },
+    "vn": {
+      "title": "Vector Nexus",
+      "subtitle": "Dịch vụ chuyển nhượng",
+      "tabs": {
+        "newVn": "VNmới",
+        "usedVn": "Đã sử dụngVN"
+      },
+      "recipientAddress": "Địa chỉ người nhận",
+      "addressPlaceholder": "0x...",
+      "transferAmount": "Số tiền chuyển",
+      "balance": "Số dư",
+      "newVn": {
+        "info": "ChuyểnVector Nexus(VN) mới của bạn sang một địa chỉ ví khác. Các hoạt động không thể đảo ngược trên blockchain.",
+        "btn": "Chuyển khoảnVN"
+      },
+      "usedVn": {
+        "info": "ChuyểnVector Nexusđã sử dụng của bạn (wVN/wVN2). Lưu ý rằng việc chuyển khoảnERC721có phí gas cao hơn một chút.",
+        "btn": "Chuyển khoản"
+      },
+      "modal": {
+        "title": "Xác nhận chuyển khoản",
+        "confirm": "Ký & Tiến hành",
+        "pending": "Đang chuyển...",
+        "aboutToTransfer": "Bạn sắp chuyển",
+        "toAddress": "đến địa chỉ sau:",
+        "warning": "⚠️ Vui lòng xác minh cẩn thận địa chỉ người nhận. Chuyển khoản chuỗi khối không thể đảo ngược."
+      },
+      "transfer": {
+        "pending": "Đang chuyển{asset}...",
+        "success": "Chuyển hoàn tất.",
+        "failed": "Chuyển không thành công."
+      }
+    },
+    "noticeTest": {
+      "eyebrow": "Tuyến đường thử nghiệm",
+      "title": "Xem trước thông báo",
+      "subtitle": "Lộ trình thử nghiệm này chỉ được sử dụng để xem trước các thành phần thông báo mà không kết nối chúng vào quy trình kinh doanh thực tế. Hiện tại nó bao gồm cả bản sao tin nhắnBarkX PoolvàUniswap. Nhấp vào bất kỳ nút xem trước nào để hiển thị thông báo dưới dạng bánh mì nướng nổi ở giữa màn hình.",
+      "path": "Đường dẫn: /test/barkx-pool-notice",
+      "floatingPreview": "Xem trước thông báo nổi",
+      "noActiveNotice": "Không có thông báo hoạt động",
+      "sourceBarkx": "BarkX",
+      "sourceUniswap": "Uniswap",
+      "showBarkxExample": "Hiển thị ví dụ BarkX",
+      "showUniswapExample": "Hiển thị ví dụUniswap",
+      "hideNotice": "Ẩn thông báo",
+      "pendingNotice": "Thông báo đang chờ xử lý",
+      "pendingHint": "Thông báo nổi ở giữa đáy màn hình; các nút ví vẫn bị khóa khi hiển thị.",
+      "showPending": "Hiển thị đang chờ xử lý",
+      "hidePending": "Ẩn Đang chờ xử lý",
+      "itemsCount": "{count}mục",
+      "preview": "Xem trước",
+      "outcomeSuccess": "sự thành công",
+      "outcomeFailure": "thất bại",
+      "uniswapPreview": "UniswapXem trước",
+      "pair": "BARKX/USDT"
+    }
+  },
+  "messages": {
+    "barkxPool": {
+      "groups": {
+        "depositVnLp": "Gửi tiềnVN+LP",
+        "depositWvnOnly": "Chỉ gửi tiềnwVN",
+        "depositLpOnly": "Chỉ gửi tiềnLP",
+        "withdrawWvn": "Rút tiềnwVN",
+        "withdrawLp": "Rút tiềnLP",
+        "directClaim": "Yêu cầu trực tiếp",
+        "compound": "hợp chất"
+      },
+      "items": {
+        "deposit_vn_lp_success": "Việc gửi tiền đã hoàn tất.{lpAmount}LPđã được tạo và gửi đến nhóm khai thác.",
+        "deposit_vn_lp_failure_cap_reached": "Không thành công.LPĐã đạt đến giới hạn hiệu quả. Vui lòng gửi thêmVNtrước.",
+        "deposit_vn_lp_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "deposit_wvn_only_success": "Việc gửi tiền đã hoàn tất.LPGiới hạn hiệu dụng của bạn đã mở rộng.",
+        "deposit_wvn_only_failure_requires_lp": "Thất bại. Bạn phải có ít nhất{lpAmount}LPtrong nhóm khai thác trước khi gửi thêmwVN.",
+        "deposit_wvn_only_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "deposit_lp_only_success": "Việc gửi tiền đã hoàn tất. Bây giờ bạn có nhiều sức mạnh khai thác hơn.",
+        "deposit_lp_only_failure_requires_vn": "Không thành công. Bạn phải có ít nhất{vnAmount}VNtrong nhóm khai thác trước khi gửi thêmLP.",
+        "deposit_lp_only_failure_cap_reached": "Không thành công.LPĐã đạt đến giới hạn hiệu quả. Vui lòng gửi thêmVNtrước.",
+        "deposit_lp_only_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "withdraw_wvn_success_cap_decreased": "Việc rút tiền đã hoàn tất.LPGiới hạn hiệu dụng của bạn đã giảm.",
+        "withdraw_wvn_success_all_removed": "Việc rút tiền đã hoàn tất. Tất cảwVNvàLPcủa bạn đã bị xóa và trả lại vào ví của bạn.",
+        "withdraw_wvn_failure_cap_exceeded": "Thất bại.LPGiới hạn hiệu dụng sẽ bị vượt quá sau khi rútVN. Vui lòng xóaLPtrước.",
+        "withdraw_wvn_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "withdraw_lp_success": "Việc rút tiền đã hoàn tất. Sức mạnh khai thác của bạn đã giảm.",
+        "withdraw_lp_failure_requires_lp": "Không thành công. Bạn phải gửi ít nhất{lpAmount}LPkhi bạn cóVNtrong nhóm khai thác.",
+        "withdraw_lp_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "direct_claim_success": "Làm tốt lắm.{barkxAmount}BARKXđã được nhận vào ví.",
+        "direct_claim_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "compound_success": "Làm tốt lắm.{barkxAmount}BARKXđã được tổng hợp thành{lpAmount}LPvà gửi đến nhóm khai thác.",
+        "compound_failure_cap_exceeded": "Thất bại.LPGiới hạn hiệu dụng sẽ bị vượt quá sau khi gộp. Vui lòng gửi thêmVNtrước.",
+        "compound_failure_retry": "Không thành công. Vui lòng thử lại."
+      }
+    },
+    "uniswap": {
+      "groups": {
+        "swap": "Hoán đổi",
+        "addLiquidity": "Thêm thanh khoản",
+        "removeLiquidity": "Xóa thanh khoản"
+      },
+      "items": {
+        "uniswap_swap_success": "Hoán đổi hoàn tất.",
+        "uniswap_swap_failure_retry": "Không thành công. Vui lòng thử lại.",
+        "uniswap_add_liquidity_success": "Thanh khoản được cung cấp.{lpAmount}LPđã được tạo.",
+        "uniswap_add_liquidity_failure_retry": "Thất bại. Vui lòng thử lại.",
+        "uniswap_remove_liquidity_success": "Thanh khoản bị loại bỏ.{lpAmount}LPđã bị đốt cháy.",
+        "uniswap_remove_liquidity_failure_retry": "Không thành công. Vui lòng thử lại."
+      }
+    }
+  },
+  "errors": {
+    "barkxPool": {
+      "paused": "Hành động này hiện đang bị tạm dừng.",
+      "stillLocked": "Tài sản này vẫn bị khóa.",
+      "lpCapExceeded": "LPĐã vượt quá giới hạn hiệu quả. Trước tiên hãy bổ sung thêm dung lượngVN.",
+      "noVnStaked": "Không cóVNnào được đặt cược, vì vậyLPkhông thể được gửi riêng lẻ.",
+      "insufficientLp": "Vị tríLPhiện tại quá thấp để gửi thêmwVN1.",
+      "belowLpMin": "Việc rút tiền này sẽ giảmLPxuống dưới mức yêu cầu tối thiểu.",
+      "mustWithdrawAllLp": "Bạn phải rút toàn bộLPkhi xóaVNcuối cùng.",
+      "invalidSignature": "Chữ ký không hợp lệ. Vui lòng yêu cầu chữ ký mới.",
+      "signatureExpired": "Chữ ký đã hết hạn. Vui lòng yêu cầu chữ ký mới.",
+      "alreadyUsedInModeA": "wVN1này đã được sử dụng ở Chế độ A và không thể nhận lại tiền thưởng.",
+      "zeroAmount": "Số tiền phải lớn hơn 0.",
+      "nothingToWithdraw": "Không có gì có sẵn để rút tiền.",
+      "invalidBucket": "Nhóm đã chọn không tồn tại.",
+      "slippageExceeded": "Đã vượt quá giới hạn trượt giá. Vui lòng điều chỉnh các thông số và thử lại.",
+      "insufficientBalance": "Số dư phần thưởng nhóm không đủ.",
+      "invalidParam": "Tham số không hợp lệ. Vui lòng kiểm tra các giá trị đầu vào."
+    }
+  }
+}

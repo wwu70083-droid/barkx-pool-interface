@@ -1,0 +1,1002 @@
+{
+  "app": {
+    "name": "BarkX Mining",
+    "brand": "BarkX"
+  },
+  "common": {
+    "modals": {
+      "close": "إغلاق",
+      "nodeStatus": {
+        "title": "حالة العقدة",
+        "active": "العقدة النشطة",
+        "inactive": "العقدة غير النشطة",
+        "currentStatus": "الوضع الحالي:",
+        "howToMaintain": "كيفية الحفاظ على الحالة النشطة؟",
+        "descriptionHtml": "تُعتبر العقدة <strong style=\"color: var(--green);\">نشطة</strong> إذا حافظت على <strong>مركز لمدة 360 يومًا</strong> في BarkX Pool. وهذا يعني الاحتفاظ بما لا يقل عن <strong>1 VN</strong> وأي كمية من <strong>رموز LP</strong> المخصصة لدورة القفل لمدة 360 يومًا. وتظل الأصول غير المقفلة ضمن هذه الدورة محتسبة ضمن الحالة النشطة."
+      },
+      "compoundEligibility": {
+        "title": "الأهلية المركبة",
+        "lifetimeRatio": "نسبة التركيب مدى الحياة:",
+        "metricHint": "يمثل هذا المقياس النسبة المئوية لإجمالي مكافآتBARKXالتي طالبت بها منBarkX Poolوالتي تم إعادة استثمارها في رموزLPالمميزة.",
+        "rulesTitle": "قواعد الميدالية المركبة:",
+        "rulesHtml": "يقومBarkAIبتقييم هذه النسبة لكل مستخدم كل 7 أيام. إذا كانت النسبة لديك <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> في اللقطة التالية، سيتم منحك وسام المركب، مما يفتح مضاعف العائد صالحًا للأيام السبعة اللاحقة."
+      }
+    },
+    "balance": "الرصيد:{amount}",
+    "unlocked": "مفتوح:{amount}",
+    "max": "الأعلى",
+    "lockPeriods": {
+      "hours24": "24 ساعة",
+      "days90": "90 يوما",
+      "days360": "360 يوما"
+    },
+    "duration": {
+      "hours24": "24 ساعة",
+      "day": "{count}اليوم",
+      "days": "{count}أيام",
+      "hour": "{count}ساعة",
+      "hours": "{count}ساعات",
+      "minute": "{count}دقيقة",
+      "minutes": "{count}دقيقة",
+      "lessThanMinute": "< 1 دقيقة"
+    }
+  },
+  "routes": {
+    "titles": {
+      "dashboard": "لوحة التحكم",
+      "swap": "تبديل",
+      "liquidity": "السيولة",
+      "pool": "BarkX Pool",
+      "ePool": "BarkX Elite Pool",
+      "vPool": "BarkX VIP Pool",
+      "incubator": "الحاضنة",
+      "nodeBoost": "Node Boost",
+      "barkdao": "BarkDAO",
+      "settings": "الإعدادات",
+      "noticeTest": "اختبار إشعار BarkX Pool"
+    }
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "swap": "تبديل",
+    "liquidity": "السيولة",
+    "pool": "BarkX Pool",
+    "featuredPools": "المجمعات المميزة",
+    "ePool": "BarkX Elite Pool",
+    "vPool": "BarkX VIP Pool",
+    "incubator": "الحاضنة",
+    "nodeBoost": "Node Boost",
+    "vn": "Vector Nexus",
+    "barkdao": "BarkDAO",
+    "partnership": "الشراكات",
+    "openDao": "OpenDAO",
+    "settings": "الإعدادات"
+  },
+  "wallet": {
+    "install": "تثبيت المحفظة",
+    "connect": "ربط المحفظة",
+    "connecting": "جار الاتصال...",
+    "reconnect": "إعادة ربط المحفظة",
+    "switch": "تبديل {chain}",
+    "switchTo": "التبديل إلى {chain}",
+    "target": "الشبكة المطلوبة: {chain}",
+    "unknownNetwork": "شبكة غير معروفة",
+    "networkSwitchHint": "{network} · التبديل إلى {chain}",
+    "notConnected": "المحفظة غير متصلة",
+    "noInjected": "لا توجد محفظة مدمجة",
+    "disconnectHint": "افصل الاتصال من إضافة المحفظة إذا أردت إلغاء الوصول.",
+    "pending": "قيد المعالجة...",
+    "errors": {
+      "noInjected": "لم يتم العثور على محفظة. يرجى تثبيت MetaMask أو محفظة متوافقة.",
+      "noAccount": "لم يتم إرجاع أي حساب من المحفظة.",
+      "rejected": "لقد ألغيت طلب المحفظة.",
+      "addChain": "يرجى إضافة {chain} إلى محفظتك ثم المحاولة مرة أخرى.",
+      "untrustedHost": "بيئة الاستضافة الحالية غير موثوقة. يرجى إعادة فتح التطبيق من مصدر معتمد.",
+      "switchNetwork": "يرجى التبديل إلى {chain}.",
+      "generic": "فشل اتصال المحفظة. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "components": {
+    "swapOptions": {
+      "slippage": {
+        "low": "0.1%",
+        "medium": "0.5%",
+        "high": "1.0%"
+      },
+      "slippageTolerance": "التسامح الانزلاق",
+      "transactionDeadline": "الموعد النهائي للمعاملة",
+      "minutes": "دقائق",
+      "expertMode": "وضع الخبراء",
+      "expertModeHint": "السماح بالتداولات ذات الانزلاق العالي",
+      "custom": "مخصص"
+    },
+    "approvalActionGroup": {
+      "connectWallet": "ربط المحفظة",
+      "approve": "الموافقة على{token}",
+      "approving": "جارٍ الموافقة على{token}...",
+      "checking": "جارٍ التحقق..."
+    },
+    "pendingNotice": {
+      "default": "قيد الانتظار..."
+    },
+    "collapsibleCard": {
+      "poolStatus": "حالة المجمع",
+      "options": "خيارات",
+      "swapOptions": "خيارات المبادلة"
+    },
+    "poolStatus": {
+      "totalLiquidity": "إجمالي السيولة",
+      "lpMinted": "LPمسكوك",
+      "barkxReserve": "BARKXاحتياطي",
+      "usdtReserve": "USDTاحتياطي"
+    }
+  },
+  "pages": {
+    "ePool": {
+      "depositVbarkx": {
+        "infoAfter": ".",
+        "infoBefore": "قم بإيداعvBARKXالخاص بك معUSDTلسكLPتلقائيًا. كلvBARKXيتحول إلىBARKXفي ",
+        "depositVbarkx": "الإيداعvBARKX",
+        "convertToDeposit": "تحويل إلى إيداع",
+        "pairingWith": "الاقتران مع",
+        "predictedLp": "المبلغ المتوقعLP",
+        "action": "الإيداعvBARKX+USDT",
+        "pending": "إيداعvBARKX+USDT...",
+        "minimum": "الحد الأدنى{amount}vBARKX",
+        "success": "تم إيداعvBARKXبنجاح.",
+        "failure": "فشل إيداعvBARKX.",
+        "paused": "إيداعvBARKXمتوقف مؤقتًا حاليًا.",
+        "depositVnFirst": "قم بإيداعVNأولاً لفتح سعةLP.",
+        "priceUnavailable": "BARKXالسعر غير متوفر في الوقت الحالي.",
+        "insufficientUsdt": "رصيدUSDTغير كافٍ.",
+        "capExceeded": "LPتم تجاوز الحد الأقصى الفعال."
+      },
+      "title": "BarkX Elite Pool",
+      "subtitle": "تعدين السيولة لنادي النخبة",
+      "tabs": {
+        "depositVn": "الإيداعVN",
+        "depositVbarkx": "الإيداعvBARKX",
+        "withdraw": "ينسحب",
+        "rewards": "المكافآت"
+      },
+      "common": {
+        "apr": "APR",
+        "nodeBoostTitle": "عرض انهيار تعزيز العقدة",
+        "lockPeriod": "فترة القفل",
+        "unlockLater": "افتح{lockPeriod}لاحقًا.",
+        "barkxPrice": "BARKXالسعر:{price}USDT"
+      },
+      "depositVn": {
+        "info": "يمكن قبولVNالجديد فقط لتوسيعLPالحد الأقصى الفعال فيBarkX Elite Pool. ستظل جميعVNالجديدة المودعة هنا جديدة ويمكن استخدامها فيBarkX Poolللحصول على مكافأةBARKX.",
+        "depositNewVn": "إيداع جديدVN",
+        "capIncrease": "LPزيادة فعالة في الحد الأقصى",
+        "action": "الإيداعVN",
+        "pending": "إيداعVN...",
+        "success": "تم إيداعVNبنجاح.",
+        "failure": "فشل إيداعVN.",
+        "paused": "إيداعVNمتوقف مؤقتًا حاليًا."
+      },
+      "withdraw": {
+        "info": "حدد سجلات الإيداع غير المؤمنة لسحب الأصول الخاصة بك.LPسوف ينخفض ​​الحد الأقصى الفعال وقوة التعدين وفقًا لذلك.",
+        "selectAllCurrentPage": "حدد الكل في الصفحة الحالية",
+        "statusUnlocked": "مفتوح",
+        "selectedSummary": "تم اختياره للانسحاب (مجمع)",
+        "totalVn": "المجموعVN",
+        "totalLp": "المجموعLP",
+        "capDecrease": "LPتخفيض الحد الأقصى",
+        "withdrawSelected": "سحب المحدد",
+        "withdrawPending": "سحب الأصول المحددة...",
+        "withdrawSuccess": "تم سحب الأصول المختارة.",
+        "withdrawFailure": "فشل الانسحاب.",
+        "vnPaused": "سحبVNمتوقف مؤقتًا حاليًا.",
+        "lpPaused": "سحبLPمتوقف مؤقتًا حاليًا.",
+        "withdrawLpFirst": "اسحبLPأولاً أو حدد عددًا أقل من مجموعاتVN."
+      },
+      "rewards": {
+        "info": "احصل على مكافآت النخبة الخاصة بك مباشرةً في محفظتك. تم تطبيق رسوم صفر!",
+        "autoAccumulated": "يتم تجميع المكافآت تلقائيًا كل 24 ساعة.",
+        "pendingRewards": "المكافآت المعلقة",
+        "directClaim": "المطالبة المباشرة",
+        "feeRate": "معدل الرسوم",
+        "receivingAmount": "استلام المبلغ",
+        "claimToWallet": "المطالبة بالمحفظة",
+        "lessThanOneAction": "أقل من 1BARKX",
+        "claimPending": "المطالبة بالمكافآت...",
+        "claimSuccess": "تمت المطالبة بـ{amount}BARKX.",
+        "claimFailure": "فشلت المطالبة."
+      },
+      "depositStatus": {
+        "title": "الأحوال الشخصية",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPالرمز المميز",
+        "lpCap": "LPالحد الأقصى الفعال",
+        "unusedCap": "{amount}LPالغطاء غير مستخدم",
+        "note": "لديك سعةLPغير مستخدمة.",
+        "cta": "قم بإيداع المزيدLP",
+        "tail": "لتعظيم قوة التعدين!",
+        "estimate": "تقدير"
+      },
+      "estimate": {
+        "title": "LPتقدير",
+        "emptyMessage": "الحد الأقصى الفعال الحاليLPالخاص بك صغير جدًا بحيث لا يدعم التقدير.",
+        "emptyActionBefore": "يرجى إيداع على الأقل",
+        "emptyActionAfter": "لتوسيع الحد الأقصى الفعالLPالخاص بك قبل تقدير متطلبات السيولة.",
+        "barkxPrice": "BARKXالسعر",
+        "plannedLp": "المخططLP",
+        "assetsRequired": "الأصول المقدرة المطلوبة"
+      },
+      "leaderboard": {
+        "title": "المتصدرين",
+        "topBurn": "أعلى حرق",
+        "topDeposit": "أعلى الودائع"
+      },
+      "time": {
+        "fallback": "180 يوما",
+        "day": "{count}اليوم",
+        "days": "{count}أيام",
+        "hour": "{count}ساعة",
+        "hours": "{count}ساعات",
+        "minute": "{count}دقيقة",
+        "minutes": "{count}دقيقة",
+        "lessThanMinute": "< 1 دقيقة"
+      },
+      "errors": {
+        "belowMinDeposit": "أقل من الحد الأدنى للإيداعvBARKX.",
+        "insufficientBalance": "رصيد غير كاف.",
+        "invalidBucket": "تحديد المجموعة غير صالح.",
+        "invalidParam": "معلمات المعاملة غير صالحة.",
+        "invalidSignature": "توقيع المطالبة غير صالح.",
+        "lpCapExceeded": "LPتم تجاوز الحد الأقصى الفعال.",
+        "noVnStaked": "قم بإيداعVNأولاً لفتح سعةLP.",
+        "nothingToWithdraw": "لا شيء للانسحاب.",
+        "paused": "هذا الإجراء متوقف مؤقتًا حاليًا.",
+        "signatureExpired": "انتهت صلاحية توقيع المطالبة.",
+        "slippageExceeded": "تجاوز الانزلاق. يرجى المحاولة مرة أخرى.",
+        "stillLocked": "الأصول المحددة لا تزال مقفلة.",
+        "zeroAmount": "يجب أن يكون المبلغ أكبر من 0."
+      }
+    },
+    "barkdao": {
+      "incentive": {
+        "zeroFee": "0%",
+        "title": "حافز العقدة",
+        "qualified": "مؤهَل",
+        "unqualified": "غير مؤهل",
+        "pending": "الحوافز المعلقة",
+        "infoStart": "قم بدمج حوافز العقدة المتراكمة فيBarkX Poolالخاص بك ",
+        "pendingRewards": "المكافآت المعلقة",
+        "infoMiddle": " للمطالبة أو المضاعفة. ",
+        "infoEnd": " الرسوم المطبقة!",
+        "reqTitle": "المؤهل المطلوب:",
+        "reqText": "تتراكم حوافز شبكتك بأمان، ولكن لدمجها، يجب عليك الحفاظ على مركز نشط لمدة 360 يومًا (الاحتفاظ بـ 1VN+LP) فيBarkX Pool. الأصول غير المؤمنة لا تزال صالحة.",
+        "mergeTitle": "دمج للمكافآت",
+        "feeRate": "معدل الرسوم",
+        "receiving": "استلام المبلغ",
+        "mergingAmount": "مبلغ الدمج",
+        "merge": "دمج للمكافآت",
+        "merging": "جار الدمج...",
+        "mergedSuccess": "تم الدمج بنجاح",
+        "goToRewards": "انتقل إلى المكافآت",
+        "claiming": "جارٍ المطالبة...",
+        "claim": "المطالبة بالمحفظة"
+      },
+      "subtitle": "شبكة قيادة العقدة",
+      "actionRequired": "الإجراء مطلوب",
+      "tabs": {
+        "invite": "يدعو",
+        "network": "شبكة",
+        "incentive": "حافز"
+      },
+      "unregistered": {
+        "title": "لم تنضم إلىBarkDAOبعد.",
+        "desc": "للمشاركة في الشبكة، يجب عليك تسجيل عنوان محفظة Node Leader الخاص بك. يؤدي هذا إلى تحديد موقعك ضمن التسلسل الهرميBarkDAO.",
+        "warningTitle": "تحذير بالغ الأهمية:",
+        "warningText": "لا يمكن تغيير عنوان القائد الذي تدخله أدناه بمجرد تسجيله في العقد الذكي. يرجى التحقق جيدًا والتأكد من دقة العنوان بنسبة 100% قبل التأكيد.",
+        "leaderLabel": "عنوان محفظة القائد",
+        "feeLabel": "رسوم التسجيل",
+        "feeSub": "هذه رسوم بروتوكول، باستثناء الشبكة القياسيةGas.",
+        "register": "تأكيد وتسجيل",
+        "registerPending": "جاري التسجيل...",
+        "registerSuccess": "اكتمل التسجيل. عضويةBarkDAOنشطة الآن.",
+        "registerFailure": "فشل التسجيل. يرجى المحاولة مرة أخرى.",
+        "contractNotConfigured": "لم يتم تكوين عنوان العقدBarkDAOفي هذه البيئة.",
+        "registerDisabled": "التسجيل متوقف مؤقتا حاليا.",
+        "paymentDisabled": "ETHالتسجيل غير متاح حاليًا.",
+        "rootForbidden": "لا يمكنك التسجيل مباشرة تحت عنوان الجذر.",
+        "parentNotFound": "عنوان القائد غير مسجل فيBarkDAO.",
+        "parentDisabled": "عنوان القائد هذا لا يقبل حاليا أعضاء جدد.",
+        "alreadyRegistered": "هذه المحفظة مسجلة بالفعل فيBarkDAO."
+      },
+      "invite": {
+        "badge": "عضو نشط",
+        "title": "مرحبًا بك في شبكة العقدة الخاصة بك",
+        "desc": "لقد تم تسجيلك رسميًا فيBarkDAO. قم بدعوة الآخرين للانضمام إلى شبكتك من خلال مشاركة عنوان محفظتك. عندما يقومون بالتسجيل، يجب عليهم إدخال عنوانك كقائد لهم.",
+        "addressLabel": "عنوان محفظتك (للدعوات)",
+        "invitedByLabel": "بدعوة من",
+        "copy": "نسخ العنوان",
+        "copied": "منسوخ!"
+      },
+      "network": {
+        "title": "تصور بارككس",
+        "howToExplore": "كيفية الاستكشاف",
+        "viewLabel": "عرض:{label}",
+        "permissions": {
+          "max": "الحد الأقصى (20↑ / 20↓)",
+          "medium": "متوسط ​​(20↑ / 3↓)",
+          "min": "الحد الأدنى (1↑ / 1↓)"
+        },
+        "guideTitle": "دليل الاستكشاف",
+        "guideDrag": "يجر",
+        "guideDragDesc": "قماش لعموم.",
+        "guideTap": "مقبض",
+        "guideTapDesc": "عقدة لعرض عنوانها. اضغط على المساحة الفارغة للإغلاق.",
+        "guideDouble": "انقر نقرًا مزدوجًا",
+        "guideDoubleDesc": "العقد الصلبة للتوسع.",
+        "guideLimit": "حد:",
+        "guideLimitDesc": "يمكنك استكشاف ما يصل إلى مستويات{levels}كحد أقصى بعيدًا عن عقدتك.",
+        "legend": "أسطورة",
+        "legendRoot": "جذر",
+        "legendHigher": "القائد الأعلى",
+        "legendDirect": "القائد المباشر",
+        "legendYou": "أنت",
+        "legendSub": "الشبكة الفرعية",
+        "legendSingle": "عقدة واحدة",
+        "legendCluster": "العقد المفردة المجمعة"
+      },
+      "signal": {
+        "title": "انهيار إشارة الشبكة",
+        "about": "حول شبكة BarkX والحوافز:",
+        "rule1": "1. تعتمد كفاءة الحوافز الخاصة بك على حجم شبكتك النهائية.",
+        "rule2": "2. تضعف قوة الإشارة مع المسافة. يحتفظ كل مستوى لاحق بـ 70% من المستوى السابق.",
+        "rule3": "3. يمكن أن تصل إشارة العقدة إلى أقصى عمق 20 مستوى.",
+        "colStrength": "قوة الإشارة",
+        "colDistance": "مسافة",
+        "colNodes": "العقد النشطة",
+        "colContribution": "مساهمة",
+        "unauthorized": "البيانات غير مصرح بها",
+        "summary": "ملخص / المجموع:"
+      }
+    },
+    "settings": {
+      "title": "الإعدادات",
+      "subtitle": "التفضيلات والروابط",
+      "wallet": {
+        "title": "المحفظة",
+        "copy": "نسخ",
+        "copied": "تم النسخ",
+        "switchWallet": "تغيير المحفظة",
+        "disconnect": "فصل الاتصال"
+      },
+      "contracts": {
+        "title": "العقود الذكية",
+        "copy": "نسخ عنوان العقد"
+      },
+      "display": {
+        "title": "العرض",
+        "language": "اللغة",
+        "selectLanguage": "اختر اللغة",
+        "en": "EN",
+        "cn": "CN"
+      },
+      "about": {
+        "title": "حول",
+        "version": "الإصدار",
+        "tutorial": "الدليل",
+        "docs": "المستندات",
+        "discord": "Discord"
+      }
+    },
+    "dashboard": {
+      "title": "لوحة القيادة",
+      "subtitle": "BARKXتعدين السيولة",
+      "metrics": {
+        "price": "BARKX/USDTالسعر",
+        "apy": "APR",
+        "marketCap": "BARKXالقيمة السوقية"
+      },
+      "nodeWeight": {
+        "title": "وزن العقدة",
+        "yesterdayWeight": "وزن الأمس:",
+        "fetchedFrom": "يتم جلب هذه القيمة بشكل آمن من",
+        "sourceName": "OpenDAOAPI",
+        "multiplierBefore": "إنه بمثابة مضاعف يتم تطبيقه مباشرة على حسابك",
+        "averageBalance": "متوسط ​​الرصيد لمدة 30 يومًا",
+        "multiplierAfter": ". يعمل عامل الوزن الأعلى على تضخيم حصتك التنافسية بشكل كبير في اللقطة اليومية، مما يضمن حصة أكبر من حصة التحويلBARKX.",
+        "learnBefore": "لمعرفة كيفية زيادة وزن العقدة الخاصة بك، يرجى زيارة",
+        "linkText": "OpenDAO",
+        "learnAfter": "للمتطلبات التفصيلية."
+      },
+      "mainPool": {
+        "title": "BarkX Poolالخاص بي",
+        "detailsTitle": "تفاصيلBarkX Poolالخاصة بي",
+        "boostedApr": "معززAPR",
+        "boostedApy": "معززAPY",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPالرمز المميز",
+        "pendingRewards": "المكافآت المعلقة",
+        "totalAchieved": "إجمالي ما تم تحقيقه"
+      },
+      "elitePool": {
+        "title": "BarkX Elite Poolالخاص بي"
+      },
+      "vipPool": {
+        "title": "BarkX VIP Poolالخاص بي",
+        "apr": "APR"
+      },
+      "incubator": {
+        "title": "حاضنة بلدي",
+        "myDeposit": "إيداعي",
+        "average30Day": "متوسط ​​30 يومًا",
+        "myQuotaToday": "حصتي اليوم",
+        "totalIncubated": "مجموع المحتضنة"
+      },
+      "cards": {
+        "newVn": "جديدVN",
+        "newVnInWallet": "VNجديد في المحفظة",
+        "usedVn": "مستعملةVN",
+        "usedVnInWallet": "تم استخدامVNفي المحفظة",
+        "barkx": "BARKX",
+        "barkxInWallet": "BARKXفي المحفظة",
+        "lpToken": "LPالرمز المميز",
+        "lpTokenInWallet": "LPالرمز المميز في المحفظة",
+        "pendingRewards": "المكافآت المعلقة",
+        "achievedRewards": "المكافآت التي تم الحصول عليها",
+        "inWallet": "في المحفظة"
+      },
+      "depositStatus": {
+        "title": "حالة الإيداع الخاصة بي",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPالرمز المميز",
+        "lpCap": "LPالحد الأقصى الفعال",
+        "lpCapUnused": "{amount}LPالغطاء غير مستخدم",
+        "note": "لديك سعةLPغير مستخدمة.",
+        "cta": "قم بإيداع المزيدLP",
+        "tail": "لتعظيم قوة التعدين!",
+        "noteOver70": "لقد استخدمت أكثر من 70% من سعةLPالخاصة بك. تذكر أن تترك دائمًا بعض المساحة للتركيب."
+      },
+      "assetsInWallet": {
+        "title": "الأصول في المحفظة",
+        "overviewTitle": "نظرة عامة كاملة على الأصول",
+        "newVn": "جديدVector Nexus",
+        "usedVn": "مستعملةVector Nexus",
+        "usedVn1": "المستخدمةVector NexusI",
+        "usedVn2": "يستخدمVector NexusII",
+        "barkx": "BARKXالرمز المميز",
+        "vbarkx": "vBARKXالرمز المميز",
+        "lp": "LPالرمز المميز",
+        "vlp": "vLPالرمز المميز"
+      },
+      "poolRewards": {
+        "title": "BarkX Poolالمكافآت",
+        "pendingMining": "مكافآت التعدين المعلقة",
+        "totalAchieved": "إجمالي ما تم تحقيقه"
+      },
+      "vipPoolRewards": {
+        "title": "BarkX VIP Poolالمكافآت",
+        "pendingMining": "مكافآت التعدين المعلقة",
+        "totalAchieved": "إجمالي ما تم تحقيقه"
+      }
+    },
+    "incubator": {
+      "title": "حاضنة",
+      "subtitle": "vBARKX-BARKXالبوابة",
+      "snapshotTime": "التوقيت العالمي المنسق 0:00",
+      "poolBalance": "حمام السباحة:{amount}",
+      "dao": {
+        "status": "__المصطلح1__:{status}",
+        "yes": "نعم",
+        "no": "لا"
+      },
+      "modal": {
+        "title": "تأكيد الحضانة",
+        "messageBefore": "أنت على وشك الاحتضان",
+        "messageAfter": "منvBARKXالمودع فيBARKXبنسبة 1:1.",
+        "confirm": "يتأكد"
+      },
+      "accessDenied": {
+        "title": "تم الرفض",
+        "messageBefore": "خدمات الحاضنة متاحة حصريًا لأعضاءOpenDAOالمسجلين.",
+        "messageAction": "يرجى تسجيل محفظتك مع",
+        "messageAfter": "على الفور لفتح الوصول."
+      },
+      "tabs": {
+        "deposit": "إيداع",
+        "withdraw": "ينسحب",
+        "incubate": "احتضان"
+      },
+      "deposit": {
+        "infoBefore": "قم بإيداعvBARKXالخاص بك لإنشاء متوسط ​​رصيدك لمدة 30 يومًا. لقطات يومية تم التقاطها في",
+        "infoAfter": "حدد وزنك لحصة التحويلBARKXفي اليوم التالي.",
+        "amount": "المبلغ للإيداع",
+        "approve": "الموافقة علىvBARKX"
+      },
+      "withdraw": {
+        "info": "اسحبvBARKXالخاص بك في أي وقت دون فترة تأمين. سيؤثر هذا على حسابات متوسط ​​الرصيد في اللقطة التالية.",
+        "amount": "المبلغ المراد سحبه",
+        "action": "سحبvBARKX(رسوم قدرها 0.1%)"
+      },
+      "incubate": {
+        "infoBefore": "قم بتحويلvBARKXالمودع إلىBARKXفي",
+        "infoAfter": "بناءً على الحصة المخصصة لك. سيتم مصادرة أي حصة تحويل غير مستخدمة لهذا اليوم ولن يتم ترحيلها إلى اليوم التالي.",
+        "globalQuotaToday": "الحصص العالمية اليوم",
+        "yourQuotaToday": "حصتك اليوم",
+        "amount": "المبلغ لاحتضان",
+        "convertedAmount": "المبلغ المحول",
+        "action": "احتضان إلىBARKX"
+      },
+      "status": {
+        "title": "الأحوال الشخصية",
+        "myDeposit": "إيداعي",
+        "average30Day": "متوسط ​​30 يومًا",
+        "yesterdaySnapshot": "لقطة الأمس",
+        "currentQuotaShare": "حصة الحصة الحالية"
+      },
+      "leaderboard": {
+        "title": "المتصدرين",
+        "topQuota": "أعلى حصة",
+        "topIncubation": "أعلى الحضانة"
+      }
+    },
+    "swap": {
+      "title": "تبديل",
+      "subtitle": "Uniswap V2•Arbitrum One",
+      "pay": "أنت تدفع",
+      "receive": "تتلقى",
+      "rate": "معدل",
+      "priceImpact": "تأثير السعر",
+      "minimumReceived": "الحد الأدنى المستلم",
+      "networkFee": "رسوم الشبكة",
+      "action": "تبديل",
+      "priceImpactTooHigh": "تأثير السعر مرتفع جدًا",
+      "pending": "مبادلة..."
+    },
+    "liquidity": {
+      "title": "السيولة",
+      "subtitle": "توفيرBARKX-USDTالسيولة",
+      "tabs": {
+        "add": "أضف السيولة",
+        "remove": "إزالة السيولة"
+      },
+      "add": {
+        "tokenA": "الرمز أ",
+        "tokenB": "الرمز ب",
+        "receive": "سوف تتلقى",
+        "shareOfPool": "حصة من بركة",
+        "action": "أضف السيولة",
+        "pending": "إضافة السيولة..."
+      },
+      "remove": {
+        "lpAmount": "LPمبلغ الرمز المميز",
+        "receive": "سوف تتلقى",
+        "action": "إزالة السيولة",
+        "pending": "إزالة السيولة..."
+      }
+    },
+    "pool": {
+      "title": "BarkX Pool",
+      "subtitle": "BARKX-USDTتعدين السيولة",
+      "personalBoostedApy": "تعزيز شخصيتكAPY",
+      "common": {
+        "nodeBoostTitle": "عرض انهيار تعزيز العقدة"
+      },
+      "tabs": {
+        "depositVn": "الإيداعVN",
+        "depositMore": "إيداع المزيد",
+        "withdraw": "ينسحب",
+        "rewards": "المكافآت"
+      },
+      "depositVn": {
+        "info": "قم بإيداعVNالجديد الخاص بك معUSDTلسكLPتلقائيًا. احصل على{bonus}BARKXمكافأة لكلVN!",
+        "infoBefore": "قم بإيداعVNالجديد الخاص بك معUSDTلسكLPتلقائيًا. يحصل ",
+        "infoAfter": " مكافأة لكلVN!",
+        "currentApy": "APR",
+        "lockPeriod": "فترة القفل",
+        "depositNewVn": "إيداع جديدVN",
+        "bonusToDeposit": "مكافأة للإيداع",
+        "barkxPrice": "BARKXالسعر:{price}USDT",
+        "pairingWith": "الاقتران مع",
+        "predictedLp": "المبلغ المتوقعLP",
+        "action": "الإيداعVN+LP",
+        "pending": "إيداعVN+LP...",
+        "unlockDate": "تاريخ الفتح:{date}"
+      },
+      "depositMore": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "wvnInfo": "قم بإيداعVNالمستخدم لتوسيعLPالحد الأقصى الفعال.",
+        "lpInfo": "قم بإيداعLPالخاص بك لزيادة قوة التعدين.",
+        "depositUsedVn": "الإيداع المستخدمVN",
+        "depositLp": "الإيداعLP",
+        "capIncrease": "LPزيادة فعالة في الحد الأقصى",
+        "unlockLater": "افتح{lockPeriod}لاحقًا.",
+        "depositWvnAction": "الإيداعwVN",
+        "depositWvnPending": "إيداعwVN...",
+        "depositLpAction": "الإيداعLP",
+        "depositLpPending": "إيداعLP..."
+      },
+      "withdraw": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "tabWvnLp": "360 يوما",
+        "tabWvnOrLp": "24 ساعة",
+        "tabLpOnly": "90 يوما",
+        "info": "حدد سجلات الإيداع غير المؤمنة لسحب الأصول الخاصة بك.LPسوف ينخفض ​​الحد الأقصى الفعال وقوة التعدين وفقًا لذلك.",
+        "miningPower": "قوة التعدين",
+        "selectAll": "حدد الكل في الصفحة الحالية",
+        "noRecords": "لا توجد سجلات مقفلة",
+        "unlocked": "مفتوح",
+        "locked": "مغلق",
+        "confirming": "تأكيد",
+        "selectedSummary": "تم اختياره للانسحاب (مجمع)",
+        "totalWvn": "المجموعwVN",
+        "totalLp": "المجموعLP",
+        "capDecrease": "LPتخفيض الحد الأقصى",
+        "withdrawSelected": "سحب المحدد",
+        "withdrawPending": "انسحاب...",
+        "successMessage": "اكتمل السحب.",
+        "wvnInfo": "سحب مفتوحVNمن المجمع. سوف ينخفض ​​الحد الأقصى الفعالLPالخاص بك.",
+        "lpInfo": "سحب مفتوحLPمن المجمع. سوف تنخفض قوة التعدين الخاصة بك.",
+        "withdrawWvn": "سحبwVN",
+        "withdrawLp": "سحبLP",
+        "withdrawWvnAction": "سحبwVN",
+        "withdrawWvnPending": "سحبwVN...",
+        "withdrawLpAction": "سحبLP",
+        "withdrawLpPending": "سحبLP..."
+      },
+      "rewards": {
+        "info": "احصل على مكافآت في محفظتك أو قم بتجميعها فيLPجديد لتوفير{discount}من الرسوم!",
+        "infoBefore": "احصل على المكافآت في محفظتك أو قم بتجميعها فيLPجديد لحفظها ",
+        "infoAfter": " على الرسوم!",
+        "autoAccumulated": "يتم تجميع المكافآت تلقائيًا كل 24 ساعة.",
+        "pendingRewards": "المكافآت المعلقة",
+        "directClaim": "المطالبة المباشرة",
+        "feeRate": "معدل الرسوم",
+        "receivingAmount": "استلام المبلغ",
+        "directClaimAction": "المطالبة المباشرة",
+        "lessThanOneAction": "أقل من 1BARKX",
+        "directClaimPending": "جارٍ المطالبة...",
+        "compoundTitle": "مركب إلىLP",
+        "lockPeriod": "فترة القفل",
+        "utilizedAmount": "المبلغ المستعمل",
+        "predictedLp": "المبلغ المتوقعLP",
+        "compoundAction": "مُجَمَّع",
+        "compoundPending": "يضاعف...",
+        "lockedUntil": "LPمغلق حتى:{date}"
+      },
+      "depositStatus": {
+        "title": "الأحوال الشخصية",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPالرمز المميز",
+        "lpCap": "LPالحد الأقصى الفعال",
+        "unusedCap": "{amount}LPالغطاء غير مستخدم",
+        "note": "لديك سعةLPغير مستخدمة.",
+        "cta": "قم بإيداع المزيدLP",
+        "tail": "لتعظيم قوة التعدين!",
+        "estimate": "تقدير",
+        "noteOver70": "لقد استخدمت أكثر من 70% من سعةLPالخاصة بك. تذكر أن تترك دائمًا بعض المساحة للتركيب."
+      },
+      "estimate": {
+        "title": "LPتقدير",
+        "emptyMessage": "الحد الأقصى الفعال الحاليLPالخاص بك صغير جدًا بحيث لا يدعم التقدير.",
+        "emptyActionBefore": "يرجى إيداع على الأقل",
+        "emptyActionAfter": "لتوسيع الحد الأقصى الفعالLPالخاص بك قبل تقدير متطلبات السيولة.",
+        "barkxPrice": "BARKXالسعر",
+        "plannedLp": "المخططLP",
+        "assetsRequired": "الأصول المقدرة المطلوبة"
+      }
+    },
+    "vPool": {
+      "badge": "الأعضاء المدعوون فقط",
+      "viewInvitation": "عرض الدعوة",
+      "title": "BarkX VIP Pool",
+      "subtitle": "vLPحوض التعدين",
+      "notWhitelisted": "لم يتم إدراج عنوانك في القائمة البيضاء لمجموعة VIP. اتصل بالفريق لتقديم الطلب.",
+      "invitation": {
+        "changeLanguage": "انقر لتغيير اللغة",
+        "lines": {
+          "greeting": "الضيف الكريم،",
+          "welcome": "مرحبًا بك فيBarkX VIP Poolالحصري.",
+          "contribution": "لقد ميزتك مساهماتك الرائعة وثقتك الثابتة داخل نظامنا البيئي. كدليل على مكانتك، تم تصميم هذا الملاذ الخاص لتعظيم أصولك من خلال أعلى مستوى من العائدات المتميزة لدينا.",
+          "honor": "إنه لشرف عميق لنا أن نخدمك.",
+          "rewards": "يرجى الاستمتاع بمكافآتك الاستثنائية."
+        },
+        "signature": "بإخلاص"
+      },
+      "tabs": {
+        "depositVn": "الإيداعVN",
+        "depositVlp": "الإيداعvLP",
+        "withdraw": "ينسحب",
+        "rewards": "المكافآت"
+      },
+      "common": {
+        "vipApy": "APR",
+        "lockPeriod": "فترة القفل",
+        "unlockLater": "افتح{lockPeriod}لاحقًا."
+      },
+      "depositVn": {
+        "info": "قم بإيداعVNالخاص بك لتوسيعvLPالحد الأقصى الفعال.",
+        "vn": "VN",
+        "wvn": "wVN",
+        "wvn2": "wVN2",
+        "depositNewVn": "إيداع جديدVN",
+        "depositWvn": "الإيداعwVN",
+        "depositWvn2": "الإيداعwVN2",
+        "capIncrease": "vLPزيادة الحد الأقصى",
+        "depositVnAction": "الإيداعVN",
+        "depositVnPending": "إيداعVN...",
+        "depositWvnAction": "الإيداعwVN",
+        "depositWvnPending": "إيداعwVN...",
+        "depositWvn2Action": "الإيداعwVN2",
+        "depositWvn2Pending": "إيداعwVN2...",
+        "depositVnSuccess": "اكتمل الإيداع. لقد تم توسيع الحد الأقصى الفعالvLPالخاص بك.",
+        "depositVnFailure": "فشل الإيداع. يرجى المحاولة مرة أخرى.",
+        "depositWvnSuccess": "اكتمل الإيداع. لقد تم توسيع الحد الأقصى الفعالvLPالخاص بك.",
+        "depositWvnFailure": "فشل الإيداع. يرجى المحاولة مرة أخرى.",
+        "depositWvn2Success": "اكتمل الإيداع. لقد تم توسيع الحد الأقصى الفعالvLPالخاص بك.",
+        "depositWvn2Failure": "فشل الإيداع. يرجى المحاولة مرة أخرى.",
+        "vnCapReached": "فشل. تم الوصول إلى السعة الشخصيةVN.",
+        "unlockLater": "افتح{lockPeriod}لاحقًا."
+      },
+      "depositVlp": {
+        "info": "قم بإيداعvLPالخاص بك لزيادة قوة التعدين.",
+        "unlockLater": "افتح{lockPeriod}لاحقًا.",
+        "depositVlp": "الإيداعvLP",
+        "action": "الإيداعvLP",
+        "pending": "إيداعvLP...",
+        "depositVlpSuccess": "اكتمل الإيداع. لديك الآن المزيد من قوة التعدين.",
+        "depositVlpFailure": "فشل الإيداع. يرجى المحاولة مرة أخرى."
+      },
+      "withdraw": {
+        "info": "حدد سجلات الإيداع غير المؤمنة لسحب الأصول الخاصة بك.vLPسوف ينخفض ​​الحد الأقصى الفعال وقوة التعدين وفقًا لذلك.",
+        "selectAllCurrentPage": "حدد الكل في الصفحة الحالية",
+        "noUnlockedRecords": "لم يتم العثور على سجلات مقفلة.",
+        "statusUnlocked": "مفتوح",
+        "selectedSummary": "تم اختياره للانسحاب (مجمع)",
+        "totalWvn2": "المجموعwVN2",
+        "totalVlp": "المجموعvLP",
+        "capDecrease": "vLPتخفيض الحد الأقصى",
+        "statusLocked": "مغلق",
+        "statusConfirming": "تأكيد",
+        "withdrawSelected": "سحب المحدد",
+        "withdrawPending": "انسحاب...",
+        "withdrawSuccess": "اكتمل السحب. لقد انخفض الحد الأقصى الفعالvLPالخاص بك.",
+        "withdrawFailure": "فشل الانسحاب. يرجى المحاولة مرة أخرى.",
+        "withdrawFailureCapExceeded": "فشل الانسحاب. إن سحبwVN2سيتجاوز الحد الأقصى الفعالvLPالخاص بك. يرجى سحب بعضvLPأولاً."
+      },
+      "rewards": {
+        "info": "احصل على مكافآت VIP الخاصة بك مباشرة إلى محفظتك. تم تطبيق رسوم صفر!",
+        "autoAccumulated": "يتم تجميع المكافآت تلقائيًا كل 24 ساعة.",
+        "pendingRewards": "المكافآت المعلقة",
+        "directClaim": "المطالبة المباشرة",
+        "feeRate": "معدل الرسوم",
+        "receivingAmount": "استلام المبلغ",
+        "claimToWallet": "المطالبة بالمحفظة",
+        "lessThanOneAction": "أقل من 1BARKX",
+        "claimPending": "المطالبة بالمكافآت...",
+        "claimSuccess": "تمت المطالبة بـ{amount}BARKXفي محفظتك.",
+        "claimFailure": "فشلت المطالبة. يرجى المحاولة مرة أخرى.",
+        "noDeposits": "لم يتم العثور على ودائع مؤهلة للمطالبة بها."
+      },
+      "depositStatus": {
+        "title": "الأحوال الشخصية",
+        "personalCapacity": "القدرة الشخصيةVN",
+        "vlpToken": "vLPالرمز المميز",
+        "vlpCap": "vLPالحد الأقصى الفعال",
+        "unusedCap": "{amount}vLPالغطاء غير مستخدم",
+        "note": "لديك سعةvLPغير مستخدمة.",
+        "cta": "قم بإيداع المزيدvLP",
+        "tail": "لتعظيم قوة التعدين!"
+      }
+    },
+    "nodeBoost": {
+      "title": "تعزيز العقدة",
+      "subtitle": "إدارة التعزيزات الشخصية",
+      "days": "أيام",
+      "status": {
+        "noRecord": "لم يتم العثور على سجلBarkX Poolلهذه المحفظة حتى الآن. قم بالإيداع في حوض السباحة أولاً لفتح التعزيزات المخصصة.",
+        "loadFailed": "لا يمكن تحديث بيانات Node Boost. تعرض الصفحة قيمًا احتياطية آمنة."
+      },
+      "toggle": {
+        "emptyState": "تبديل الحالة الفارغة",
+        "mockData": "عرض: بيانات وهمية"
+      },
+      "modal": {
+        "close": "إغلاق مشروط"
+      },
+      "totalCard": {
+        "title": "BarkX PoolقاعدةAPRالمضاعف"
+      },
+      "active": {
+        "title": "انهيار التعزيز النشط",
+        "empty": "لم يتم العثور على تعزيزات نشطة لهذا الحساب."
+      },
+      "available": {
+        "title": "التعزيزات المتاحة لفتح",
+        "allUnlocked": "أنت تمتلك حاليًا جميع التعزيزات المتاحة!"
+      },
+      "boosts": {
+        "permanent": {
+          "name": "التعزيز الدائم",
+          "meta": "امتياز الحساب مدى الحياة"
+        },
+        "leadership": {
+          "name": "تعزيز وسام القيادة",
+          "expiresIn": "تنتهي صلاحيته في:",
+          "unlockHint": "قم ببناء شبكة عقدة BarkX الخاصة بك",
+          "upTo": "ما يصل إلى{rate}"
+        },
+        "compound": {
+          "name": "تعزيز الميدالية المركبة",
+          "nextEvaluation": "التقييم التالي في:",
+          "globalEvaluation": "التقييم العالمي في:",
+          "evaluatedRatio": "آخر نسبة تم تقييمها:",
+          "weeklyEvaluation": "التقييم العالمي الأسبوعي",
+          "liveRatio": "نسبة المركب الحي:",
+          "upTo": "ما يصل إلى{rate}"
+        },
+        "device": {
+          "name": "تعزيز الجهاز",
+          "meta": "مكافأة الأجهزة الذكية المؤهلة"
+        },
+        "penalty": {
+          "name": "تعديل العقوبة",
+          "meta": "تعديل بروتوكول التحكم في المخاطر"
+        }
+      },
+      "modals": {
+        "permanent": {
+          "title": "التعزيز الدائم",
+          "text": "نشكرك على مساهمتك الهائلة في النظام البيئيBarkAI. هذا هو شرف حياتك."
+        },
+        "leadership": {
+          "title": "تعزيز وسام القيادة",
+          "text": "إن قيادتك الأخيرة في بناء شبكة عقدة BarkX أكسبتك هذه الميدالية."
+        },
+        "compound": {
+          "title": "تعزيز الميدالية المركبة",
+          "text": "إذا بقيت النسبة المركبة لمدى الحياة فيBarkX Poolأعلاه <strong>{threshold}%</strong>، ستستمر في الحصول على هذه الميدالية في تاريخ التقييم التالي. كانت النسبة المركبة الخاصة بك في التقييم الأخير <strong style=\"color: var(--amber);\">{ratio}%</strong>."
+        },
+        "device": {
+          "title": "تعزيز الجهاز",
+          "text": "هذا التعزيز مخصص لحوافز الأجهزة الذكية المؤهلة. يعرضAPIالعام الحالي فقط السعر المطبق، وليس تفاصيل التأهيل."
+        },
+        "penalty": {
+          "title": "تعديل العقوبة",
+          "text": "معدل العقوبة هو تعديل للتحكم في مخاطر البروتوكول يتم تطبيقه على مضاعف Node Boost النهائي. القيمة السالبة تقلل من مضاعف العائد الفعال."
+        },
+        "protocol": {
+          "title": "معلمة أمان البروتوكول",
+          "text": "إن مضاعف العائد الإجمالي مقيد بشدة <strong style=\"color: var(--amber);\">x2.00</strong>. يتم اقتطاع المكافآت التراكمية التي تتجاوز +100% لضمان استدامة الشبكة والالتزام ببروتوكولات إدارة المخاطر الصارمة لمحرك التسريع."
+        }
+      }
+    },
+    "vn": {
+      "title": "Vector Nexus",
+      "subtitle": "خدمة النقل",
+      "tabs": {
+        "newVn": "جديدVN",
+        "usedVn": "مستعملةVN"
+      },
+      "recipientAddress": "عنوان المستلم",
+      "addressPlaceholder": "0x...",
+      "transferAmount": "مبلغ التحويل",
+      "balance": "توازن",
+      "newVn": {
+        "info": "قم بنقلVector Nexus(VN) الجديد إلى عنوان محفظة آخر. العمليات لا رجعة فيها على blockchain.",
+        "btn": "نقلVN"
+      },
+      "usedVn": {
+        "info": "انقلVector Nexusالمستخدم (wVN/wVN2). لاحظ أن عمليات النقلERC721تتضمن رسوم غاز أعلى قليلاً.",
+        "btn": "تحويل"
+      },
+      "modal": {
+        "title": "تأكيد النقل",
+        "confirm": "التوقيع والمضي قدما",
+        "pending": "جارٍ النقل...",
+        "aboutToTransfer": "أنت على وشك النقل",
+        "toAddress": "إلى العنوان التالي:",
+        "warning": "⚠️ يرجى التحقق من عنوان المستلم بعناية. لا يمكن عكس عمليات نقل Blockchain."
+      },
+      "transfer": {
+        "pending": "جارٍ نقل{asset}...",
+        "success": "اكتمل النقل.",
+        "failed": "فشل النقل."
+      }
+    },
+    "noticeTest": {
+      "eyebrow": "طريق الاختبار",
+      "title": "معاينة الإشعار",
+      "subtitle": "يتم استخدام مسار الاختبار هذا فقط لمعاينة مكونات الإشعار دون توصيلها بتدفقات الأعمال الحقيقية. وهو يتضمن حاليًا نسخة الرسالةBarkX PoolوUniswap. انقر فوق أي زر معاينة لإظهار الإشعار كنخب عائم في وسط أسفل الشاشة.",
+      "path": "المسار: /test/barkx-pool-notice",
+      "floatingPreview": "معاينة الإشعار العائم",
+      "noActiveNotice": "لا يوجد إشعار نشط",
+      "sourceBarkx": "BarkX",
+      "sourceUniswap": "Uniswap",
+      "showBarkxExample": "عرض مثال BarkX",
+      "showUniswapExample": "عرضUniswapمثال",
+      "hideNotice": "إخفاء إشعار",
+      "pendingNotice": "إشعار معلق",
+      "pendingHint": "إشعار عائم في وسط الشاشة؛ تظل أزرار المحفظة مغلقة بينما تكون مرئية.",
+      "showPending": "إظهار معلق",
+      "hidePending": "إخفاء معلق",
+      "itemsCount": "{count}العناصر",
+      "preview": "معاينة",
+      "outcomeSuccess": "نجاح",
+      "outcomeFailure": "فشل",
+      "uniswapPreview": "Uniswapمعاينة",
+      "pair": "BARKX/USDT"
+    }
+  },
+  "messages": {
+    "barkxPool": {
+      "groups": {
+        "depositVnLp": "الإيداعVN+LP",
+        "depositWvnOnly": "الإيداعwVNفقط",
+        "depositLpOnly": "الإيداعLPفقط",
+        "withdrawWvn": "سحبwVN",
+        "withdrawLp": "سحبLP",
+        "directClaim": "المطالبة المباشرة",
+        "compound": "مُجَمَّع"
+      },
+      "items": {
+        "deposit_vn_lp_success": "اكتمل الإيداع. تم إنشاء{lpAmount}LPوإرساله إلى مجمع التعدين.",
+        "deposit_vn_lp_failure_cap_reached": "فشل.LPتم الوصول إلى الحد الأقصى الفعال. يرجى إيداع المزيد منVNأولاً.",
+        "deposit_vn_lp_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "deposit_wvn_only_success": "اكتمل الإيداع. لقد تم توسيع الحد الأقصى الفعالLPالخاص بك.",
+        "deposit_wvn_only_failure_requires_lp": "فشل. يجب أن يكون لديك على الأقل{lpAmount}LPفي مجمع التعدين قبل إيداعwVNإضافي.",
+        "deposit_wvn_only_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "deposit_lp_only_success": "اكتمل الإيداع. لديك الآن المزيد من قوة التعدين.",
+        "deposit_lp_only_failure_requires_vn": "فشل. يجب أن يكون لديك على الأقل{vnAmount}VNفي مجمع التعدين قبل إيداعLPإضافي.",
+        "deposit_lp_only_failure_cap_reached": "فشل.LPتم الوصول إلى الحد الأقصى الفعال. يرجى إيداع المزيد منVNأولاً.",
+        "deposit_lp_only_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "withdraw_wvn_success_cap_decreased": "اكتمل السحب. لقد انخفض الحد الأقصى الفعالLPالخاص بك.",
+        "withdraw_wvn_success_all_removed": "اكتمل السحب. تمت إزالة كافةwVNوLPوإعادتها إلى محفظتك.",
+        "withdraw_wvn_failure_cap_exceeded": "فشل.LPسيتم تجاوز الحد الأقصى الفعال بعد الانسحابVN. الرجاء إزالةLPأولاً.",
+        "withdraw_wvn_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "withdraw_lp_success": "اكتمل السحب. لقد انخفضت قوة التعدين الخاصة بك.",
+        "withdraw_lp_failure_requires_lp": "فشل. يجب أن يكون لديك على الأقل{lpAmount}LPمودعة عندما يكون لديكVNفي مجمع التعدين.",
+        "withdraw_lp_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "direct_claim_success": "أحسنت. تمت المطالبة بـ{barkxAmount}BARKXإلى المحفظة.",
+        "direct_claim_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "compound_success": "أحسنت. تم دمج{barkxAmount}BARKXفي{lpAmount}LPوإرساله إلى مجمع التعدين.",
+        "compound_failure_cap_exceeded": "فشل.LPسيتم تجاوز الحد الأقصى الفعال بعد التركيب. يرجى إيداع المزيد منVNأولاً.",
+        "compound_failure_retry": "فشل. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "uniswap": {
+      "groups": {
+        "swap": "تبديل",
+        "addLiquidity": "أضف السيولة",
+        "removeLiquidity": "إزالة السيولة"
+      },
+      "items": {
+        "uniswap_swap_success": "تم الانتهاء من المبادلة.",
+        "uniswap_swap_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "uniswap_add_liquidity_success": "يتم توفير السيولة. تم إنشاء{lpAmount}LP.",
+        "uniswap_add_liquidity_failure_retry": "فشل. يرجى المحاولة مرة أخرى.",
+        "uniswap_remove_liquidity_success": "تتم إزالة السيولة. تم حرق{lpAmount}LP.",
+        "uniswap_remove_liquidity_failure_retry": "فشل. يرجى المحاولة مرة أخرى."
+      }
+    }
+  },
+  "errors": {
+    "barkxPool": {
+      "paused": "هذا الإجراء متوقف مؤقتًا حاليًا.",
+      "stillLocked": "لا يزال هذا الأصل مقفلاً.",
+      "lpCapExceeded": "LPتم تجاوز الحد الأقصى الفعال. أضف المزيد من سعةVNأولاً.",
+      "noVnStaked": "لا يوجدVNرهن، لذلك لا يمكن إيداعLPبمفرده.",
+      "insufficientLp": "مركزLPالحالي منخفض جدًا بحيث لا يمكن إيداع المزيد منwVN1.",
+      "belowLpMin": "سيؤدي هذا السحب إلى انخفاضLPعن الحد الأدنى المطلوب.",
+      "mustWithdrawAllLp": "يجب عليك سحب كلLPعند إزالةVNالأخير.",
+      "invalidSignature": "توقيع غير صالح. الرجاء طلب توقيع جديد.",
+      "signatureExpired": "انتهت صلاحية التوقيع. الرجاء طلب توقيع جديد.",
+      "alreadyUsedInModeA": "لقد تم استخدام هذاwVN1بالفعل في الوضع A ولا يمكن الحصول على المكافأة مرة أخرى.",
+      "zeroAmount": "يجب أن يكون المبلغ أكبر من الصفر.",
+      "nothingToWithdraw": "لا يوجد شيء متاح للانسحاب.",
+      "invalidBucket": "المجموعة المحددة غير موجودة.",
+      "slippageExceeded": "تم تجاوز حد الانزلاق. يرجى ضبط المعلمات والمحاولة مرة أخرى.",
+      "insufficientBalance": "رصيد مكافأة المجمع غير كافٍ.",
+      "invalidParam": "معلمة غير صالحة. يرجى التحقق من قيم الإدخال."
+    }
+  }
+}
