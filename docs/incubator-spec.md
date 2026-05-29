@@ -119,6 +119,8 @@
 
 开发后端前，先分析生产版本的 BarkX Pool dApp 仓库 `BarkX-Pool-Interface` 中实现的接口，推测 BarkX Pool 后端开发规范，让 Incubator 的接口开发尽量贴近生产风格。
 
+相关技术栈沿用 `opendao-backend` 的。
+
 > 开发过程中暂不采用 systmed，避免重启服务时频繁 sudo 影响效率。
 
 ### 配额计算
@@ -211,8 +213,8 @@
 
 ### 补跑
 
-* 补跑 normal 配额：重新拉 OpenDAO 数据，刷新所有用户的当日 normal 配额，覆盖任何旧的配额，并重置当日补跑机会。
-* 补跑 leader 配额：重新拉 OpenDAO 数据，刷新所有用户的当日 leader 配额，增加到其未转换配额中，并重置当日补跑机会。
+* 补跑 normal 配额：重新拉 OpenDAO 数据，刷新所有用户的当日 normal 配额，覆盖任何旧的配额，并为全体用户重置当日转换机会。
+* 补跑 leader 配额：重新拉 OpenDAO 数据，刷新所有用户的当日 leader 配额，增加到其未转换配额中，并为全体用户重置当日转换机会。
 
 > 除非管理员补跑导致重置，否则用户绝不可在同一日在同一个转换机制中重复转换。
 
@@ -253,8 +255,8 @@
 
 ## 仓库结构
 
-1. `incubator.html` 直接融合到仓库 `barkx-pool-interface` 的 main。
-    1. 文档统一在 `barkx-pool-interface/docs`。
-2. `incubator-admin.html` 推送到仓库 `barkx-incubator-admin`。
-3. 后端代码推送到仓库 `barkx-incubator-backend`。
-4. 合约代码推送到仓库 `barkx-incubator-contract`。
+* `incubator.html` 和相关前端代码直接融合到仓库 `barkx-pool-interface` 的 main。
+    * 文档统一在 `barkx-pool-interface/docs`。
+* `incubator-admin.html` 和相关前端代码推送到仓库 `barkx-incubator-admin`。
+* 后端代码推送到仓库 `barkx-incubator-backend`。
+* 合约代码推送到仓库 `barkx-incubator-contract`。
