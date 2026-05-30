@@ -1,15 +1,11 @@
 # Doc Task
 
-已达到首次验收标准。
+由于刚才发生的众多改进，需要逐一检查以下关键说明文档是否跟上最新进度。应在整个开发周期中对这些文档的进度对齐保持关注。有需要更新的，立即更新。
 
-首先，对当前版本打包加 tag，作为第一个里程碑。
-
-后续会交给安全团队进行代码审计。
-
-## deploy_guide.md
-
-编写此文件，精炼、有条理地向专业开发人员介绍如何部署该 barkx-pool 的测试网版本，使开发者能在其他测试环境展开下一步的 incubator 开发和验证工作。覆盖全部用户端、管理员端、后端、合约的部署。
-
-## prod_modify.md
-
-编写此文件，精炼、有条理地向专业开发人员介绍将此 incubator 测试网版本转换到生产版本，需经历哪些步骤，实施哪些对接和改造。（SPEC 已介绍了生产环境中有什么）
+* dev_guide.md
+* dev_guide_fix.md
+* incubator-contract.md
+* incubator-frontend-api.md
+* incubator_partner_api_integration_guide.md
+* deploy_guide.md
+* prod_modify.md
