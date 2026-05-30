@@ -357,7 +357,7 @@
         "messageLeader": "You are about to incubate your accumulated leader quota of <strong>{amount} vBARKX</strong> into BARKX at a 1:1 ratio.",
         "pending": "A conversion is already in flight. Please wait a moment and try again.",
         "cooldown": "Please wait a few seconds before converting again.",
-        "inProgress": "Conversion in Progress",
+        "inProgress": "Pending for Relay",
         "inCooldown": "Conversion in Cooldown"
       },
       "weightModal": {

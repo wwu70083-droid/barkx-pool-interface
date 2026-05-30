@@ -235,9 +235,11 @@
         <button class="custom-modal-close" type="button" @click="closeInject">✕</button>
         <div class="custom-modal-title">{{ $t("pages.incubator.inject.title") }}</div>
         <div class="info-box" style="margin-top: 8px" v-html="$t('pages.incubator.inject.info')"></div>
-        <div class="data-row" style="border-bottom: none; padding: 8px 0">
-          <span class="data-lbl">{{ $t("pages.incubator.stats.myInjection") }}</span>
-          <span class="data-val" style="color: var(--cyan-bright)">{{ myInjection }}</span>
+        <div class="card stat-card-block" style="margin-top: 12px; margin-bottom: 0">
+          <div class="data-row" style="border-bottom: none">
+            <span class="data-lbl">{{ $t("pages.incubator.stats.myInjection") }}</span>
+            <span class="data-val" style="color: var(--cyan-bright)">{{ myInjection }}</span>
+          </div>
         </div>
         <div class="input-group">
           <div class="input-header">
