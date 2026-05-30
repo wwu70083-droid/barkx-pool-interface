@@ -1,7 +1,15 @@
 # Doc Task
 
-## incubator-frontend-api.md
+已达到首次验收标准。
 
-为了让开发人员维护前端产物，专门写一份 API 说明文档，归纳所有 Incubator 业务专用的 user-interface 和 admin-interface 与后端通信所需的接口。
+首先，对当前版本打包加 tag，作为第一个里程碑。
 
-文档格式参考 opendao_partner_api_integration_guide.md 但注意这不是 Partner API 说明文档。
+后续会交给安全团队进行代码审计。
+
+## deploy_guide.md
+
+编写此文件，精炼、有条理地向专业开发人员介绍如何部署该 barkx-pool 的测试网版本，使开发者能在其他测试环境展开下一步的 incubator 开发和验证工作。覆盖全部用户端、管理员端、后端、合约的部署。
+
+## prod_modify.md
+
+编写此文件，精炼、有条理地向专业开发人员介绍将此 incubator 测试网版本转换到生产版本，需经历哪些步骤，实施哪些对接和改造。（SPEC 已介绍了生产环境中有什么）
