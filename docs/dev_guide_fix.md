@@ -81,3 +81,11 @@
   1. **后端 in-flight 守卫**：`signConvert` 拒绝为同一 (用户,机制,当日) 签发「未消费且未过期」的第二份签名（`409 CONVERSION_PENDING`）；失败/取消的尝试在签名 `deadline`（CONVERT_DEADLINE_SEC=600s）后自动释放。已验证：第一次 200，第二次 409。
   2. **合约层冷却**：每用户 `lastConvertHeight`，两次 convert 至少间隔 `CONVERT_COOLDOWN_BLOCKS=36` 块（~9s）> 监听 12 块（~3s）。即便后端误签，合约兜底。错误 `ConvertCooldown`。副作用：跨机制也需等 ~9s（合约不分机制），可接受。
 - **前端**：上链确认后乐观切「Completed」态，不等监听；安全性由上述两道防线保证。
+
+## F-15 Arbitrum `block.number` 是 L1 块高（冷却防护重大 bug）
+
+- **现象**：合约 convert 冷却 `CONVERT_COOLDOWN_BLOCKS=36` 本意 ~9s（36×0.25s L2），实测约 7 分钟。虚拟时钟快速测试时 convert 被合约 revert（冷却未满），叠加后端 in-flight 守卫，用户重试报 `409 CONVERSION_PENDING`。
+- **证据**：用户 `Converted` 事件在 L2 块 272147712，但 `lastConvertHeight`（同一 tx 由 `block.number` 写入）= 10952539（L1 Sepolia 块高，且早于合约部署块）。
+- **原因**：Arbitrum 上 Solidity `block.number` 返回 **L1 块高**（~12s/块），不是 L2 块高（~0.25s/块）。36×L1块 ≈ 36×12s ≈ 7 分钟。
+- **修复**：冷却改用 ArbSys 预编译 `IArbSys(0x64).arbBlockNumber()` 取 **L2 块高**。用低级 `staticcall` + 返回长度判断，无此预编译的本地/其它链回退 `block.number`（本地测试照常通过；`try/catch` 不能捕获返回数据解码失败，故用低级 staticcall）。36 L2 块 = ~9s，符合 SPEC。需重新部署合约。
+- **连带**：`CONVERT_DEADLINE_SEC` 600→120s，缩短「失败/取消 convert 后 in-flight 守卫锁定重试」的窗口。锁定时长必须 = 签名链上有效期（≥有效期才能防双花），故只能靠缩短有效期来缩短锁定，120s 对正常钱包确认足够。
