@@ -2,7 +2,7 @@
 
 > 本文件由 `incubator-spec.md` + `incubator-user-guide.md` + `opendao_partner_api_integration_guide.md` + 静态原型 `incubator_sample.html` 综合编纂，作为四个组件（合约 / 后端 / 用户前端 / 管理前端）的开发依据。SPEC 与本指南冲突时以 SPEC 为准，本指南记录已解决的歧义与落地决策。
 
-> **配套文档**：合约细节见 [`incubator-contract.md`](incubator-contract.md)；前端↔后端接口见 [`incubator-frontend-api.md`](incubator-frontend-api.md)；踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
+> **配套文档**：部署见 [`deploy_guide.md`](deploy_guide.md)；转生产见 [`prod_modify.md`](prod_modify.md)；合约细节见 [`incubator-contract.md`](incubator-contract.md)；前端↔后端接口见 [`incubator-frontend-api.md`](incubator-frontend-api.md)；踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
 >
 > **当前状态（测试网，Arbitrum Sepolia）**：四个组件均已落地、联调通过并部署。
 > - 合约 `BarkXIncubator`：`0x7e68A4df996d797ea4230cbAF8789BA42bFD5522`（已注资 BARKX，inject→convert 全链路 smoke 通过；含 36 L2 块冷却防护，详见 [`incubator-contract.md`](incubator-contract.md)）。旧地址 `0x98BB…6Ac4`、`0x3805…CFC4` 已废弃。
