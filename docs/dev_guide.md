@@ -56,7 +56,7 @@ NormalQuota              = NodeWeightedAvgInjection / GlobalWeightedAvgInjection
 LeaderQuota              = DynamicReward * (DynamicEff%/100) + FeedbackReward * (FeedbackEff%/100)
 ```
 
-- `NodeAvgInjection` = 该用户过去 30 日 `userInjection` 的日均（后端每日快照累积窗口）。
+- `NodeAvgInjection` = 该用户 `userInjection` 的 30 日均值。**分母恒为 30**（非用户实际进场天数）：进场不足 30 天的节点，缺失的早期天数按 0 计入，例如进场第 7 天 = 过去 7 个每日存量之和 / 30。新节点权重在头 30 天内逐步爬升。
 - `GlobalWeightedAvgInjection` = 全体节点 `NodeWeightedAvgInjection` 之和。
 - `GlobalQuota` = 管理员设置的当日 Normal 总配额（整数 BARKX）。
 
