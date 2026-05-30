@@ -284,7 +284,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { formatUnits, maxUint256 } from "viem";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
@@ -402,14 +402,40 @@ const confirmMessage = computed(() => {
 
 // Confirm button state: in-flight (backend) takes priority over on-chain cooldown.
 const cooldownActive = ref(false);
-const confirmPending = computed(() =>
-  confirmMechanism.value === "normal" ? Boolean(profile.value?.normalPending) : Boolean(profile.value?.leaderPending),
+const nowSec = ref(Math.floor(Date.now() / 1000));
+const confirmPendingUntil = computed(() =>
+  confirmMechanism.value === "normal" ? profile.value?.normalPendingUntil : profile.value?.leaderPendingUntil,
+);
+const confirmPending = computed(() => Boolean(confirmPendingUntil.value));
+const pendingRemaining = computed(() =>
+  confirmPendingUntil.value ? Math.max(0, confirmPendingUntil.value - nowSec.value) : 0,
 );
 const confirmButton = computed(() => {
-  if (confirmPending.value) return { disabled: true, label: t("pages.incubator.confirm.inProgress") };
+  if (confirmPending.value) {
+    const r = pendingRemaining.value;
+    return { disabled: true, label: r > 0 ? `${t("pages.incubator.confirm.inProgress")} (${r}s)` : t("pages.incubator.confirm.inProgress") };
+  }
   if (cooldownActive.value) return { disabled: true, label: t("pages.incubator.confirm.inCooldown") };
   return { disabled: false, label: t("pages.incubator.confirm.confirm") };
 });
+
+// While the Confirm modal is open, tick the countdown; when a stuck (cancelled)
+// signature's window elapses, re-poll so the button frees up.
+let confirmTimer = null;
+watch(confirmModal, (open) => {
+  if (open) {
+    nowSec.value = Math.floor(Date.now() / 1000);
+    if (confirmTimer) clearInterval(confirmTimer);
+    confirmTimer = setInterval(() => {
+      nowSec.value = Math.floor(Date.now() / 1000);
+      if (confirmPending.value && pendingRemaining.value <= 0) loadProfile();
+    }, 1000);
+  } else if (confirmTimer) {
+    clearInterval(confirmTimer);
+    confirmTimer = null;
+  }
+});
+onBeforeUnmount(() => { if (confirmTimer) clearInterval(confirmTimer); });
 
 // Inject action button (approval handled separately by ApprovalActionGroup).
 const injectRequirements = [{ id: "incubator:vbarkx", label: "vBARKX" }];
