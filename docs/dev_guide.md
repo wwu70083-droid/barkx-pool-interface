@@ -77,19 +77,29 @@ Hardhat / Solidity 0.8.26 / OpenZeppelin ^5 / `Ownable` + `Pausable` + `Reentran
 ### 状态与查询
 - `mapping(address=>uint256) userTotalInjection` — 生涯注入（inject 完成时累加）。
 - `mapping(address=>uint256) userTotalConversion` — 生涯转换输出（convert 完成时累加）。
+- `mapping(address=>uint256) lastConvertHeight` — 用户上次 convert 的区块高度（convert 完成时写入，冷却防护用）。
 - `userInjection(addr) view = userTotalInjection[addr] - userTotalConversion[addr]` — 当前有效虚拟存量。
 - `IERC20 immutable barkxToken; IERC20 immutable vbarkxToken;`
+- `uint256 constant CONVERT_COOLDOWN_BLOCKS = 36` — 两次 convert 之间的最小区块间隔。
 
 ### 普通方法（均 `whenNotPaused nonReentrant`，注意原子封闭）
 - `inject(uint256 amount)`：`vbarkxToken.burnFrom(msg.sender, amount)`（vBARKX 为 OZ ERC20Burnable，经授权拉取并销毁，合约不持有；见 F-08）；`userTotalInjection[msg.sender] += amount`；`emit Injected(user, amount, newTotalInjection)`。
 - `convert(uint256 amount, uint256 nonce, uint256 deadline, bytes approverSig)`：
-  1. `require(block.timestamp <= deadline)`；
-  2. 防重放：`require(!usedSig[keccak256(sig)])` 后置位；
-  3. EIP-712 校验：`Convert(address user,uint256 amount,uint256 nonce,uint256 deadline)`，digest = `_hashTypedDataV4`，`ECDSA.recover == approver`，`user == msg.sender`；
-  4. `require(userInjection(msg.sender) >= amount)`；
-  5. `userTotalConversion[msg.sender] += amount`；`barkxToken.safeTransfer(msg.sender, amount)`；`emit Converted(user, amount, nonce)`。
+  1. **冷却防护**：`require(block.number >= lastConvertHeight[msg.sender] + CONVERT_COOLDOWN_BLOCKS)` 否则 `revert ConvertCooldown()`；
+  2. `require(block.timestamp <= deadline)`；
+  3. 防重放：`require(!usedSig[keccak256(sig)])` 后置位；
+  4. EIP-712 校验：`Convert(address user,uint256 amount,uint256 nonce,uint256 deadline)`，digest = `_hashTypedDataV4`，`ECDSA.recover == approver`，`user == msg.sender`；
+  5. `require(userInjection(msg.sender) >= amount)`；
+  6. `userTotalConversion[msg.sender] += amount`；`lastConvertHeight[msg.sender] = block.number`；`barkxToken.safeTransfer(msg.sender, amount)`；`emit Converted(user, amount, nonce)`。
 
 > 合约不区分 normal/leader；机制归属由后端依据签名 `nonce` 记录并在监听 `Converted` 时回填。
+
+### 双层防止「监听确认间隙」内重复转换
+SPEC 防护要求，两道防线：
+1. **合约层冷却（第二道）**：每用户 `lastConvertHeight`，两次 convert 间至少间隔 `CONVERT_COOLDOWN_BLOCKS = 36` 个块（Arbitrum 0.25s/块 ≈ 9 秒）。即便后端因 bug/被攻破而误签，合约也强制每用户 convert 之间留出 36 块间隔。36 块（~9s）> 后端监听确认的 12 块（~3s），冷却窗口安全覆盖监听间隙并留余量。
+   - **副作用（可接受）**：合约不区分机制，用户在一种机制 convert 后，需等满 36 块（~9s）才能在另一机制发起合法 convert。
+   - 错误：`ConvertCooldown`；视图 `lastConvertHeight(addr)`。
+2. **后端层 in-flight 守卫（第一道）**：后端在监听等待 12 块期间，拒绝为同一 (用户, 机制, 当日) 再签发未过期未消费的签名（`409 CONVERSION_PENDING`），见 §4 与 F-14。
 
 ### EIP-712 域
 `EIP712("BarkX-Incubator", "1")`，verifyingContract = 本合约地址。
