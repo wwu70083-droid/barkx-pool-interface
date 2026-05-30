@@ -557,7 +557,13 @@ async function doConvert() {
     await Promise.all([loadProfile(), loadStatic()]);
     showNotice({ outcome: "success", text: t("pages.incubator.confirm.success", { amount: convertedDisplay }) });
   } catch (e) {
-    showNotice({ outcome: "failure", text: t("pages.incubator.confirm.failure") });
+    // Clearer messages for the two known transient states; else generic Failed.
+    const code = e?.responseCode || "";
+    const blob = `${e?.shortMessage || ""} ${e?.message || ""} ${e?.details || ""}`;
+    let text = t("pages.incubator.confirm.failure");
+    if (code === "CONVERSION_PENDING") text = t("pages.incubator.confirm.pending");
+    else if (/ConvertCooldown/i.test(blob)) text = t("pages.incubator.confirm.cooldown");
+    showNotice({ outcome: "failure", text });
   } finally {
     store.clearWalletPendingState();
     converting.value = false;
