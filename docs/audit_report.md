@@ -47,6 +47,11 @@ Recommended fix:
 - Add a periodic cleanup job for expired/used challenges.
 - Optionally cap outstanding challenges per address/scope.
 
+Status: **Resolved (2026-05-30)**.
+- Per-IP rate limit added to both challenge endpoints (30/min → `429 RATE_LIMITED`): `barkx-incubator-backend/src/util/rateLimit.ts`, wired in `src/routes/incubator.ts` + `src/routes/auth.ts`.
+- `issueChallenge` now caps outstanding challenges to one per `(scope,address)` (deletes prior rows on re-issue): `src/auth/challenge.ts`.
+- Periodic GC (every 5 min, plus once at boot) of expired/used challenges and expired admin sessions: `gcChallenges()` in `src/auth/challenge.ts`, scheduled in `src/server.ts`.
+
 ### 2. Low: Owner rotation revocation is delayed by the 10s owner cache
 
 Affected code:
@@ -67,11 +72,16 @@ Recommended fix:
 - Reduce the cache TTL further, or invalidate the cache on each admin request.
 - If performance matters, pin the cache to a block height instead of a wall-clock TTL.
 
+Status: **Resolved (2026-05-30)**.
+- `OWNER_TTL_MS` reduced from 10000 to 2000 (`barkx-incubator-backend/src/auth/adminAuth.ts`), cutting the post-rotation acceptance window ~5x. The cache now only coalesces request bursts; admin traffic is low.
+
 ## Additional Observations
 
-- The auth-critical challenge/session paths do not appear to have dedicated automated tests in the repository; the current test coverage is still centered on quota math.
+- The auth-critical challenge/session paths do not appear to have dedicated automated tests in the repository; the current test coverage is still centered on quota math. **Addressed (2026-05-30): `barkx-incubator-backend/src/__tests__/auth.test.ts` adds 7 tests covering the challenge lifecycle and the admin session-login checks.**
 - Testnet-oriented defaults (`OPENDAO_MOCK`, `DEBUG_ENDPOINTS`) remain intentionally enabled by default and must still be turned off for production per `prod_modify.md`.
 
 ## Closing Notes
 
 The second-pass review confirms the earlier high-risk findings were addressed. The remaining issues are operational hardening items rather than exploitable privilege-escalation bugs.
+
+**Follow-up (2026-05-30):** Both low-severity findings above have since been remediated (rate limiting + per-address cap + periodic GC for challenges; owner-cache TTL reduced to 2s), and automated tests were added for the auth paths. See `dev_guide_fix.md` F-18.

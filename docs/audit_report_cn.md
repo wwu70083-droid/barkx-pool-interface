@@ -47,6 +47,11 @@
 - 增加定时清理任务，清除过期/已使用的 challenge。
 - 也可以限制每个地址/作用域的未完成 challenge 数量。
 
+状态：**已修复（2026-05-30）**。
+- 两个 challenge 端点加按 IP 限流（30 次/分钟 → `429 RATE_LIMITED`）：`barkx-incubator-backend/src/util/rateLimit.ts`，接入 `src/routes/incubator.ts` 与 `src/routes/auth.ts`。
+- `issueChallenge` 现在将每个 `(scope,address)` 的未完成 challenge 封顶为 1 条（再次签发时删除旧记录）：`src/auth/challenge.ts`。
+- 定时 GC（每 5 分钟 + 启动时一次）清除过期/已用 challenge 及过期 `admin_session`：`src/auth/challenge.ts` 的 `gcChallenges()`，在 `src/server.ts` 调度。
+
 ### 2. 低风险：owner 轮换的失效存在 10 秒缓存延迟
 
 受影响代码：
@@ -67,11 +72,16 @@
 - 进一步缩短缓存 TTL，或在每次 admin 请求时直接失效缓存。
 - 如果担心性能，可改为按区块高度缓存，而不是按墙钟时间缓存。
 
+状态：**已修复（2026-05-30）**。
+- `OWNER_TTL_MS` 由 10000 降至 2000（`barkx-incubator-backend/src/auth/adminAuth.ts`），轮换后旧 owner 被接受的窗口缩短约 5 倍。缓存现仅用于合并请求突发；admin 流量很低。
+
 ## 其他观察
 
-- 与 auth 相关的 challenge/session 路径在仓库中看起来没有专门的自动化测试；当前测试仍主要集中在配额数学。
+- 与 auth 相关的 challenge/session 路径在仓库中看起来没有专门的自动化测试；当前测试仍主要集中在配额数学。**已处理（2026-05-30）：`barkx-incubator-backend/src/__tests__/auth.test.ts` 新增 7 个用例，覆盖 challenge 生命周期与 admin 会话登录校验。**
 - 测试网默认值（`OPENDAO_MOCK`、`DEBUG_ENDPOINTS`）仍然是有意开启的，生产环境仍需按 `prod_modify.md` 显式关闭。
 
 ## 结语
 
 第二轮审阅确认了上次的高风险问题已经被修复。剩余问题属于运维加固项，而不是可利用的权限提升漏洞。
+
+**后续（2026-05-30）：** 上述两条低风险问题均已修复（challenge 限流 + 每地址封顶 + 定时 GC；owner 缓存 TTL 降至 2 秒），并为 auth 路径补充了自动化测试。详见 `dev_guide_fix.md` F-18。

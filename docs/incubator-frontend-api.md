@@ -106,7 +106,7 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"nonce",type:"string"},
 ```
 
 ### GET /incubator/convert/challenge/:address
-发一次性钱包鉴权 challenge（审计 #1）。
+发一次性钱包鉴权 challenge（审计 #1）。限流 **30 次/分钟/IP**，超限 `429 RATE_LIMITED`。
 ```json
 { "challengeNonce":"<hex>", "message":"BarkX Incubator convert authorization\nAddress: 0x..\nChallenge: <hex>", "expiresAt":1780124700 }
 ```
@@ -127,7 +127,7 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"nonce",type:"string"},
 ## 管理接口（admin-interface，前缀 `/admin`）
 
 ### 认证（公开，无需 token）
-- `GET /login/challenge/:address` → `{ nonce, expiresAt }`（一次性登录挑战）。
+- `GET /login/challenge/:address` → `{ nonce, expiresAt }`（一次性登录挑战）。限流 **30 次/分钟/IP**，超限 `429 RATE_LIMITED`。
 - `POST /login` `{ payload, signature }` → `{ ok, token, expiresAt }`（见上「管理接口 —— 服务端会话 token」）。
 - `POST /logout`（带 Bearer）→ `{ ok }`，注销当前会话 token。
 
@@ -178,5 +178,6 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"nonce",type:"string"},
 | 403 | `WRONG_SCOPE`/`NOT_OWNER`/`USER_SUSPENDED` | 权限不足 / 用户被暂停 |
 | 409 | `ALREADY_CONVERTED_TODAY`/`INSUFFICIENT_INJECTION` | 当日已转 / 存量不足（in-flight 守卫已移除，无 `CONVERSION_PENDING`） |
 | 422 | `QUOTA_BELOW_MIN` | 配额 < 1 BARKX |
+| 429 | `RATE_LIMITED` | challenge 端点超过 30 次/分钟/IP（审计 #1） |
 | 503 | `APPROVER_LOCKED`/`NOT_CONFIGURED` | 后端签名 keystore 未解锁 |
 | 500 | `PROFILE_FAILED`/`SIGN_FAILED`/`RECOMPUTE_FAILED`/… | 内部错误（带 `message`） |

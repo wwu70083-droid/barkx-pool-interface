@@ -112,3 +112,17 @@
 - **附加**：cooldown 36→8（见 F-15）；partner token 生命周期（enable/disable/rotate/ip-allowlist）补全；`OPENDAO_MOCK`/`DEBUG_ENDPOINTS` 默认值不改、靠 `prod_modify.md §7` 清单。
 - **DB schema**：迁移 `0003_security_hardening.sql` —— `convert_sig.chain_seq` + `challenge` + `admin_session`。清库后由 migrate 重建。
 - **测试**：合约 `hardhat test` 23 用例全过（含 `BadSeq`、同 seq 互斥）；后端 `tsc` 通过 + challenge 逻辑功能测试；前端 dev 构建通过。
+
+## F-18 第二轮审计的低风险加固
+
+第二轮审计（`audit_report.md` / `audit_report_cn.md`）确认高/中危已全修，仅剩 2 条 Low + 观察，均已处理：
+
+- **#1 challenge 接口可被刷写撑表**：
+  - `auth/challenge.ts`：`issueChallenge` 改为**先删同 `(scope,address)` 旧记录再插**（每地址每 scope 至多 1 条未完成 challenge，re-request 自动作废旧的）；新增 `gcChallenges()` 清过期/已用。
+  - `util/rateLimit.ts`：内存定窗限流中间件，按客户端 IP；两个公开 challenge 端点（`/incubator/convert/challenge/:address`、`/admin/login/challenge/:address`）限 **30 次/分钟/IP**，超限 `429 RATE_LIMITED`。
+  - `server.ts`：boot 起每 5 分钟 GC（过期/已用 challenge + 过期 `admin_session`），并在启动时跑一次。
+- **#2 owner 轮换失效有 10s 缓存延迟**：`auth/adminAuth.ts` `OWNER_TTL_MS` 10000→**2000**，紧急轮换失效窗口缩 5 倍；缓存仅用于合并请求突发（admin 流量低）。
+- **观察：auth 路径缺自动化测试**：新增 `src/__tests__/auth.test.ts`（7 用例）覆盖 challenge 单次消费/过期/错地址/re-issue 作废、admin 登录 happy path + 会话 token、TTL 过长/issuedAt 过旧/坏 challenge/非 owner 拒绝、requireAdmin 缺/未知 token 拒绝。`node --test` 全过（用 `setCachedOwnerForTesting` 绕过链）。
+- **观察：测试网默认值**：`OPENDAO_MOCK`/`DEBUG_ENDPOINTS` 仍按 `prod_modify.md §7` 在上线时关闭，未改默认（既定决策）。
+
+> 已知遗留（与本轮无关）：`src/__tests__/quota.test.ts` 的期望值绑定的是**旧版 mock fixture**（OWNER 0x5bC9… 为 T3、奖励 100/200，及旧 hardhat 地址 T1/T5）。当前 `fixtures/opendao-mock.json` 已整体换成 10 个集群测试地址（不含 OWNER），故该文件 2 个 leader 相关用例因读不到 `leader_balance` 行而失败。`compute.ts` 业务逻辑正确，纯属测试夹具漂移；待按当前 fixture 重写期望值后即可恢复。
