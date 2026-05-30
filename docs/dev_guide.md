@@ -4,8 +4,8 @@
 
 > **配套文档**：部署见 [`deploy_guide.md`](deploy_guide.md)；转生产见 [`prod_modify.md`](prod_modify.md)；合约细节见 [`incubator-contract.md`](incubator-contract.md)；前端↔后端接口见 [`incubator-frontend-api.md`](incubator-frontend-api.md)；踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
 >
-> **当前状态（测试网，Arbitrum Sepolia）**：四个组件均已落地、联调通过并部署。
-> - 合约 `BarkXIncubator`：`0x7e68A4df996d797ea4230cbAF8789BA42bFD5522`（已注资 BARKX，inject→convert 全链路 smoke 通过；含 36 L2 块冷却防护，详见 [`incubator-contract.md`](incubator-contract.md)）。旧地址 `0x98BB…6Ac4`、`0x3805…CFC4` 已废弃。
+> **当前状态（测试网，Arbitrum Sepolia）**：四个组件均已落地、联调通过并部署；已完成一轮安全审计修复（见 [`audit_report.md`](audit_report.md)）并**重新部署合约**。
+> - 合约 `BarkXIncubator`：`0x1884F88B212f7d946600193cb53307992Da32E77`（已注资 BARKX；含**每用户 `seq` 顺序 nonce** + 8 L2 块冷却防护，详见 [`incubator-contract.md`](incubator-contract.md)）。旧地址 `0x7e68A4df…D5522`、`0x98BB…6Ac4`、`0x3805…CFC4` 已废弃。
 > - 后端 `:8021`，convert approver = 独立密钥 `0x29204C012bB48806f3A2bF45591Aa924dA83F9C6`（keystore 见 dev_guide_fix.md F-11）。
 > - 用户前端融合进 `barkx-pool-interface` 并以 `--mode development` 构建（testnet 配置，见 F-05）。
 > - HTTPS 测试域名经 nginx 反代到位（见 §7 与 F-12）。
@@ -74,17 +74,18 @@ LeaderQuota              = DynamicReward * (DynamicEff%/100) + FeedbackReward * 
 
 > 合约结构、状态、方法、事件、错误、冷却/ArbSys、部署脚本等**详见 [`incubator-contract.md`](incubator-contract.md)**。本节只留摘要。
 
-`BarkXIncubator`（Solidity 0.8.26 / OZ ^5，chainId 421614，测试网部署 `0x7e68A4df996d797ea4230cbAF8789BA42bFD5522`）：固定 1 vBARKX = 1 BARKX。
+`BarkXIncubator`（Solidity 0.8.26 / OZ ^5，chainId 421614，测试网部署 `0x1884F88B212f7d946600193cb53307992Da32E77`）：固定 1 vBARKX = 1 BARKX。
 
 - `inject(amount)`：`vbarkxToken.burnFrom` 销毁 vBARKX、记 `userTotalInjection`（合约不持有 vBARKX，见 F-08）。
-- `convert(amount, nonce, deadline, sig)`：校验 approver 的 EIP-712 `Convert` 签名（域 `BarkX-Incubator` v1）、防重放、**冷却**、`userInjection >= amount`，输出 BARKX 并记 `userTotalConversion`。合约**不分** normal/leader，机制由后端按签名 `nonce` 归因。
+- `convert(amount, seq, nonce, deadline, sig)`：校验 approver 的 EIP-712 `Convert` 签名（域 `BarkX-Incubator` v1）、防重放、**每用户 `seq` 顺序校验**、冷却、`userInjection >= amount`，输出 BARKX 并记 `userTotalConversion`、`convertSeq[user]++`。合约**不分** normal/leader，机制由后端按签名 `nonce`（审计日志行号）归因。
 - `userInjection = userTotalInjection - userTotalConversion`（当前可转虚拟存量）。
 - 管理（onlyOwner）：`setApprover` / `pause` / `withdraw`（**禁提 vBARKX**）/ `transferOwnership`。
 - 代币（测试网）：BARKX `0x457f…3339B0f`、vBARKX `0xb29D…Aa83F`（ERC20Burnable）。owner `0x5bC9…0C2a`；approver 用独立密钥（F-11）。
 
-### 双层防止「监听确认间隙」内重复转换（要点）
-1. **合约层冷却（第二道兜底）**：每用户 `lastConvertHeight`，两次 convert 至少间隔 `CONVERT_COOLDOWN_BLOCKS=36` 个 **L2** 块（~9s）> 监听 12 块（~3s）。冷却高度取 **ArbSys L2 块高**（不是 `block.number`＝L1，详见 F-15）；机制无关 → 跨机制也需等 ~9s（可接受）。错误 `ConvertCooldown`，视图 `currentConvertBlock()` / `lastConvertHeight`。
-2. **后端层 in-flight 守卫（第一道）**：见 §4「转换签名、in-flight 守卫与 discard」。
+### 防止「监听确认间隙」内重复转换（要点，审计后已重构）
+1. **合约层每用户 `seq` 顺序 nonce（主防线，审计 #1 / F-16 根治）**：`convert` 要求签名携带 `seq == convertSeq[msg.sender]`，消费后 `convertSeq[user]++`。两份针对同一 `seq` 的签名（如监听间隙内重复签发、或同日 normal+leader 提前签发）链上**互斥**——先落账的把 seq 推进，另一份 revert `BadSeq`。故同一日同一配额至多转换一次，**无需后端 in-flight 锁等待**。
+2. **合约层冷却（轻量防刷）**：每用户 `lastConvertHeight`，两次 convert 至少间隔 `CONVERT_COOLDOWN_BLOCKS=8` 个 **L2** 块（~2s）。冷却高度取 **ArbSys L2 块高**（不是 `block.number`＝L1，详见 F-15）。seq 落地后双花防护已由 seq 承担，冷却降为防刷/防误点的小阈值（原 36 块会阻塞跨机制连续转换）。错误 `ConvertCooldown`，视图 `currentConvertBlock()` / `lastConvertHeight` / `convertSeq(address)`。
+3. **`_usedApproval` 重放守卫保留**：付款路径纵深防御，拒绝逐字节重放同一签名。
 
 ---
 
@@ -116,18 +117,16 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
 
 > 校验铁律：请求转换时虚拟存量必须 ≥ 可用配额；每次转换必清空该机制配额。除非管理员补跑触发重置，否则同一日同一机制不可重复转换。
 
-### 转换签名、in-flight 守卫与 discard
-- **签名**：`signConvert` 校验（存量≥配额、当日该机制未用、未被暂停、≥1 BARKX）→ 预占 nonce、签 EIP-712 `Convert`（有效期 `CONVERT_DEADLINE_SEC=60s`）→ 返回 `{amount,nonce,deadline,signature}`。
-- **in-flight 守卫（第一道防护）**：签名前若已存在同 (用户, 机制, 当日) 的「未消费且未过期」签名，拒签 `409 CONVERSION_PENDING`。防止监听确认间隙（~12 块/3s）内重复签发导致配额双花。
-- **discard / 过期规则**：
-  - 成功上链 → 监听 `Converted` 消费该签名（置 `consumed_at`）→ 守卫立即释放。
-  - 失败/取消（钱包拒绝、gas 失败、链上 revert）→ 签名**永不被消费**，只能等其 `deadline` 过期（60s）后守卫才释放。
-  - **不能提前 discard**：被取消的签名在 `deadline` 前仍是链上有效的 EIP-712 签名，提前再签发第二份会让用户同时持两份有效签名 → 双花。故锁定时长**必须 = 签名链上有效期**；缩短等待只能靠缩短 `CONVERT_DEADLINE_SEC`（已 600→120→60s，再短会让确认慢的合法 convert 过期）。详见 F-16。
-- **前端**：profile 返回 `normalPendingUntil/leaderPendingUntil`，Confirm 按钮显示 `Pending for Relay (Xs)` 倒计时，到点自动重新轮询解锁。彻底免等需合约改用每用户顺序 nonce（未做，见 F-16）。
+### 转换签名、钱包鉴权与 seq（审计后重构）
+- **钱包鉴权（审计 #1，第一道）**：convert 端点曾**无鉴权**，任何人都能为他人地址请求签名并借旧 in-flight 守卫把受害者卡死。现要求先 `GET /incubator/convert/challenge/:address` 取一次性 challenge，用钱包 `personal_sign` 其 `message`，POST 时带 `{address, signature, challengeNonce}`；后端 `verifyMessage` 还原地址必须 == 目标地址、challenge 未用未过期（用后即焚）。
+- **签名**：`signConvert` 校验（存量≥配额、当日该机制未用、未被暂停、≥1 BARKX）→ 读链上 `convertSeq(user)` → 预占审计 nonce、签 EIP-712 `Convert{user,amount,seq,nonce,deadline}`（有效期 `CONVERT_DEADLINE_SEC`）→ 落库 `chain_seq` → 返回 `{amount, seq, nonce, deadline, signature, mechanism}`。
+- **in-flight 守卫已移除**：seq 使重复签发链上互斥（见上一节），后端不再拒签第二份、不再返回 `409 CONVERSION_PENDING`，也不再有「取消后等待 deadline 才释放」的锁。被取消/失败的签名只会因 seq 推进或 deadline 过期而自然失效，无需后端干预。
+- **前端**：profile 仍返回 `normalPendingUntil/leaderPendingUntil`（现为**软提示**：是否有未消费未过期签名），用于显示 `Pending for Relay`，但**不再硬阻塞**重新转换；重复提交在链上 revert `BadSeq`，安全。
 
 ### 用户接口（风格贴近 BarkX Pool 后端）
 - `GET /incubator/profile/:address` → `userInjection`(链上), `NodeWeightedAvgInjection`, `NodeWeight`, `NodeShare`(当日配额占比), `GlobalQuota`, `NormalQuota`, `DynamicReward`, `DynamicMappingEfficiency`, `FeedbackReward`, `FeedbackMappingEfficiency`, `LeaderQuota`, `totalUnusedLeaderQuota`, `normalDoneToday`, `leaderDoneToday`。
-- `POST /incubator/convert/normal`、`POST /incubator/convert/leader` → 校验后返回 `{ amount, nonce, deadline, signature }`。
+- `GET /incubator/convert/challenge/:address` → 发一次性钱包鉴权 challenge `{ challengeNonce, message, expiresAt }`（审计 #1）。
+- `POST /incubator/convert/normal`、`POST /incubator/convert/leader` → 请求体 `{ address, signature, challengeNonce }`（钱包对 challenge 的 `personal_sign`）；校验后返回 `{ amount, seq, nonce, deadline, signature, mechanism }`。
 - `GET /incubator/leaderboard` → 生涯转换 BARKX 前十。
 - `GET /incubator/config` → 三张 tier 表 + GlobalQuota（供前端 modal 展示）。
 
@@ -138,10 +137,11 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
 - 按用户：`userAddressIncubator`, `blockJoinIncubator`(首次 inject 区块, 默认升序), `userTotalInjection`, `userTotalNormalConversion`, `userTotalLeaderConversion`, 今日 Normal(`NodeWeight,NodeAvgInjection,NodeWeightedAvgInjection,NormalQuota`)、今日 Leader(`DynamicReward,DynamicMappingEfficiency,FeedbackReward,FeedbackMappingEfficiency,LeaderQuota`)。
 
 ### 管理接口
-- 登录（owner EIP-712，`BarkX-Incubator-Login` 域，scope=admin）。
+- 登录（审计 #2，会话 token 模型）：`GET /admin/login/challenge/:address` 取一次性 nonce → owner 用 EIP-712 `BarkX-Incubator-Login` 域（payload 含 `nonce/issuedAt/expiresAt/scope=admin`）签名 → `POST /admin/login {payload,signature}` 服务端校验签名+owner+一次性 nonce、强制 `expiresAt-issuedAt ≤ ADMIN_LOGIN_TTL_SEC`、拒过旧 issuedAt，签发**不可重放的服务端会话 token**；后续请求 `Authorization: Bearer <token>`。`POST /admin/logout` 注销。（不再是可重放、客户端自定寿命的签名 bearer。）
 - 解锁 keystore（`/admin/lock/approver/unlock|lock|status`）。
 - Config：`GlobalQuota`(整数 BARKX) / Node Weight T0–T5 / Dynamic T0–T5 / Feedback T0–T5。
 - Users 列表。
+- Partners：创建（可带 IP 白名单）/ `enable` / `rotate`(换 token，旧失效) / `ip-allowlist`（增补的 token 生命周期能力）。
 - Quota：补跑 normal（重拉、覆盖当日 normal 配额、全员重置当日 normal 转换机会）；补跑 leader（重拉、把当日 leader 配额增加到未用累积、全员重置当日 leader 转换机会）；暂停某用户转换权限。
 - 拉取失败 / 用旧数据等异常在 dashboard 报告。
 
@@ -169,12 +169,13 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
 
 ## 6. 管理前端 `barkx-incubator-admin`
 
-照搬 `opendao-admin`（静态 HTML + ethers v6 CDN + `admin-common.js` API client + owner EIP-712 登录），改造：
+照搬 `opendao-admin`（静态 HTML + **自托管 ethers v6**（`vendor/`，审计 #5，不再用公共 CDN）+ `admin-common.js` API client + owner EIP-712 登录 → **服务端会话 token**，审计 #2），改造：
 
 - **Dashboard**：解锁后端（keystore 密码）；展示拉取/计算健康状态与异常报告。
 - **Users**：列表/查询。
 - **Config**：GlobalQuota（整数）、Node Weight T0–T5、Dynamic Reward Mapping T0–T5、Feedback Reward Mapping T0–T5（整数百分比）。默认值见 §2。
-- **Actions**：全局暂停、提币、设置 Approver（owner 钱包签名发交易）。
+- **Actions**：全局暂停、提币、设置 Approver（owner 钱包签名发交易）。**审计 #3**：切链失败视为硬错误；操作按钮仅在 `chainId==421614 && 钱包==owner()` 时启用；发每笔交易前即时复检活动链。
+- **Partners**：创建（含 IP 白名单输入）、禁用/启用、轮换 token、设置 IP 白名单（审计后补全的生命周期）。
 - **Quota**：补跑 normal、补跑 leader、暂停某用户转换权限。
 - 更新 `js/config.js`：backend URL、chainId 421614、合约地址、域名。
 

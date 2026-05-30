@@ -27,23 +27,27 @@
 
 ## 鉴权
 
-### 用户接口 —— 无鉴权
-按地址查询/请求。`convert` 仅按地址签发：签名把对应地址的当日配额绑定为可转，输出的 BARKX 只能进该地址，且合约要求 `msg.sender == user`，故无需用户签名鉴权，第三方代查代请求无收益。
+### 用户接口 —— convert 需钱包鉴权（审计 #1）
+读类接口（profile/leaderboard/config）按地址查询、无鉴权。**convert 需钱包鉴权**：先 `GET /incubator/convert/challenge/:address` 取一次性 challenge，钱包 `personal_sign` 其 `message`，POST 时带 `{address, signature, challengeNonce}`；后端 `verifyMessage` 还原地址必须 == 目标地址、challenge 用后即焚。（曾无鉴权 → 第三方可为他人请求签名并借旧 in-flight 守卫把受害者卡在 `CONVERSION_PENDING`；现已封堵。）
 
-### 管理接口 —— EIP-712 owner 登录（Bearer）
+### 管理接口 —— 服务端会话 token（审计 #2）
+
+不再是「可重放、客户端自定寿命的 EIP-712 签名 Bearer」，改为一次性挑战换服务端会话 token：
 
 ```
-Authorization: Bearer base64(JSON{ payload, signature })
+1) GET  /admin/login/challenge/:address          → { nonce, expiresAt }
+2) owner 用 EIP-712 域签名 Login(payload 含 nonce)
+3) POST /admin/login { payload, signature }       → { token, expiresAt }
+4) 后续请求：Authorization: Bearer <token>         （不透明服务端 token，非签名）
+   POST /admin/logout 注销
 ```
-
-`payload = { wallet, issuedAt, expiresAt, scope:"admin" }`，用 EIP-712 域签名：
 
 ```js
 domain = { name: "BarkX-Incubator-Login", version: "1", chainId: 421614, verifyingContract: <INCUBATOR_ADDRESS> }
-types  = { Login: [ {name:"wallet",type:"address"},{name:"issuedAt",type:"uint256"},{name:"expiresAt",type:"uint256"},{name:"scope",type:"string"} ] }
+types  = { Login: [ {name:"wallet",type:"address"},{name:"nonce",type:"string"},{name:"issuedAt",type:"uint256"},{name:"expiresAt",type:"uint256"},{name:"scope",type:"string"} ] }
 ```
 
-后端校验签名有效、未过期，且 `wallet == 合约 owner()`。失败：`401 NO_AUTH/BAD_AUTH`、`403 WRONG_SCOPE/NOT_OWNER`。Token 过期或被拒时管理前端跳回登录页。
+`/admin/login` 校验：签名还原 == `wallet`、`wallet == 合约 owner()`、一次性 nonce 未用未过期、`expiresAt-issuedAt ≤ ADMIN_LOGIN_TTL_SEC`、issuedAt 不过旧/不超前，再签发服务端 token（寿命取 `min(expiresAt, issuedAt+TTL)`）。`requireAdmin` 校验该 token（不再每次校验签名），owner 轮换即失效。失败：`400 BAD_REQUEST/BAD_TIMESTAMPS`、`401 BAD_AUTH/BAD_CHALLENGE/TTL_TOO_LONG`、`403 WRONG_SCOPE/NOT_OWNER`。Token 过期/被拒时管理前端跳回登录页。
 
 ---
 
@@ -82,8 +86,8 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"issuedAt",type:"uint25
 | `dynamicRewardWei` / `dynamicMappingEfficiencyPct` | Leader：Dynamic Reward + 映射效率 |
 | `feedbackRewardWei` / `feedbackMappingEfficiencyPct` | Leader：Feedback Reward + 映射效率 |
 | `leaderQuotaGrowthWei` / `totalUnusedLeaderQuotaWei` | Leader Quota Growth / Total Unused Leader Quota |
-| `normalPending` / `leaderPending` | in-flight：是否有未消费未过期的当日签名（Confirm 按钮显示 "Pending for Relay"） |
-| `normalPendingUntil` / `leaderPendingUntil` | 该 in-flight 签名的到期 Unix 秒（前端倒计时 `Pending for Relay (Xs)`），无则 `null` |
+| `normalPending` / `leaderPending` | **软提示**：是否有未消费未过期的当日签名（Confirm 按钮显示 "Pending for Relay"）。审计后 in-flight 守卫已移除，此为提示而非硬阻塞——重复提交在链上 revert `BadSeq`，安全 |
+| `normalPendingUntil` / `leaderPendingUntil` | 该签名的到期 Unix 秒（前端倒计时 `Pending for Relay (Xs)`），无则 `null` |
 | `suspended` | 用户是否被管理员暂停转换 |
 
 错误：`400 BAD_ADDRESS`、`500 PROFILE_FAILED`。
@@ -101,19 +105,33 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"issuedAt",type:"uint25
 { "leaderboard": [ { "rank":1, "address":"0x...", "totalConvertedWei":"452100000000000000000000" }, … ] }
 ```
 
-### POST /incubator/convert/normal · POST /incubator/convert/leader
-请求体 `{ "address": "0x..." }`。后端校验（存量≥配额、当日该机制未用、未被暂停、≥1 BARKX、无 in-flight）→ 返回可提交合约 `convert` 的签名：
+### GET /incubator/convert/challenge/:address
+发一次性钱包鉴权 challenge（审计 #1）。
 ```json
-{ "amount":"800000000000000000000", "nonce":2, "deadline":1780124642,
+{ "challengeNonce":"<hex>", "message":"BarkX Incubator convert authorization\nAddress: 0x..\nChallenge: <hex>", "expiresAt":1780124700 }
+```
+前端用钱包 `personal_sign(message)`，再调下方 convert。
+
+### POST /incubator/convert/normal · POST /incubator/convert/leader
+请求体 `{ "address":"0x...", "signature":"0x..", "challengeNonce":"<hex>" }`（`signature` = 钱包对 challenge `message` 的 `personal_sign`）。后端先 `verifyMessage` 校验地址所有权 + 消费 challenge，再校验（存量≥配额、当日该机制未用、未被暂停、≥1 BARKX）→ 读链上 `convertSeq(user)` → 返回可提交合约 `convert` 的签名：
+```json
+{ "amount":"800000000000000000000", "seq":3, "nonce":2, "deadline":1780124642,
   "signature":"0x…", "mechanism":"normal" }
 ```
-前端：`incubator.convert(amount, nonce, deadline, signature)`。
+前端：`incubator.convert(amount, seq, nonce, deadline, signature)`。
 
-错误：`400 BAD_ADDRESS`；`403 USER_SUSPENDED`；`409 ALREADY_CONVERTED_TODAY` / `CONVERSION_PENDING`（in-flight，见 dev_guide F-16）/ `INSUFFICIENT_INJECTION`；`422 QUOTA_BELOW_MIN`；`503 APPROVER_LOCKED`（后端 keystore 未解锁）；`500 SIGN_FAILED`。
+错误：`400 BAD_ADDRESS`；`401 AUTH_REQUIRED/BAD_SIGNATURE/SIG_MISMATCH/BAD_CHALLENGE`（钱包鉴权失败）；`403 USER_SUSPENDED`；`409 ALREADY_CONVERTED_TODAY` / `INSUFFICIENT_INJECTION`；`422 QUOTA_BELOW_MIN`；`503 APPROVER_LOCKED`（后端 keystore 未解锁）；`500 SIGN_FAILED`。（in-flight 守卫已移除，不再有 `CONVERSION_PENDING`。）
 
 ---
 
-## 管理接口（admin-interface，均需 Bearer，前缀 `/admin`）
+## 管理接口（admin-interface，前缀 `/admin`）
+
+### 认证（公开，无需 token）
+- `GET /login/challenge/:address` → `{ nonce, expiresAt }`（一次性登录挑战）。
+- `POST /login` `{ payload, signature }` → `{ ok, token, expiresAt }`（见上「管理接口 —— 服务端会话 token」）。
+- `POST /logout`（带 Bearer）→ `{ ok }`，注销当前会话 token。
+
+> 以下接口均需 `Authorization: Bearer <token>`（服务端会话 token）。
 
 ### Dashboard / 解锁
 - `GET /dashboard` → `{ lock:{state,unlockedAddress,unlockedAt,…}, approverOnChain, paused, listenerLastBlock, health:{ lastComputeOk, lastComputeError, lastCompute, lastPartnerSnapshot } }`。也用作 token 探活。
@@ -136,7 +154,10 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"issuedAt",type:"uint25
 
 ### Partners（Partner API token 管理）
 - `GET /partners` → `{ partners:[ {id,name,enabled,rate_limit_per_minute,ip_allowlist,created_at,last_used_at} ] }`。
-- `POST /partners` `{ name, rateLimitPerMinute? }` → `{ ok, id, name, token }`（**明文 token 仅此一次返回**）。
+- `POST /partners` `{ name, rateLimitPerMinute?, ipAllowlist? }` → `{ ok, id, name, token }`（**明文 token 仅此一次返回**）。
+- `POST /partners/:id/enable` `{ enabled:bool }` → `{ ok, id, enabled }`（禁用/启用，切断泄露 token 无需改库）。
+- `POST /partners/:id/rotate` → `{ ok, id, token }`（换新明文 token，旧 token 立即失效）。
+- `POST /partners/:id/ip-allowlist` `{ ipAllowlist }` → `{ ok, id, ipAllowlist }`（逗号分隔，空串清空）。
 
 ### Debug 虚拟时钟（testnet，`DEBUG_ENDPOINTS=1` 时启用）
 - `GET /debug/state` → `{ realDate, dayOffset, effectiveDate }`。
@@ -152,10 +173,10 @@ types  = { Login: [ {name:"wallet",type:"address"},{name:"issuedAt",type:"uint25
 
 | HTTP | code | 含义 |
 |------|------|------|
-| 400 | `BAD_ADDRESS`/`BAD_DATE`/`BAD_VALUE`/`BAD_TIER`/`BAD_DAYS`/`NO_PASSWORD`/`NO_NAME` | 参数错误 |
-| 401 | `NO_AUTH`/`BAD_AUTH`/`BAD_PASSWORD` | 鉴权失败 / keystore 密码错 |
+| 400 | `BAD_ADDRESS`/`BAD_DATE`/`BAD_VALUE`/`BAD_TIER`/`BAD_DAYS`/`BAD_ID`/`NO_PASSWORD`/`NO_NAME`/`BAD_REQUEST` | 参数错误 |
+| 401 | `NO_AUTH`/`BAD_AUTH`/`BAD_CHALLENGE`/`TTL_TOO_LONG`/`AUTH_REQUIRED`/`BAD_SIGNATURE`/`SIG_MISMATCH`/`BAD_PASSWORD` | 鉴权失败（会话/钱包挑战）/ keystore 密码错 |
 | 403 | `WRONG_SCOPE`/`NOT_OWNER`/`USER_SUSPENDED` | 权限不足 / 用户被暂停 |
-| 409 | `ALREADY_CONVERTED_TODAY`/`CONVERSION_PENDING`/`INSUFFICIENT_INJECTION` | 当日已转 / in-flight 中 / 存量不足 |
+| 409 | `ALREADY_CONVERTED_TODAY`/`INSUFFICIENT_INJECTION` | 当日已转 / 存量不足（in-flight 守卫已移除，无 `CONVERSION_PENDING`） |
 | 422 | `QUOTA_BELOW_MIN` | 配额 < 1 BARKX |
 | 503 | `APPROVER_LOCKED`/`NOT_CONFIGURED` | 后端签名 keystore 未解锁 |
 | 500 | `PROFILE_FAILED`/`SIGN_FAILED`/`RECOMPUTE_FAILED`/… | 内部错误（带 `message`） |

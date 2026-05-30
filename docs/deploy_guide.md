@@ -28,7 +28,7 @@ npm run smoke:arb-sepolia                # 链上 inject→convert 全链路自�
 git clone <repo> && cd barkx-incubator-backend && npm install
 cp .env.example .env
 ```
-`.env` 关键项：`INCUBATOR_ADDRESS`=合约地址；`BARKX_ADDRESS`/`VBARKX_ADDRESS`；`RPC_URL`；`APPROVER_KEYSTORE_PATH=~/barkx-incubator-keys/approver.keystore.json`；`LISTENER_START_BLOCK`=部署区块号；`LISTENER_CONFIRMATIONS=12`；`CONVERT_DEADLINE_SEC=60`；`OPENDAO_MOCK=1`（测试用 `fixtures/opendao-mock.json`）；`ALLOWED_ORIGINS`=用户前端+管理前端域名；`DEBUG_ENDPOINTS=1`（启虚拟时钟调试）。
+`.env` 关键项：`INCUBATOR_ADDRESS`=合约地址；`BARKX_ADDRESS`/`VBARKX_ADDRESS`；`RPC_URL`；`APPROVER_KEYSTORE_PATH=~/barkx-incubator-keys/approver.keystore.json`；`LISTENER_START_BLOCK`=部署区块号；`LISTENER_CONFIRMATIONS=12`；`CONVERT_DEADLINE_SEC=60`；`OPENDAO_MOCK=1`（测试用 `fixtures/opendao-mock.json`）；`ALLOWED_ORIGINS`=用户前端+管理前端域名；`DEBUG_ENDPOINTS=1`（启虚拟时钟调试）；`TRUST_PROXY=1`（经 nginx 反代时设 1，使 `req.ip` 为真实客户端、partner IP 白名单可信；默认 0 不信任 XFF，审计 #4）。
 ```bash
 npm run migrate           # 建库（含 tier 默认值、global_quota 默认 500000）
 npx tsx src/server.ts     # 或 npm run build && npm start（开发期不用 systemd）

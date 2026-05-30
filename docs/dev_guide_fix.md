@@ -81,6 +81,7 @@
   1. **后端 in-flight 守卫**：`signConvert` 拒绝为同一 (用户,机制,当日) 签发「未消费且未过期」的第二份签名（`409 CONVERSION_PENDING`）；失败/取消的尝试在签名 `deadline`（CONVERT_DEADLINE_SEC=600s）后自动释放。已验证：第一次 200，第二次 409。
   2. **合约层冷却**：每用户 `lastConvertHeight`，两次 convert 至少间隔 `CONVERT_COOLDOWN_BLOCKS=36` 块（~9s）> 监听 12 块（~3s）。即便后端误签，合约兜底。错误 `ConvertCooldown`。副作用：跨机制也需等 ~9s（合约不分机制），可接受。
 - **前端**：上链确认后乐观切「Completed」态，不等监听；安全性由上述两道防线保证。
+- **⚠️ 审计后已重构（见 F-17）**：后端 in-flight 守卫（防线 1）**已移除**，改由合约**每用户 `seq` 顺序 nonce** 防双花；冷却（防线 2）降为 8 块轻量阈值。本条记录历史设计。
 
 ## F-15 Arbitrum `block.number` 是 L1 块高（冷却防护重大 bug）
 
@@ -89,10 +90,25 @@
 - **原因**：Arbitrum 上 Solidity `block.number` 返回 **L1 块高**（~12s/块），不是 L2 块高（~0.25s/块）。36×L1块 ≈ 36×12s ≈ 7 分钟。
 - **修复**：冷却改用 ArbSys 预编译 `IArbSys(0x64).arbBlockNumber()` 取 **L2 块高**。用低级 `staticcall` + 返回长度判断，无此预编译的本地/其它链回退 `block.number`（本地测试照常通过；`try/catch` 不能捕获返回数据解码失败，故用低级 staticcall）。36 L2 块 = ~9s，符合 SPEC。需重新部署合约。
 - **连带**：`CONVERT_DEADLINE_SEC` 600→120s，缩短「失败/取消 convert 后 in-flight 守卫锁定重试」的窗口。锁定时长必须 = 签名链上有效期（≥有效期才能防双花），故只能靠缩短有效期来缩短锁定，120s 对正常钱包确认足够。
+- **⚠️ 审计后**：L2 块高（ArbSys）的修复保留；但 `CONVERT_COOLDOWN_BLOCKS` 已 **36→8**（~2s）——双花防护移交合约 `seq`，冷却仅作防刷，顺带消除 36 块带来的跨机制连续转换等待。见 F-17。
 
 ## F-16 取消 convert 后的 in-flight 等待与 discard
 
 - **现象**：用户在钱包取消 convert 后刷新重进，Confirm 按钮仍为 Pending，且不知等多久。
 - **discard 机制**：被取消的签名永不会被监听消费（无链上事件），只能等其 `deadline` 过期后 in-flight 守卫才释放。**不能提前释放**——该签名在 deadline 前仍是链上有效的 EIP-712 签名，提前再签发第二份会让用户同时持两份有效签名 → 双花。故锁定时长必须 = 签名链上有效期。
 - **改进**：`CONVERT_DEADLINE_SEC` 120→60s（在不破坏防护前提下把最坏等待减半；再短会让确认慢的正常用户的合法 convert 过期）。后端 profile 增 `normalPendingUntil/leaderPendingUntil`，前端 Confirm 按钮显示 `Pending for Relay (Xs)` 实时倒计时，到点自动重新轮询解锁。
-- **彻底消除等待的方案（未做，需再次重部署）**：合约改用每用户**顺序 nonce**（convert 校验并自增 `userNonce`），则取消后用同一 nonce 重新签发也安全（两份共享 nonce，链上只能成功一份）。当前未做以避免再次重部署。
+- **彻底消除等待的方案（✅ 审计时已实施，见 F-17）**：合约改用每用户**顺序 `seq`**（convert 校验 `seq==convertSeq[user]` 并自增），取消后用新 seq 重新签发也安全（两份共享旧 seq，链上只能成功一份，另一份 `BadSeq`）。in-flight 守卫与 `CONVERSION_PENDING` 随之移除；profile 的 `pending*` 字段降为软提示。
+
+## F-17 安全审计修复（重新部署）
+
+- **背景**：安全团队静态审计（`audit_report.md`）后，对全部 5 findings + 3 观察做修复，并**重新部署合约**至 `0x1884F88B212f7d946600193cb53307992Da32E77`、后端清库重置。
+- **#1 convert（叠加修复）**：
+  1. 链下钱包鉴权——`GET /incubator/convert/challenge/:address` 发一次性 nonce，钱包 `personal_sign`，POST 带 `{address,signature,challengeNonce}`，`verifyMessage` 还原地址必须 == 目标地址。封堵「替他人请求签名卡死受害者」。
+  2. 合约每用户 `seq` 顺序 nonce（F-16 根治）——新 typehash `Convert(user,amount,seq,nonce,deadline)`，`seq==convertSeq[user]` 校验后自增。**in-flight 守卫移除**，无 `CONVERSION_PENDING`。`nonce` 仍为后端审计行号 + 机制归因。
+- **#2 admin 登录**：可重放、客户端自定寿命的 EIP-712 bearer → **服务端会话 token**。一次性登录 nonce（嵌入 Login payload）、服务端强制 `expiresAt-issuedAt ≤ ADMIN_LOGIN_TTL_SEC`、拒过旧 issuedAt；`requireAdmin` 校验不透明 token（owner 轮换即失效）。新表 `challenge`/`admin_session`。
+- **#3 admin actions**：切链失败硬报错；按钮仅 `chain==421614 && 钱包==owner()` 启用；发交易前即时复检链。
+- **#4 trust proxy**：`app.set('trust proxy', true)` → env `TRUST_PROXY`（默认 0；nginx 单跳设 1），防 `X-Forwarded-For` 伪造绕过 partner IP 白名单。
+- **#5 admin ethers**：公共 CDN → 自托管 `vendor/ethers-6.13.4.umd.min.js`。
+- **附加**：cooldown 36→8（见 F-15）；partner token 生命周期（enable/disable/rotate/ip-allowlist）补全；`OPENDAO_MOCK`/`DEBUG_ENDPOINTS` 默认值不改、靠 `prod_modify.md §7` 清单。
+- **DB schema**：迁移 `0003_security_hardening.sql` —— `convert_sig.chain_seq` + `challenge` + `admin_session`。清库后由 migrate 重建。
+- **测试**：合约 `hardhat test` 23 用例全过（含 `BadSeq`、同 seq 互斥）；后端 `tsc` 通过 + challenge 逻辑功能测试；前端 dev 构建通过。
