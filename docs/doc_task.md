@@ -1,13 +1,7 @@
 # Doc Task
 
-## dev_guide.md
+## incubator-frontend-api.md
 
-防护模块的 discard 逻辑、过期规则应被明确记载。
+为了让开发人员维护前端产物，专门写一份 API 说明文档，归纳所有 Incubator 业务专用的 user-interface 和 admin-interface 与后端通信所需的接口。
 
-更新 dev_guide.md，确保文档跟上当前开发进度。
-
-## incubator-contract.md
-
-专门写一份合约开发说明文档，向开发人员讲解 incubator 合约结构、方法等信息。
-
-dev_guide.md 中原本详解合约的部分，按需缩减篇幅，引导开发人员到 incubator-contract.md 阅读详情。
+文档格式参考 opendao_partner_api_integration_guide.md 但注意这不是 Partner API 说明文档。
