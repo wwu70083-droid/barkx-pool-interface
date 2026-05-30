@@ -100,6 +100,10 @@
 * **convert**：销毁调用者的孵化池 vBARKX 虚拟存量，输出 BARKX，需 approver 签名
 * **inject**：消耗调用者的 vBARKX，增加孵化池 vBARKX 虚拟存量
 
+#### 防护
+
+为了加强防护，在合约中添加每个用户的 **lastConvertHeight** 记录。用户在任意一种转换机制下完成一次转换上链后，必须冷却 36 个区块（约 9 秒），才能发起下一次转换，否则会被合约报错拒绝。已知后端无故障情况下仅需 3 秒完成事件同步，此防护可作为第二道保护。此防护的副作用：用户在一种机制中完成转换后，也要等 15 秒才能在另一个机制发起合法转换，因为合约不区分 convert 所用的机制。但是，这个副作用是可以接受的。
+
 > 注意原子封闭。
 
 ### 管理方法
@@ -157,6 +161,12 @@
 * **Normal Incubation**：前端判断存量不小于配额 -> 用户请求 `convert` 调用 -> 后端校验数量 -> 后端签名 -> 输出 BARKX 并写 `userTotalConversion` -> 后端监听确认当日转换已用并清零 normal 配额
 * **Leader Incubation**：前端判断存量不低于配额 -> 用户请求 `convert` 调用 -> 后端校验数量 -> 后端签名 -> 输出 BARKX 并写 `userTotalConversion` -> 后端监听确认当日转换已用并清零 leader 配额
 * **Inject**：用户请求 `inject` 调用 -> 用户发送 vBARKX -> 合约销毁 vBARKX 并写 `userTotalInjection`
+
+#### 防护
+
+用户在前端成功完成一次转换后，在后端监听等待 12 个区块期间，用户可能重复发起转换。必须有 in-flight 守卫，在后端等待确认期间防止用户发起新的转换。
+
+> Arbitrum 的区块速度为 0.25 秒。
 
 ### Incubator Partner API
 
