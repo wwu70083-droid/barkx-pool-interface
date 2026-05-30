@@ -1,49 +1,11 @@
 # Dev Task
 
-## 样式对齐
+刚测试了一次 normal incubate，功能正常，但在前端有一个值得优化的流程。
 
-1. 原型 incubator_sample.html 的 Inject vBARKX modal 的宽度是与通用面板等宽的，你的实现中 modal 宽度做窄了。按原型样式调整宽度。
-2. 原型 incubator_sample.html 的配色风格是自带的海蓝色，而不是 style.css 的通用蓝紫色。你观察几个现有生产模块的页面风格，会发现 e-pool、v-pool 各有自己的主题色，incubator 也是如此。重新读取原型文件规定的色彩风格，完成实现。
-3. 原型 incubator_sample.html 的页面底部还有 Powered by OpenDAO 字样，当前实现漏了，需补充。
-4. Normal Incubation 和 Leader Incubation 中的 Less than 1 BARKX 字体规格是不是没统一？肉眼感觉 Normal Incubation 的 Less than 1 BARKX 小一点。核查一下。
+目前：当转换在链上确认后，配额已被消费，但我推测，因为后端监听需要等 12 个块，在此之前，画面会停留在原位，不会立即展示 Normal Incubation Completed 状态。
 
-## 文案对齐
+改进：上链确认，toast 报成功，立即同时让画面自动切 Normal Incubation Completed 状态，这里不要等后端监听。当然，在后端真正切状态前，用户如果自己手动刷新页面，又可能回到原画面，但这个时间差不大，破绽可以接受。（检查此处的事实：后端必须有校验防护，不会允许用户趁这个监听时间差再次发起转换）
 
-以下 modal 的文案都要和原型 incubator_sample.html 的对齐，我帮你抄录在这里。你再去原型里看一下。
-
-1. OpenDAO Node Weight modal 的文案是：
-
-This value is securely fetched from the **OpenDAO Partner API**.
-
-It acts as a multiplier applied directly to your 30-Day Average Injection. A higher weight factor significantly amplifies your competitive proportion in the daily snapshot, securing a larger share of the BARKX conversion quota.
-
-2. Dynamic Reward Mapping modal 的文案是：
-
-This value is securely fetched from the **OpenDAO Partner API**.
-
-It acts as a factor to directly map your OpenDAO Dynamic Reward into the leader's incubation quota.
-
-3. Feedback Reward Mapping modal 的文案是：
-
-This value is securely fetched from the **OpenDAO Partner API**.
-
-It acts as a factor to directly map your OpenDAO Feedback Reward into the leader's incubation quota.
-
-4. Inject vBARKX modal 的文案是：
-
-Inject your vBARKX to build your 30-day average balance. Daily snapshots taken at **00:45 UTC** determine your share for the BARKX conversion quota in the next day.
-
-5. 另外，原型里两个不同机制的 Confirm Incubation modal 各自采用了不同的文案，你去原型里找来分别对齐。
-
-## 数据源
-
-在你关闭后端服务期间，我查看用户前端，发现与 SPEC 不符合的现象。当后端下线时，前端依然可以读合约，那么，根据 SPEC 要求的：
-
-* My Injection：用户在合约中的有效存量，读合约 userInjection
-* Injected：严格等于 My Injection
-
-这些值应该从合约中正常读取。但前端上，这些值也都显示为 0，说明它们是从后端读的。分析得对吗？
-
-
+同步也改进 leader incubate 流程，与上述需求对齐。
 
 
