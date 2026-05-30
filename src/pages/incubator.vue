@@ -363,8 +363,11 @@ const leaderQuotaGrowth = computed(() => fmt(profile.value?.leaderQuotaGrowthWei
 const leaderUnused = computed(() => fmt(profile.value?.totalUnusedLeaderQuotaWei));
 const walletVbarkx = computed(() => fmt(walletVbarkxRaw.value));
 
-const normalDone = computed(() => Boolean(profile.value?.normalDoneToday));
-const leaderDone = computed(() => Boolean(profile.value?.leaderDoneToday));
+// Optimistic done: set on on-chain confirm so the UI flips to Completed
+// without waiting for the backend listener (~12 blocks). Resets on reload.
+const optimisticDone = ref({ normal: false, leader: false });
+const normalDone = computed(() => Boolean(profile.value?.normalDoneToday) || optimisticDone.value.normal);
+const leaderDone = computed(() => Boolean(profile.value?.leaderDoneToday) || optimisticDone.value.leader);
 
 // ── button state machine (Insufficient Injection / Less than 1 BARKX / Incubate) ──
 function btnState(quotaWei) {
@@ -545,6 +548,12 @@ async function doConvert() {
     });
     await waitForTx(hash);
     confirmModal.value = false;
+    // Optimistically flip to the Completed state immediately on on-chain
+    // confirmation — don't wait the ~12-block listener gap before the backend
+    // reflects normalDoneToday/leaderDoneToday. A manual refresh during the gap
+    // may briefly show the active view again; acceptable. The backend refuses a
+    // second signature in this window (CONVERSION_PENDING), so it's safe.
+    optimisticDone.value = { ...optimisticDone.value, [mechanism]: true };
     await Promise.all([loadProfile(), loadStatic()]);
     showNotice({ outcome: "success", text: t("pages.incubator.confirm.success", { amount: convertedDisplay }) });
   } catch (e) {
