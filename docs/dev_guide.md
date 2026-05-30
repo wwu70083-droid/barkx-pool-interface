@@ -2,6 +2,14 @@
 
 > 本文件由 `incubator-spec.md` + `incubator-user-guide.md` + `opendao_partner_api_integration_guide.md` + 静态原型 `incubator_sample.html` 综合编纂，作为四个组件（合约 / 后端 / 用户前端 / 管理前端）的开发依据。SPEC 与本指南冲突时以 SPEC 为准，本指南记录已解决的歧义与落地决策。
 
+> **配套文档**：踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
+>
+> **当前状态（测试网，Arbitrum Sepolia）**：四个组件均已落地、联调通过并部署。
+> - 合约 `BarkXIncubator`：`0x98BB15Ecc05B8e00c1fD6BD7eD574283ac506Ac4`（已注资 BARKX，inject→convert 全链路 smoke 通过）。
+> - 后端 `:8021`，convert approver = 独立密钥 `0x29204C012bB48806f3A2bF45591Aa924dA83F9C6`（keystore 见 dev_guide_fix.md F-11）。
+> - 用户前端融合进 `barkx-pool-interface` 并以 `--mode development` 构建（testnet 配置，见 F-05）。
+> - HTTPS 测试域名经 nginx 反代到位（见 §7 与 F-12）。
+
 ## 0. 概览
 
 孵化池（Incubator）以 **1 vBARKX = 1 BARKX** 的固定比例将 vBARKX 转换为 BARKX，运行在 **Arbitrum One**（测试阶段在 **Arbitrum Sepolia, chainId 421614**）。
@@ -56,7 +64,7 @@ NormalQuota              = NodeWeightedAvgInjection / GlobalWeightedAvgInjection
 LeaderQuota              = DynamicReward * (DynamicEff%/100) + FeedbackReward * (FeedbackEff%/100)
 ```
 
-- `NodeAvgInjection` = 该用户 `userInjection` 的 30 日均值。**分母恒为 30**（非用户实际进场天数）：进场不足 30 天的节点，缺失的早期天数按 0 计入，例如进场第 7 天 = 过去 7 个每日存量之和 / 30。新节点权重在头 30 天内逐步爬升。
+- `NodeAvgInjection` = 该用户 `userInjection` 的 30 日均值。**分母恒为 30**（非用户实际进场天数）：进场不足 30 天的节点，缺失的早期天数按 0 计入，例如进场第 7 天 = 过去 7 个每日存量之和 / 30。新节点权重在头 30 天内逐步爬升。（此处曾有除以实际天数的业务漏洞，已修补，见 dev_guide_fix.md F-01。）
 - `GlobalWeightedAvgInjection` = 全体节点 `NodeWeightedAvgInjection` 之和。
 - `GlobalQuota` = 管理员设置的当日 Normal 总配额（整数 BARKX）。
 
@@ -73,7 +81,7 @@ Hardhat / Solidity 0.8.26 / OpenZeppelin ^5 / `Ownable` + `Pausable` + `Reentran
 - `IERC20 immutable barkxToken; IERC20 immutable vbarkxToken;`
 
 ### 普通方法（均 `whenNotPaused nonReentrant`，注意原子封闭）
-- `inject(uint256 amount)`：`vbarkxToken.safeTransferFrom(msg.sender, BURN_ADDRESS, amount)`（或 `burnFrom`）；`userTotalInjection[msg.sender] += amount`；`emit Injected(user, amount, newTotalInjection)`。
+- `inject(uint256 amount)`：`vbarkxToken.burnFrom(msg.sender, amount)`（vBARKX 为 OZ ERC20Burnable，经授权拉取并销毁，合约不持有；见 F-08）；`userTotalInjection[msg.sender] += amount`；`emit Injected(user, amount, newTotalInjection)`。
 - `convert(uint256 amount, uint256 nonce, uint256 deadline, bytes approverSig)`：
   1. `require(block.timestamp <= deadline)`；
   2. 防重放：`require(!usedSig[keccak256(sig)])` 后置位；
@@ -107,7 +115,7 @@ Hardhat / Solidity 0.8.26 / OpenZeppelin ^5 / `Ownable` + `Pausable` + `Reentran
 Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区间 8020–8030，禁用 8000–8010），**开发期不用 systemd**。风格贴近 BarkX Pool 后端与 `opendao-backend`。
 
 ### 签名解锁
-- convert 的 approver 私钥走 keystore，启动后需管理员输入密码解锁方可签名（复用 opendao-backend `auth/keystore.ts` 模式）。
+- convert 的 approver 私钥走 keystore，启动后需管理员输入密码解锁方可签名（复用 opendao-backend `auth/keystore.ts` 模式）。approver 为独立密钥（非 owner），测试密码与 keystore 路径见 dev_guide_fix.md F-11。后端每次重启都 locked。
 
 ### 定时任务
 - `00:35 UTC`：全量拉取 OpenDAO 快照（开发期用 mock fixture，生产切真实 Partner API，见 `opendao_partner_api_integration_guide.md`）。失败重试 5 次；`00:40 UTC` 前仍失败可用旧数据计算，但**管理前端必须报告**。生成两张表：
@@ -203,3 +211,35 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
 2. 后端：配额计算（mock fixture）、EIP-712 签名、监听、Partner API、管理 API。
 3. 用户前端：替换 `incubator.vue`，接入真实链上 + 后端。
 4. 管理前端：克隆 opendao-admin 改造。
+
+---
+
+## 10. 时间加速调试工具（虚拟时钟，testnet）
+
+Normal Incubation 依赖「30 日均存量」和「每日 00:35 UTC 刷新/重置」，按真实 1 天 = 24 小时无法测试。后端内置**虚拟时钟 day-offset**：整个业务层的「今天」都经由 `util/time.ts` 的 `utcDate()` 取值，设置偏移即可快进天数，无需等真实天数。
+
+### 设计
+- 偏移量（整天）持久化在 `system_state.debug.day_offset`，**启动时回灌**——后端重启不会把测试中的模拟日期重置回真实日。
+- `nowIso()`（审计时间戳）始终用真实时钟，不受偏移影响。
+- 由 `DEBUG_ENDPOINTS` 开关控制（testnet 默认开，生产置 0 关闭）。
+
+### 管理接口（owner 鉴权）
+| 方法 | 路径 | 作用 |
+| --- | --- | --- |
+| GET | `/admin/debug/state` | 返回 `{ realDate, dayOffset, effectiveDate }` |
+| POST | `/admin/debug/set-offset` `{ days }` | 跳到绝对偏移；**0 = 回到真实今天**（不跑计算） |
+| POST | `/admin/debug/advance-day` `{ days, runCompute }` | 前进 N 天，逐天跑每日计算（每天记一笔注入快照、刷新配额、重置当日转换机会、累加 leader 配额） |
+| POST | `/admin/debug/backfill-injection` `{ days }` | 为所有已知用户按当前链上 `userInjection` 回填 N 天平铺注入历史，再补跑 Normal——**瞬间得到 30 日均值** |
+
+管理前端 **Debug** 页提供上述按钮 + 时钟状态展示，无需 curl/EIP-712 手签。
+
+### 建议的 Normal Incubation 测试流程
+1. 用户 inject vBARKX → 等约 12 个块让监听入账（用户进入 `users` 表）。
+2. Debug → **Backfill 30**：瞬间得到 30 日均值与当日配额。
+3. Dashboard 用 owner 钱包登录并解锁后端（keystore 密码，见 F-11）。
+4. 在用户前端 Incubate。
+5. 验证每日重置：Debug → **Advance Day 1**，确认 Normal 面板重新可转换、Leader 未用配额累加。
+6. 测试结束 **Set Offset 0** 回到真实日。
+
+> 注意：`backfill-injection` 只对已在 `users` 表的地址生效（即已被监听记录过首次 inject 的用户）；先 inject 并等监听入账，再回填。
+
