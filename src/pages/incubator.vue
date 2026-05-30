@@ -597,6 +597,17 @@ watch(account, () => loadProfile());
   background: transparent;
 }
 
+/* Base page background — the prototype's body { background: #020617 }. A fixed
+   full-screen layer behind the grid (z-2) and glow (z-1) overlays, scoped to
+   the incubator page so it never touches the global body background. */
+.incubator-page-theme::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background: #020617;
+}
+
 .incubator-page-theme .header {
   background: rgba(2, 6, 23, 0.85) !important;
 }
@@ -608,7 +619,7 @@ watch(account, () => loadProfile());
 .incubator-page-theme .glow-bg {
   background:
     radial-gradient(ellipse at 20% 0%, rgba(2, 132, 199, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%) !important;
+    radial-gradient(ellipse at 80% 100%, rgba(56, 189, 248, 0.08) 0%, transparent 50%) !important;
 }
 
 .incubator-page-theme .tab.active {
