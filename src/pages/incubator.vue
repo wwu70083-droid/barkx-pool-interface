@@ -208,12 +208,17 @@
       </div>
     </template>
 
+    <!-- Powered by OpenDAO (prototype footer) -->
+    <footer style="text-align: center; margin-top: 24px">
+      <div style="font-size: 12px; color: var(--text-muted); opacity: 0.6; letter-spacing: 0.5px">Powered by OpenDAO</div>
+    </footer>
+
     <!-- ───────────── Confirm Incubation modal ───────────── -->
     <div v-if="confirmModal" class="custom-modal-overlay" @click="confirmModal = false">
       <div class="custom-modal cyan-theme" @click.stop>
         <button class="custom-modal-close" type="button" @click="confirmModal = false">✕</button>
         <div class="custom-modal-title">{{ $t("pages.incubator.confirm.title") }}</div>
-        <div class="custom-modal-text">{{ $t("pages.incubator.confirm.message", { amount: confirmAmount }) }}</div>
+        <div class="custom-modal-text" v-html="confirmMessage"></div>
         <button class="btn-submit" :disabled="converting" style="margin-top: 20px" @click="doConvert">
           {{ $t("pages.incubator.confirm.confirm") }}
         </button>
@@ -224,10 +229,10 @@
     <!-- Outside-click intentionally does NOT close this modal (amount entry —
          avoid accidental dismissal); only the × button closes it. -->
     <div v-if="injectModal" class="custom-modal-overlay">
-      <div class="custom-modal cyan-theme" @click.stop>
+      <div class="custom-modal cyan-theme" style="max-width: 460px; width: 90%" @click.stop>
         <button class="custom-modal-close" type="button" @click="closeInject">✕</button>
         <div class="custom-modal-title">{{ $t("pages.incubator.inject.title") }}</div>
-        <div class="info-box" style="margin-top: 8px">{{ $t("pages.incubator.inject.info") }}</div>
+        <div class="info-box" style="margin-top: 8px" v-html="$t('pages.incubator.inject.info')"></div>
         <div class="input-group">
           <div class="input-header">
             <span>{{ $t("pages.incubator.inject.amount") }}</span>
@@ -258,7 +263,7 @@
       <div class="custom-modal cyan-theme" @click.stop>
         <button class="custom-modal-close" type="button" @click="infoModal = null">✕</button>
         <div class="custom-modal-title">{{ infoModalContent.title }}</div>
-        <div class="custom-modal-text">{{ infoModalContent.desc }}</div>
+        <div class="custom-modal-text" v-html="infoModalContent.desc"></div>
         <table class="modal-table">
           <thead><tr><th>{{ infoModalContent.colA }}</th><th>{{ infoModalContent.colB }}</th></tr></thead>
           <tbody>
@@ -317,10 +322,15 @@ const profile = ref(null);
 const config = ref(null);
 const leaderboard = ref([]);
 const walletVbarkxRaw = ref("0");
+// My Injection / Injected come straight from the contract (userInjection),
+// independent of the backend — per SPEC these must read on-chain and stay
+// correct even when the backend is offline.
+const onchainInjectionWei = ref("0");
 
 const disabledStyle = {
   opacity: "0.5",
   pointerEvents: "none",
+  color: "#e2e8f0",
   background: "linear-gradient(135deg, #475569 0%, #334155 100%)",
   boxShadow: "none",
 };
@@ -339,7 +349,7 @@ function big(wei) {
 }
 
 // ── display computeds ──
-const myInjection = computed(() => fmt(profile.value?.myInjectionWei));
+const myInjection = computed(() => fmt(onchainInjectionWei.value));
 const avgWeighted = computed(() => fmt(profile.value?.nodeWeightedAvgInjectionWei));
 const nodeWeight = computed(() => `${truncateFixed((profile.value?.nodeWeightPct ?? 100) / 100, 2)}`);
 const quotaShare = computed(() => `${truncateFixed((profile.value?.nodeShare ?? 0) * 100, 2)}%`);
@@ -359,7 +369,7 @@ const leaderDone = computed(() => Boolean(profile.value?.leaderDoneToday));
 // ── button state machine (Insufficient Injection / Less than 1 BARKX / Incubate) ──
 function btnState(quotaWei) {
   const quota = big(quotaWei);
-  const injection = big(profile.value?.myInjectionWei);
+  const injection = big(onchainInjectionWei.value);
   if (injection < quota) return { disabled: true, label: t("pages.incubator.buttons.insufficientInjection") };
   if (quota < WEI) return { disabled: true, label: t("pages.incubator.buttons.lessThanOne") };
   return { disabled: false, label: t("pages.incubator.buttons.incubate") };
@@ -368,6 +378,10 @@ const normalBtn = computed(() => btnState(profile.value?.normalQuotaWei));
 const leaderBtn = computed(() => btnState(profile.value?.totalUnusedLeaderQuotaWei));
 
 const confirmAmount = computed(() => fmt(confirmMechanism.value === "normal" ? profile.value?.normalQuotaWei : profile.value?.totalUnusedLeaderQuotaWei));
+const confirmMessage = computed(() => {
+  const key = confirmMechanism.value === "normal" ? "pages.incubator.confirm.messageNormal" : "pages.incubator.confirm.messageLeader";
+  return t(key, { amount: confirmAmount.value });
+});
 
 // Inject action button (approval handled separately by ApprovalActionGroup).
 const injectRequirements = [{ id: "incubator:vbarkx", label: "vBARKX" }];
@@ -434,6 +448,20 @@ const infoModalContent = computed(() => {
 // ── data loading ──
 async function loadProfile() {
   if (!account.value) return;
+  // Read userInjection straight from the contract first — independent of the
+  // backend, so My Injection / Injected stay correct even if the backend is down.
+  try {
+    onchainInjectionWei.value = (
+      await getPublicClient().readContract({
+        address: INCUBATOR_CONFIG.incubator,
+        abi: BarkXIncubatorAbi,
+        functionName: "userInjection",
+        args: [account.value],
+      })
+    ).toString();
+  } catch (e) {
+    onchainInjectionWei.value = "0";
+  }
   try {
     profile.value = await getIncubatorProfile(account.value);
   } catch (e) {
@@ -537,23 +565,41 @@ watch(account, () => loadProfile());
 
 <style lang="less">
 .incubator-page-theme {
-  --cyan: #38bdf8;
-  --cyan-bright: #00d4ff;
-  --cyan-glow: rgba(56, 189, 248, 0.5);
+  /* Prototype's own sea-blue theme (incubator_sample.html :root) — deeper
+     than the global sky-blue/purple, like e-pool/v-pool each have their own. */
+  --cyan: #0284c7;
+  --cyan-bright: #38bdf8;
+  --cyan-glow: rgba(2, 132, 199, 0.4);
   --purple: #a855f7;
   --green: #22c55e;
   --green-glow: rgba(34, 197, 94, 0.5);
   --amber: #f59e0b;
   --red: #ef4444;
-  --border-dark: rgba(56, 189, 248, 0.12);
-  --border-glow: rgba(56, 189, 248, 0.3);
+  --bg-card: rgba(15, 23, 42, 0.95);
+  --bg-card-solid: #0f172a;
+  --border-dark: rgba(2, 132, 199, 0.2);
+  --border-glow: rgba(2, 132, 199, 0.4);
   background: transparent;
 }
 
+.incubator-page-theme .header {
+  background: rgba(2, 6, 23, 0.85) !important;
+}
+.incubator-page-theme .grid-bg {
+  background-image:
+    linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px) !important;
+}
+.incubator-page-theme .glow-bg {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(2, 132, 199, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%) !important;
+}
+
 .incubator-page-theme .tab.active {
-  background: rgba(56, 189, 248, 0.15) !important;
+  background: rgba(2, 132, 199, 0.15) !important;
   border-color: var(--cyan) !important;
-  color: var(--cyan) !important;
+  color: var(--cyan-bright) !important;
 }
 
 .incubator-page-theme .stat-card-block {
@@ -702,7 +748,7 @@ watch(account, () => loadProfile());
 }
 .custom-modal {
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
   background: rgba(15, 18, 25, 0.97);
   border: 1px solid var(--cyan, #38bdf8);
   border-radius: 16px;
