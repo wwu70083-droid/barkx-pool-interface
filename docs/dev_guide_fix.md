@@ -89,3 +89,10 @@
 - **原因**：Arbitrum 上 Solidity `block.number` 返回 **L1 块高**（~12s/块），不是 L2 块高（~0.25s/块）。36×L1块 ≈ 36×12s ≈ 7 分钟。
 - **修复**：冷却改用 ArbSys 预编译 `IArbSys(0x64).arbBlockNumber()` 取 **L2 块高**。用低级 `staticcall` + 返回长度判断，无此预编译的本地/其它链回退 `block.number`（本地测试照常通过；`try/catch` 不能捕获返回数据解码失败，故用低级 staticcall）。36 L2 块 = ~9s，符合 SPEC。需重新部署合约。
 - **连带**：`CONVERT_DEADLINE_SEC` 600→120s，缩短「失败/取消 convert 后 in-flight 守卫锁定重试」的窗口。锁定时长必须 = 签名链上有效期（≥有效期才能防双花），故只能靠缩短有效期来缩短锁定，120s 对正常钱包确认足够。
+
+## F-16 取消 convert 后的 in-flight 等待与 discard
+
+- **现象**：用户在钱包取消 convert 后刷新重进，Confirm 按钮仍为 Pending，且不知等多久。
+- **discard 机制**：被取消的签名永不会被监听消费（无链上事件），只能等其 `deadline` 过期后 in-flight 守卫才释放。**不能提前释放**——该签名在 deadline 前仍是链上有效的 EIP-712 签名，提前再签发第二份会让用户同时持两份有效签名 → 双花。故锁定时长必须 = 签名链上有效期。
+- **改进**：`CONVERT_DEADLINE_SEC` 120→60s（在不破坏防护前提下把最坏等待减半；再短会让确认慢的正常用户的合法 convert 过期）。后端 profile 增 `normalPendingUntil/leaderPendingUntil`，前端 Confirm 按钮显示 `Pending for Relay (Xs)` 实时倒计时，到点自动重新轮询解锁。
+- **彻底消除等待的方案（未做，需再次重部署）**：合约改用每用户**顺序 nonce**（convert 校验并自增 `userNonce`），则取消后用同一 nonce 重新签发也安全（两份共享 nonce，链上只能成功一份）。当前未做以避免再次重部署。
