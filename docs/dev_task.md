@@ -1,11 +1,8 @@
 # Dev Task
 
-刚测试了一次 normal incubate，功能正常，但在前端有一个值得优化的流程。
-
-目前：当转换在链上确认后，配额已被消费，但我推测，因为后端监听需要等 12 个块，在此之前，画面会停留在原位，不会立即展示 Normal Incubation Completed 状态。
-
-改进：上链确认，toast 报成功，立即同时让画面自动切 Normal Incubation Completed 状态，这里不要等后端监听。当然，在后端真正切状态前，用户如果自己手动刷新页面，又可能回到原画面，但这个时间差不大，破绽可以接受。（检查此处的事实：后端必须有校验防护，不会允许用户趁这个监听时间差再次发起转换）
-
-同步也改进 leader incubate 流程，与上述需求对齐。
-
-
+我在测试 Normal Incubation。
+用户地址：0x7091473Ea5A2E6eBd60E186a66c10e8D09AA78cf
+先 inject 了一次，然后 advance 1 天，成功 covert 一次。
+然后又 advance 1 天，再 inject 一次，接着 convert 失败了：点击 confirm 无法调用钱包，报 failed。
+看 console 报的是 409。
+检查一下哪里出错。
