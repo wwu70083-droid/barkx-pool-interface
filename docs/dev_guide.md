@@ -100,6 +100,8 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
   - **Normal Quota Table**：仅当日有效。
   - **Leader Quota Table**：累加型；当日 `LeaderQuota` 增加到用户 “未用累积配额”。
 - 每日快照每个用户当前 `userInjection`，维护 30 日滑窗以算 `NodeAvgInjection`。
+
+> **注入量 DB 镜像（数据/分析路径）**：监听 `Injected` 把 `totalInjection` 实时写入 `users.total_injection_wei`（与 `conversion_totals` 对称）。`userInjection = total_injection_wei - (normal+leader)`（`db/injection.ts`）。**批量/数据路径读库不读链**：Partner API 日快照（零读链）、每日 30 日注入快照。**核心业务仍直读链**：用户 `profile.myInjection`（实时显示）、`signConvert` 存量校验。镜像滞后监听确认窗口（~12 块），数据路径可容忍。详见 incubator-frontend-api.md / 后端 `db/injection.ts`。
 - `00:45 UTC`：生成 Incubator Partner API 快照，保留 7 天。
 
 ### 拉取的 OpenDAO 字段
@@ -108,7 +110,7 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
 ### 用户业务流程（与 SPEC 一致）
 - **Normal**：前端判存量≥配额 → 请求签名 → 后端校验（存量≥配额、当日 normal 未用、用户未被暂停）→ 预占 nonce、签 `Convert` → 返回 → 用户调合约 `convert` → 监听 `Converted` 确认后，清零该用户当日 normal 配额、`userTotalNormalConversion += amount`。
 - **Leader**：同上，配额为 “未用累积配额” 全量；确认后清零该用户 leader 累积配额、`userTotalLeaderConversion += amount`。
-- **Inject**：用户调合约 `inject`；监听 `Injected` 更新注入记录（30 日窗）。
+- **Inject**：用户调合约 `inject`；监听 `Injected` 把 `totalInjection` 写入 `users.total_injection_wei`（DB 镜像，见下）。
 
 > 链上事件监听采用 BarkX 规范：Arbitrum 确认延迟 **12 个块**（`LISTENER_CONFIRMATIONS=12`）。
 
