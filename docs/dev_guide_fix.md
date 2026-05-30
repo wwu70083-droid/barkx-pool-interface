@@ -125,4 +125,4 @@
 - **观察：auth 路径缺自动化测试**：新增 `src/__tests__/auth.test.ts`（7 用例）覆盖 challenge 单次消费/过期/错地址/re-issue 作废、admin 登录 happy path + 会话 token、TTL 过长/issuedAt 过旧/坏 challenge/非 owner 拒绝、requireAdmin 缺/未知 token 拒绝。`node --test` 全过（用 `setCachedOwnerForTesting` 绕过链）。
 - **观察：测试网默认值**：`OPENDAO_MOCK`/`DEBUG_ENDPOINTS` 仍按 `prod_modify.md §7` 在上线时关闭，未改默认（既定决策）。
 
-> 已知遗留（与本轮无关）：`src/__tests__/quota.test.ts` 的期望值绑定的是**旧版 mock fixture**（OWNER 0x5bC9… 为 T3、奖励 100/200，及旧 hardhat 地址 T1/T5）。当前 `fixtures/opendao-mock.json` 已整体换成 10 个集群测试地址（不含 OWNER），故该文件 2 个 leader 相关用例因读不到 `leader_balance` 行而失败。`compute.ts` 业务逻辑正确，纯属测试夹具漂移；待按当前 fixture 重写期望值后即可恢复。
+> 已修复（测试维护，与本轮审计独立）：`src/__tests__/quota.test.ts` 原期望值绑定的是**旧版 mock fixture**（OWNER 0x5bC9… 为 T3、奖励 100/200，及旧 hardhat 地址 T1/T5）。当前 `fixtures/opendao-mock.json` 已整体换成 10 个集群测试地址（不含 OWNER），曾导致 2 个 leader 用例读不到 `leader_balance` 行而失败（`compute.ts` 逻辑无误，纯属夹具漂移）。已按当前 fixture 重写：改用 fixture 内地址 A1(T1)/A3(T3)/A5(T5)，通过 `users.total_injection_wei` 驱动注入（`nodeAvg = total/30`）使 normal 数学保持洁净（global weighted 155000），leader 期望值按当前奖励重算（A3=75、A1=1、A5=350 BARKX）。`npm test` 现 9/9 全绿。
