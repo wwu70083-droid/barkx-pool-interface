@@ -108,10 +108,24 @@ export function getIncubatorLeaderboard() {
 }
 
 // ── Convert signature requests ──
-export function requestNormalConvertSignature(address) {
-  return request("/incubator/convert/normal", { method: "POST", body: JSON.stringify({ address }) });
+// Wallet-authenticated (audit #1): the caller must first fetch a one-time
+// challenge and personal_sign its `message`, then submit { address,
+// signature, challengeNonce } so the backend can prove wallet ownership
+// before issuing a convert approval.
+export function getConvertChallenge(address) {
+  return request(`/incubator/convert/challenge/${address}`);
 }
 
-export function requestLeaderConvertSignature(address) {
-  return request("/incubator/convert/leader", { method: "POST", body: JSON.stringify({ address }) });
+export function requestNormalConvertSignature({ address, signature, challengeNonce }) {
+  return request("/incubator/convert/normal", {
+    method: "POST",
+    body: JSON.stringify({ address, signature, challengeNonce }),
+  });
+}
+
+export function requestLeaderConvertSignature({ address, signature, challengeNonce }) {
+  return request("/incubator/convert/leader", {
+    method: "POST",
+    body: JSON.stringify({ address, signature, challengeNonce }),
+  });
 }

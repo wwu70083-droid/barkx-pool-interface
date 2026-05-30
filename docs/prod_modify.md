@@ -20,7 +20,8 @@
 - `DEBUG_ENDPOINTS=0` —— **关闭虚拟时钟/回填等调试接口**。
 - `RPC_URL` 换生产级 Arbitrum One RPC（非 ankr 测试网）；`LISTENER_START_BLOCK`=主网部署块；`LISTENER_CONFIRMATIONS=12` 保持。
 - `ALLOWED_ORIGINS` 换生产前端域名。`CONVERT_DEADLINE_SEC` 视钱包确认体验保留 60s 或微调。
-- DB 全新（不迁移测试数据）。Partner API token 重新注册（Data Fusion 在 01:00 UTC 拉取，见 partner guide）。
+- **`TRUST_PROXY=1`**（或反代子网）—— 后端默认 `trust proxy=0`（不信任 `X-Forwarded-For`，审计 #4）。生产在 nginx 单跳反代后必须设为 `1`，否则 partner IP 白名单要么失效要么按反代 IP 误判；切勿设为 `true`。
+- DB 全新（不迁移测试数据）。Partner API token 重新注册（Data Fusion 在 01:00 UTC 拉取，见 partner guide）。可在管理前端 Partners 页随时 禁用/启用/轮换 token、设置 IP 白名单（审计后补全的生命周期能力）。
 
 ## 4. 前端（用户端，构建模式 + 网关）
 
@@ -44,8 +45,13 @@
 
 ## 7. 安全 / 上线检查
 
-- **代码审计通过**后再部署（合约 + 后端 EIP-712 签名 + in-flight/cooldown 双层防护，见 F-14/F-15/F-16）。
+- **代码审计通过**后再部署（合约 + 后端 EIP-712 签名 + 每用户 seq/cooldown 双层防护，见 F-14/F-15/F-16 与 `audit_report.md`）。
 - approver 独立密钥、owner 多签、`withdraw` 禁提 vBARKX（合约已保证）。
-- 关闭一切调试接口（`DEBUG_ENDPOINTS=0`），移除测试 keystore 密码。
+- **生产环境变量逐项核对（忘配即把测试夹具 / 调试接口带进生产）**：
+  - [ ] `OPENDAO_MOCK=0` —— 否则配额会按本地 mock fixture 计算，而非真实 OpenDAO 数据。后端默认 `true`（仅为测试网便利），生产必须显式置 0。
+  - [ ] `DEBUG_ENDPOINTS=0` —— 否则虚拟时钟 / 回填 / backfill 等调试接口在生产暴露。后端默认 `true`，生产必须显式置 0。
+  - [ ] `TRUST_PROXY=1`（或反代子网）—— partner IP 白名单与日志可信前提（审计 #4）。
+  - [ ] `ADMIN_LOGIN_TTL_SEC` 按需（默认 8h）—— 服务端强制 `expiresAt-issuedAt ≤` 此值，admin 会话 token 寿命由服务端裁定（审计 #2）。
 - 监控：Dashboard 的 Latency to tip、拉取/计算健康（拉取失败用旧数据会在 Dashboard 报告）。
-- 注资充足 BARKX；Partner API 限频/白名单按需配置。
+- 注资充足 BARKX；Partner API 限频/白名单按需配置（管理前端 Partners 页可禁用/轮换 token）。
+- 管理前端 `ethers` 已自托管（审计 #5，不再依赖公共 CDN）；actions 页在错链 / 非 owner 下硬禁用并发交易前复检链（审计 #3）。

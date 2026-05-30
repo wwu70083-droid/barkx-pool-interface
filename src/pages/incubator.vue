@@ -307,6 +307,7 @@ import {
   getIncubatorProfile,
   getIncubatorConfig,
   getIncubatorLeaderboard,
+  getConvertChallenge,
   requestNormalConvertSignature,
   requestLeaderConvertSignature,
 } from "@/composables/useIncubatorBackend";
@@ -559,7 +560,7 @@ async function openConfirm(mechanism) {
       c.readContract({ address: INCUBATOR_CONFIG.incubator, abi: BarkXIncubatorAbi, functionName: "lastConvertHeight", args: [account.value] }),
       c.readContract({ address: INCUBATOR_CONFIG.incubator, abi: BarkXIncubatorAbi, functionName: "currentConvertBlock" }),
     ]);
-    cooldownActive.value = last !== 0n && cur < last + 36n;
+    cooldownActive.value = last !== 0n && cur < last + 8n;
   } catch (e) {
     cooldownActive.value = false;
   }
@@ -597,18 +598,25 @@ async function doConvert() {
   converting.value = true;
   const mechanism = confirmMechanism.value;
   try {
-    const signed = mechanism === "normal"
-      ? await requestNormalConvertSignature(account.value)
-      : await requestLeaderConvertSignature(account.value);
     const walletClient = getWalletClient();
     const [acct] = await walletClient.getAddresses();
+
+    // Wallet authentication (audit #1): prove control of the address by
+    // personal-signing a one-time challenge before requesting the approval.
+    const challenge = await getConvertChallenge(account.value);
+    const signature = await walletClient.signMessage({ account: acct, message: challenge.message });
+    const authBody = { address: account.value, signature, challengeNonce: challenge.challengeNonce };
+    const signed = mechanism === "normal"
+      ? await requestNormalConvertSignature(authBody)
+      : await requestLeaderConvertSignature(authBody);
+
     const convertedDisplay = fmt(signed.amount);
     store.setWalletPendingState({ pending: true, text: t("pages.incubator.buttons.incubate") });
     const hash = await writeContractWithGasBuffer(walletClient, {
       address: INCUBATOR_CONFIG.incubator,
       abi: BarkXIncubatorAbi,
       functionName: "convert",
-      args: [BigInt(signed.amount), BigInt(signed.nonce), BigInt(signed.deadline), signed.signature],
+      args: [BigInt(signed.amount), BigInt(signed.seq), BigInt(signed.nonce), BigInt(signed.deadline), signed.signature],
       account: acct,
       ...(await getGasOverrides()),
     });
@@ -617,18 +625,16 @@ async function doConvert() {
     // Optimistically flip to the Completed state immediately on on-chain
     // confirmation — don't wait the ~12-block listener gap before the backend
     // reflects normalDoneToday/leaderDoneToday. A manual refresh during the gap
-    // may briefly show the active view again; acceptable. The backend refuses a
-    // second signature in this window (CONVERSION_PENDING), so it's safe.
+    // may briefly show the active view again; acceptable. The contract's
+    // per-user seq makes a duplicate submission in this window revert, so it's safe.
     optimisticDone.value = { ...optimisticDone.value, [mechanism]: true };
     await Promise.all([loadProfile(), loadStatic()]);
     showNotice({ outcome: "success", text: t("pages.incubator.confirm.success", { amount: convertedDisplay }) });
   } catch (e) {
-    // Clearer messages for the two known transient states; else generic Failed.
-    const code = e?.responseCode || "";
+    // Clearer message for the cooldown; else generic Failed.
     const blob = `${e?.shortMessage || ""} ${e?.message || ""} ${e?.details || ""}`;
     let text = t("pages.incubator.confirm.failure");
-    if (code === "CONVERSION_PENDING") text = t("pages.incubator.confirm.pending");
-    else if (/ConvertCooldown/i.test(blob)) text = t("pages.incubator.confirm.cooldown");
+    if (/ConvertCooldown/i.test(blob)) text = t("pages.incubator.confirm.cooldown");
     showNotice({ outcome: "failure", text });
   } finally {
     store.clearWalletPendingState();
