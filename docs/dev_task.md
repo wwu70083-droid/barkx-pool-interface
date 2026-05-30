@@ -1,22 +1,59 @@
 # Dev Task
 
-已经测通 normal incubator，现在开始测试 leader incubator，为此，需要构造数据，模拟拉取的 OpenDAO 收益账本。
+两种转换机制均测通，DB Mirror 已改进。现在开始优化 admin 界面。
 
-## 构造 mock fixture
+## Dashboard
 
-已准备好测试地址，需按下表构造模拟数据：
+学习 opendao-admin，在仪表盘增加 Latency to tip 实时监控。
 
-| userAddress | tier | incomeToday | feedbackToday |
-|--------------------------------------------|----|----------|---------|
-| 0x7091473Ea5A2E6eBd60E186a66c10e8D09AA78cf | T1 | 0 BARKX | 0 BARKX |
-| 0xf21CF16479a716bF59Be7Ac1E062c5029092F604 | T1 | 10 BARKX | 0 BARKX |
-| 0x3dB757e02DeEf039BA524b00F006141B66CFe70e | T2 | 0 BARKX | 10 BARKX |
-| 0x8E552A42703079d8F442159148b643cA1645233d | T2 | 20 BARKX | 100 BARKX |
-| 0x52fbdB4E97d1974aD43D1d3F0bf79C45109342Bf | T3 | 30 BARKX | 0 BARKX |
-| 0x3De7878E16e65AAdAEbB44e1013546096Aa70A41 | T3 | 30 BARKX | 100 BARKX |
-| 0xA8A58078982C684C3aa90f554898e7187bd0DD83 | T4 | 40 BARKX | 0 BARKX |
-| 0xEc1F4705dE4F777dA0AFEea7000cF156fb54012E | T4 | 40 BARKX | 100 BARKX |
-| 0xcECe2eD4B956A4fBf19ca2FbDD5378C131511E63 | T5 | 50 BARKX | 0 BARKX |
-| 0x9f96255bC85068c6d310F1463f04A3b11BEcd6D6 | T5 | 50 BARKX | 100 BARKX |
+## Users
 
-你只构造数据并准备好让后端使用，我来触发计算和测试。
+## 故障
+
+用户的精确搜索功能不可用，报 users: HTTP_500，需修复。
+
+根据下方分类过滤原则，搜索时，因为结果是精确的，无视分类过滤，直接按结果进入指定的表，显示精确结果。
+
+### 分类过滤
+
+在搜索框 clear 按钮右侧新增表切换按钮：
+
+* Injected Only：仅显示有过 inject 行为的用户列表
+* Pre-inject Only：仅显示从未有过 inject 行为的用户列表
+
+从不融合显示两个列表的内容，两种视图不同（字段多寡）。
+
+在两种表视图右上角，再分别加上 Show Suspended Only 按钮，激活后只显示被禁用的账户。
+
+#### Injected Only 视图
+
+字段规划：
+
+* Address
+* Tier：快照取得的节点等级，格式为 0 到 5 的纯数字，不要带 T
+* First Injection：首次 inject 的 UTC 时间，显示到日期 YYYY-MM-DD
+* Injection：用户的当前 injection 量，四位小数截断
+* Normal Incubation：以 Normal 机制生涯累积转换 BARKX 数量，四位小数截断
+* Pending Normal Quota：最新个人 normal 配额（不累加）
+* Leader Incubation：以 Leader 机制生涯累积转换 BARKX 数量，四位小数截断
+* Pending Leader Quota：最新个人 leader 配额（会积累）
+* Status：Active / Suspended
+* Suspend Button
+
+排序规则：本表按照 First Injection 字段排序，最早的在上。不要把 suspended 移动到队尾。
+
+分页规则：每页最多 100 行。
+
+#### Pre-inject Only 视图
+
+字段规划：
+
+* Address
+* Tier：快照取得的节点等级，格式为 0 到 5 的纯数字，不要带 T（实际为 1 到 5，因为未注册 OpenDAO 的用户不可能有 leader quota 产生）
+* Pending Leader Quota：最新个人 leader 配额（会积累）
+* Status：Active / Suspended
+* Suspend Button
+
+排序规则：本表按照 Pending Leader Quota 字段排序，最多的在上。不要把 suspended 移动到队尾。
+
+分页规则：每页最多 100 行。
