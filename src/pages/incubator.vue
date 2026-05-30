@@ -87,7 +87,6 @@
           <button class="btn-submit" :disabled="normalBtn.disabled" :style="normalBtn.disabled ? disabledStyle : {}" @click="openConfirm('normal')">
             {{ normalBtn.label }}
           </button>
-          <button class="btn-submit amber" style="margin-top: 12px" @click="openInject">{{ $t("pages.incubator.buttons.inject") }}</button>
         </template>
 
         <div v-else class="done-state-panel">
@@ -99,6 +98,8 @@
           <div class="done-title">{{ $t("pages.incubator.done.normalTitle") }}</div>
           <div class="done-desc">{{ $t("pages.incubator.done.normalDesc") }}<br />{{ $t("pages.incubator.done.comeBack", { time: $t("pages.incubator.updateTime") }) }}</div>
         </div>
+
+        <button class="btn-submit amber" style="margin-top: 12px" @click="openInject">{{ $t("pages.incubator.buttons.inject") }}</button>
       </div>
 
       <!-- ───────────── Leader panel ───────────── -->
@@ -170,7 +171,6 @@
           <button class="btn-submit purple" :disabled="leaderBtn.disabled" :style="leaderBtn.disabled ? disabledStyle : {}" @click="openConfirm('leader')">
             {{ leaderBtn.label }}
           </button>
-          <button class="btn-submit amber" style="margin-top: 12px" @click="openInject">{{ $t("pages.incubator.buttons.inject") }}</button>
         </template>
 
         <div v-else class="done-state-panel">
@@ -182,6 +182,8 @@
           <div class="done-title">{{ $t("pages.incubator.done.leaderTitle") }}</div>
           <div class="done-desc">{{ $t("pages.incubator.done.leaderDesc") }}<br />{{ $t("pages.incubator.done.comeBack", { time: $t("pages.incubator.updateTime") }) }}</div>
         </div>
+
+        <button class="btn-submit amber" style="margin-top: 12px" @click="openInject">{{ $t("pages.incubator.buttons.inject") }}</button>
       </div>
 
       <!-- ───────────── Leaderboard ───────────── -->
@@ -199,8 +201,8 @@
           <div class="lb-list">
             <div v-for="item in leaderboard" :key="item.rank" class="lb-item" :class="`top-${item.rank}`">
               <span class="lb-rank">{{ item.rank }}</span>
-              <span class="lb-address">{{ shorten(item.address) }}</span>
-              <span class="lb-value">{{ $t("pages.incubator.leaderboard.value", { amount: fmt(item.totalConvertedWei) }) }}</span>
+              <span class="lb-address">{{ lbShort(item.address) }}</span>
+              <span class="lb-value">{{ $t("pages.incubator.leaderboard.value", { amount: fmtInt(item.totalConvertedWei) }) }}</span>
             </div>
             <div v-if="!leaderboard.length" class="lb-item"><span class="lb-address" style="color: var(--text-muted)">—</span></div>
           </div>
@@ -219,8 +221,8 @@
         <button class="custom-modal-close" type="button" @click="confirmModal = false">✕</button>
         <div class="custom-modal-title">{{ $t("pages.incubator.confirm.title") }}</div>
         <div class="custom-modal-text" v-html="confirmMessage"></div>
-        <button class="btn-submit" :disabled="converting" style="margin-top: 20px" @click="doConvert">
-          {{ $t("pages.incubator.confirm.confirm") }}
+        <button class="btn-submit" :disabled="converting || confirmButton.disabled" :style="confirmButton.disabled ? disabledStyle : {}" style="margin-top: 20px" @click="doConvert">
+          {{ confirmButton.label }}
         </button>
       </div>
     </div>
@@ -233,6 +235,10 @@
         <button class="custom-modal-close" type="button" @click="closeInject">✕</button>
         <div class="custom-modal-title">{{ $t("pages.incubator.inject.title") }}</div>
         <div class="info-box" style="margin-top: 8px" v-html="$t('pages.incubator.inject.info')"></div>
+        <div class="data-row" style="border-bottom: none; padding: 8px 0">
+          <span class="data-lbl">{{ $t("pages.incubator.stats.myInjection") }}</span>
+          <span class="data-val" style="color: var(--cyan-bright)">{{ myInjection }}</span>
+        </div>
         <div class="input-group">
           <div class="input-header">
             <span>{{ $t("pages.incubator.inject.amount") }}</span>
@@ -341,6 +347,13 @@ function fmt(wei) {
   // Truncate to 2 decimals (spec: display values truncated to target precision).
   return formatTokenAmount(wei ?? "0", 18, 2);
 }
+// Leaderboard: integer-truncated BARKX (prototype "452,100"), address as 0x00...00.
+function fmtInt(wei) {
+  return formatTokenAmount(wei ?? "0", 18, 0);
+}
+function lbShort(a) {
+  return a ? `${a.slice(0, 4)}...${a.slice(-2)}` : "—";
+}
 function shorten(a) {
   return shortenAddress(a, 4);
 }
@@ -383,7 +396,17 @@ const leaderBtn = computed(() => btnState(profile.value?.totalUnusedLeaderQuotaW
 const confirmAmount = computed(() => fmt(confirmMechanism.value === "normal" ? profile.value?.normalQuotaWei : profile.value?.totalUnusedLeaderQuotaWei));
 const confirmMessage = computed(() => {
   const key = confirmMechanism.value === "normal" ? "pages.incubator.confirm.messageNormal" : "pages.incubator.confirm.messageLeader";
-  return t(key, { amount: confirmAmount.value });
+  return t(key, { amount: confirmAmount.value });});
+
+// Confirm button state: in-flight (backend) takes priority over on-chain cooldown.
+const cooldownActive = ref(false);
+const confirmPending = computed(() =>
+  confirmMechanism.value === "normal" ? Boolean(profile.value?.normalPending) : Boolean(profile.value?.leaderPending),
+);
+const confirmButton = computed(() => {
+  if (confirmPending.value) return { disabled: true, label: t("pages.incubator.confirm.inProgress") };
+  if (cooldownActive.value) return { disabled: true, label: t("pages.incubator.confirm.inCooldown") };
+  return { disabled: false, label: t("pages.incubator.confirm.confirm") };
 });
 
 // Inject action button (approval handled separately by ApprovalActionGroup).
@@ -492,11 +515,26 @@ async function loadStatic() {
 function openModal(which) { infoModal.value = which; }
 function openInject() { injectInput.value = ""; injectModal.value = true; }
 function closeInject() { injectModal.value = false; }
-function openConfirm(mechanism) {
+async function openConfirm(mechanism) {
   const btn = mechanism === "normal" ? normalBtn.value : leaderBtn.value;
   if (btn.disabled) return;
   confirmMechanism.value = mechanism;
+  cooldownActive.value = false;
   confirmModal.value = true;
+  // Refresh in-flight (backend) state and read the on-chain cooldown so the
+  // Confirm button can show "Conversion in Progress" / "Conversion in Cooldown"
+  // up front instead of failing on click.
+  loadProfile();
+  try {
+    const c = getPublicClient();
+    const [last, cur] = await Promise.all([
+      c.readContract({ address: INCUBATOR_CONFIG.incubator, abi: BarkXIncubatorAbi, functionName: "lastConvertHeight", args: [account.value] }),
+      c.readContract({ address: INCUBATOR_CONFIG.incubator, abi: BarkXIncubatorAbi, functionName: "currentConvertBlock" }),
+    ]);
+    cooldownActive.value = last !== 0n && cur < last + 36n;
+  } catch (e) {
+    cooldownActive.value = false;
+  }
 }
 
 async function doInject() {
