@@ -2,10 +2,10 @@
 
 > 本文件由 `incubator-spec.md` + `incubator-user-guide.md` + `opendao_partner_api_integration_guide.md` + 静态原型 `incubator_sample.html` 综合编纂，作为四个组件（合约 / 后端 / 用户前端 / 管理前端）的开发依据。SPEC 与本指南冲突时以 SPEC 为准，本指南记录已解决的歧义与落地决策。
 
-> **配套文档**：踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
+> **配套文档**：合约细节见 [`incubator-contract.md`](incubator-contract.md)；踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
 >
 > **当前状态（测试网，Arbitrum Sepolia）**：四个组件均已落地、联调通过并部署。
-> - 合约 `BarkXIncubator`：`0x98BB15Ecc05B8e00c1fD6BD7eD574283ac506Ac4`（已注资 BARKX，inject→convert 全链路 smoke 通过）。
+> - 合约 `BarkXIncubator`：`0x7e68A4df996d797ea4230cbAF8789BA42bFD5522`（已注资 BARKX，inject→convert 全链路 smoke 通过；含 36 L2 块冷却防护，详见 [`incubator-contract.md`](incubator-contract.md)）。旧地址 `0x98BB…6Ac4`、`0x3805…CFC4` 已废弃。
 > - 后端 `:8021`，convert approver = 独立密钥 `0x29204C012bB48806f3A2bF45591Aa924dA83F9C6`（keystore 见 dev_guide_fix.md F-11）。
 > - 用户前端融合进 `barkx-pool-interface` 并以 `--mode development` 构建（testnet 配置，见 F-05）。
 > - HTTPS 测试域名经 nginx 反代到位（见 §7 与 F-12）。
@@ -72,51 +72,19 @@ LeaderQuota              = DynamicReward * (DynamicEff%/100) + FeedbackReward * 
 
 ## 3. 智能合约 `barkx-incubator-contract`
 
-Hardhat / Solidity 0.8.26 / OpenZeppelin ^5 / `Ownable` + `Pausable` + `ReentrancyGuard` + `EIP712` + `ECDSA` + `SafeERC20`。chainId 421614。
+> 合约结构、状态、方法、事件、错误、冷却/ArbSys、部署脚本等**详见 [`incubator-contract.md`](incubator-contract.md)**。本节只留摘要。
 
-### 状态与查询
-- `mapping(address=>uint256) userTotalInjection` — 生涯注入（inject 完成时累加）。
-- `mapping(address=>uint256) userTotalConversion` — 生涯转换输出（convert 完成时累加）。
-- `mapping(address=>uint256) lastConvertHeight` — 用户上次 convert 的区块高度（convert 完成时写入，冷却防护用）。
-- `userInjection(addr) view = userTotalInjection[addr] - userTotalConversion[addr]` — 当前有效虚拟存量。
-- `IERC20 immutable barkxToken; IERC20 immutable vbarkxToken;`
-- `uint256 constant CONVERT_COOLDOWN_BLOCKS = 36` — 两次 convert 之间的最小区块间隔。
+`BarkXIncubator`（Solidity 0.8.26 / OZ ^5，chainId 421614，测试网部署 `0x7e68A4df996d797ea4230cbAF8789BA42bFD5522`）：固定 1 vBARKX = 1 BARKX。
 
-### 普通方法（均 `whenNotPaused nonReentrant`，注意原子封闭）
-- `inject(uint256 amount)`：`vbarkxToken.burnFrom(msg.sender, amount)`（vBARKX 为 OZ ERC20Burnable，经授权拉取并销毁，合约不持有；见 F-08）；`userTotalInjection[msg.sender] += amount`；`emit Injected(user, amount, newTotalInjection)`。
-- `convert(uint256 amount, uint256 nonce, uint256 deadline, bytes approverSig)`：
-  1. **冷却防护**：`require(block.number >= lastConvertHeight[msg.sender] + CONVERT_COOLDOWN_BLOCKS)` 否则 `revert ConvertCooldown()`；
-  2. `require(block.timestamp <= deadline)`；
-  3. 防重放：`require(!usedSig[keccak256(sig)])` 后置位；
-  4. EIP-712 校验：`Convert(address user,uint256 amount,uint256 nonce,uint256 deadline)`，digest = `_hashTypedDataV4`，`ECDSA.recover == approver`，`user == msg.sender`；
-  5. `require(userInjection(msg.sender) >= amount)`；
-  6. `userTotalConversion[msg.sender] += amount`；`lastConvertHeight[msg.sender] = block.number`；`barkxToken.safeTransfer(msg.sender, amount)`；`emit Converted(user, amount, nonce)`。
+- `inject(amount)`：`vbarkxToken.burnFrom` 销毁 vBARKX、记 `userTotalInjection`（合约不持有 vBARKX，见 F-08）。
+- `convert(amount, nonce, deadline, sig)`：校验 approver 的 EIP-712 `Convert` 签名（域 `BarkX-Incubator` v1）、防重放、**冷却**、`userInjection >= amount`，输出 BARKX 并记 `userTotalConversion`。合约**不分** normal/leader，机制由后端按签名 `nonce` 归因。
+- `userInjection = userTotalInjection - userTotalConversion`（当前可转虚拟存量）。
+- 管理（onlyOwner）：`setApprover` / `pause` / `withdraw`（**禁提 vBARKX**）/ `transferOwnership`。
+- 代币（测试网）：BARKX `0x457f…3339B0f`、vBARKX `0xb29D…Aa83F`（ERC20Burnable）。owner `0x5bC9…0C2a`；approver 用独立密钥（F-11）。
 
-> 合约不区分 normal/leader；机制归属由后端依据签名 `nonce` 记录并在监听 `Converted` 时回填。
-
-### 双层防止「监听确认间隙」内重复转换
-SPEC 防护要求，两道防线：
-1. **合约层冷却（第二道）**：每用户 `lastConvertHeight`，两次 convert 间至少间隔 `CONVERT_COOLDOWN_BLOCKS = 36` 个块（Arbitrum 0.25s/块 ≈ 9 秒）。即便后端因 bug/被攻破而误签，合约也强制每用户 convert 之间留出 36 块间隔。36 块（~9s）> 后端监听确认的 12 块（~3s），冷却窗口安全覆盖监听间隙并留余量。
-   - **副作用（可接受）**：合约不区分机制，用户在一种机制 convert 后，需等满 36 块（~9s）才能在另一机制发起合法 convert。
-   - 错误：`ConvertCooldown`；视图 `lastConvertHeight(addr)`。
-2. **后端层 in-flight 守卫（第一道）**：后端在监听等待 12 块期间，拒绝为同一 (用户, 机制, 当日) 再签发未过期未消费的签名（`409 CONVERSION_PENDING`），见 §4 与 F-14。
-
-### EIP-712 域
-`EIP712("BarkX-Incubator", "1")`，verifyingContract = 本合约地址。
-
-### 管理方法
-- `setApprover(address)` onlyOwner（信任的后端签名方）。
-- `pause()/unpause()` onlyOwner（全局暂停 inject/convert）。
-- `withdraw(address token, uint256 amount, address to)` onlyOwner —— **禁止提取 vBARKX**（合约本不持有 vBARKX；并显式拒绝 token==vbarkxToken）。
-- `transferOwnership` 等通用方法。
-
-### 部署
-- 构造：`(barkxToken, vbarkxToken, initialOwner, initialApprover)`。
-- 网络配置同 opendao-contract（`ARB_SEPOLIA_RPC` 默认官方 RPC，本项目用 SPEC 指定 ankr RPC；`DEPLOYER_PRIVATE_KEY` 来自 `.env`）。
-- approver 公钥来自独立 keystore（参考 `gen-reward-approver-key.js`）。owner = `0x5bC95902F404310020F6673049a89F00d5de0C2a`。
-- 部署后 owner 向合约预存足量 BARKX 作为转换输出来源；写 `deployed.arbitrumSepolia.json`。
-- 测试网代币地址：BARKX `0x457fA4A1fCd0600c1Cf8485dD198f580f3339B0f`，vBARKX `0xb29D3368e40DA289694Db5debd37B3dfdb0Aa83F`。
-  - 注意：生产版前端 `.env` 中的 `VITE_BARKX_VBARKX_ADDRESS` 是另一套（生产版自有测试代币）；孵化池按 SPEC 给定的两个地址为准，前端为孵化池单独配置环境变量。
+### 双层防止「监听确认间隙」内重复转换（要点）
+1. **合约层冷却（第二道兜底）**：每用户 `lastConvertHeight`，两次 convert 至少间隔 `CONVERT_COOLDOWN_BLOCKS=36` 个 **L2** 块（~9s）> 监听 12 块（~3s）。冷却高度取 **ArbSys L2 块高**（不是 `block.number`＝L1，详见 F-15）；机制无关 → 跨机制也需等 ~9s（可接受）。错误 `ConvertCooldown`，视图 `currentConvertBlock()` / `lastConvertHeight`。
+2. **后端层 in-flight 守卫（第一道）**：见 §4「转换签名、in-flight 守卫与 discard」。
 
 ---
 
@@ -145,6 +113,15 @@ Express + TypeScript + better-sqlite3 (WAL) + ethers v6，端口 **8021**（区�
 > 链上事件监听采用 BarkX 规范：Arbitrum 确认延迟 **12 个块**（`LISTENER_CONFIRMATIONS=12`）。
 
 > 校验铁律：请求转换时虚拟存量必须 ≥ 可用配额；每次转换必清空该机制配额。除非管理员补跑触发重置，否则同一日同一机制不可重复转换。
+
+### 转换签名、in-flight 守卫与 discard
+- **签名**：`signConvert` 校验（存量≥配额、当日该机制未用、未被暂停、≥1 BARKX）→ 预占 nonce、签 EIP-712 `Convert`（有效期 `CONVERT_DEADLINE_SEC=60s`）→ 返回 `{amount,nonce,deadline,signature}`。
+- **in-flight 守卫（第一道防护）**：签名前若已存在同 (用户, 机制, 当日) 的「未消费且未过期」签名，拒签 `409 CONVERSION_PENDING`。防止监听确认间隙（~12 块/3s）内重复签发导致配额双花。
+- **discard / 过期规则**：
+  - 成功上链 → 监听 `Converted` 消费该签名（置 `consumed_at`）→ 守卫立即释放。
+  - 失败/取消（钱包拒绝、gas 失败、链上 revert）→ 签名**永不被消费**，只能等其 `deadline` 过期（60s）后守卫才释放。
+  - **不能提前 discard**：被取消的签名在 `deadline` 前仍是链上有效的 EIP-712 签名，提前再签发第二份会让用户同时持两份有效签名 → 双花。故锁定时长**必须 = 签名链上有效期**；缩短等待只能靠缩短 `CONVERT_DEADLINE_SEC`（已 600→120→60s，再短会让确认慢的合法 convert 过期）。详见 F-16。
+- **前端**：profile 返回 `normalPendingUntil/leaderPendingUntil`，Confirm 按钮显示 `Pending for Relay (Xs)` 倒计时，到点自动重新轮询解锁。彻底免等需合约改用每用户顺序 nonce（未做，见 F-16）。
 
 ### 用户接口（风格贴近 BarkX Pool 后端）
 - `GET /incubator/profile/:address` → `userInjection`(链上), `NodeWeightedAvgInjection`, `NodeWeight`, `NodeShare`(当日配额占比), `GlobalQuota`, `NormalQuota`, `DynamicReward`, `DynamicMappingEfficiency`, `FeedbackReward`, `FeedbackMappingEfficiency`, `LeaderQuota`, `totalUnusedLeaderQuota`, `normalDoneToday`, `leaderDoneToday`。
