@@ -101,7 +101,7 @@
 
 ## F-17 安全审计修复（重新部署）
 
-- **背景**：安全团队静态审计（`audit_report.md`）后，对全部 5 findings + 3 观察做修复，并**重新部署合约**至 `0x1884F88B212f7d946600193cb53307992Da32E77`、后端清库重置。
+- **背景**：安全团队静态审计（`audit_report.md`）后，对全部 5 findings + 3 观察做修复，并**重新部署合约**至 `0x1884F88B212f7d946600193cb53307992Da32E77`、后端清库重置。（该地址其后又经一次全新测试网重置取代，当前部署为 `0x97201Bd95f93C9a8133d7e22932d2EE12D6ec414`。）
 - **#1 convert（叠加修复）**：
   1. 链下钱包鉴权——`GET /incubator/convert/challenge/:address` 发一次性 nonce，钱包 `personal_sign`，POST 带 `{address,signature,challengeNonce}`，`verifyMessage` 还原地址必须 == 目标地址。封堵「替他人请求签名卡死受害者」。
   2. 合约每用户 `seq` 顺序 nonce（F-16 根治）——新 typehash `Convert(user,amount,seq,nonce,deadline)`，`seq==convertSeq[user]` 校验后自增。**in-flight 守卫移除**，无 `CONVERSION_PENDING`。`nonce` 仍为后端审计行号 + 机制归因。

@@ -7,7 +7,7 @@
 `BarkXIncubator.sol` —— 固定 **1 vBARKX = 1 BARKX** 的转换网关。用户 `inject`（销毁 vBARKX、记虚拟存量）建立存量，再凭后端 approver 的 EIP-712 签名 `convert` 部分存量为 BARKX。合约**不区分** Normal/Leader（机制归属由后端按签名 `nonce` 记录），链上只记生涯注入/转换总量与冷却高度。
 
 - 链：Arbitrum One（测试 Arbitrum Sepolia，chainId `421614`）。
-- 当前测试网部署：`0x1884F88B212f7d946600193cb53307992Da32E77`（审计修复后重新部署；旧 `0x7e68A4df…D5522` 已废弃）。
+- 当前测试网部署：`0x97201Bd95f93C9a8133d7e22932d2EE12D6ec414`（一次全新测试网重置后部署；旧 `0x1884F88B…32E77`（审计修复后部署）、`0x7e68A4df…D5522` 等已废弃）。
 - 代币：BARKX `0x457fA4A1fCd0600c1Cf8485dD198f580f3339B0f`；vBARKX `0xb29D3368e40DA289694Db5debd37B3dfdb0Aa83F`（OZ `ERC20Burnable`）。
 - 栈：Solidity `0.8.26`，OZ `^5`：`Ownable` + `Pausable` + `ReentrancyGuard` + `EIP712` + `ECDSA` + `SafeERC20` + `Address`。
 

@@ -5,7 +5,7 @@
 > **配套文档**：部署见 [`deploy_guide.md`](deploy_guide.md)；转生产见 [`prod_modify.md`](prod_modify.md)；合约细节见 [`incubator-contract.md`](incubator-contract.md)；前端↔后端接口见 [`incubator-frontend-api.md`](incubator-frontend-api.md)；踩坑/经验见 [`dev_guide_fix.md`](dev_guide_fix.md)（本指南仅留摘要指向，不展开）；对外 Partner API 规范见 [`incubator_partner_api_integration_guide.md`](incubator_partner_api_integration_guide.md)。
 >
 > **当前状态（测试网，Arbitrum Sepolia）**：四个组件均已落地、联调通过并部署；已完成一轮安全审计修复（见 [`audit_report.md`](audit_report.md)）并**重新部署合约**。
-> - 合约 `BarkXIncubator`：`0x1884F88B212f7d946600193cb53307992Da32E77`（已注资 BARKX；含**每用户 `seq` 顺序 nonce** + 8 L2 块冷却防护，详见 [`incubator-contract.md`](incubator-contract.md)）。旧地址 `0x7e68A4df…D5522`、`0x98BB…6Ac4`、`0x3805…CFC4` 已废弃。
+> - 合约 `BarkXIncubator`：`0x97201Bd95f93C9a8133d7e22932d2EE12D6ec414`（已注资 BARKX；含**每用户 `seq` 顺序 nonce** + 8 L2 块冷却防护，详见 [`incubator-contract.md`](incubator-contract.md)）。旧地址 `0x1884F88B…32E77`（审计修复后部署，已被一次全新测试网重置取代）、`0x7e68A4df…D5522`、`0x98BB…6Ac4`、`0x3805…CFC4` 已废弃。
 > - 后端 `:8021`，convert approver = 独立密钥 `0x29204C012bB48806f3A2bF45591Aa924dA83F9C6`（keystore 见 dev_guide_fix.md F-11）。
 > - 用户前端融合进 `barkx-pool-interface` 并以 `--mode development` 构建（testnet 配置，见 F-05）。
 > - HTTPS 测试域名经 nginx 反代到位（见 §7 与 F-12）。
@@ -74,7 +74,7 @@ LeaderQuota              = DynamicReward * (DynamicEff%/100) + FeedbackReward * 
 
 > 合约结构、状态、方法、事件、错误、冷却/ArbSys、部署脚本等**详见 [`incubator-contract.md`](incubator-contract.md)**。本节只留摘要。
 
-`BarkXIncubator`（Solidity 0.8.26 / OZ ^5，chainId 421614，测试网部署 `0x1884F88B212f7d946600193cb53307992Da32E77`）：固定 1 vBARKX = 1 BARKX。
+`BarkXIncubator`（Solidity 0.8.26 / OZ ^5，chainId 421614，测试网部署 `0x97201Bd95f93C9a8133d7e22932d2EE12D6ec414`）：固定 1 vBARKX = 1 BARKX。
 
 - `inject(amount)`：`vbarkxToken.burnFrom` 销毁 vBARKX、记 `userTotalInjection`（合约不持有 vBARKX，见 F-08）。
 - `convert(amount, seq, nonce, deadline, sig)`：校验 approver 的 EIP-712 `Convert` 签名（域 `BarkX-Incubator` v1）、防重放、**每用户 `seq` 顺序校验**、冷却、`userInjection >= amount`，输出 BARKX 并记 `userTotalConversion`、`convertSeq[user]++`。合约**不分** normal/leader，机制由后端按签名 `nonce`（审计日志行号）归因。
