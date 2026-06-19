@@ -1,0 +1,119 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - "V*"
+
+concurrency:
+  group: barkx-production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+
+    env:
+      DIST_DIR_NAME: 1BivafueC9TCMc3uFpCQaP2LkbCQy3ASkV
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure Rollup native binary is installed
+        shell: bash
+        run: |
+          if node -e "require('@rollup/rollup-linux-x64-gnu')" >/dev/null 2>&1; then
+            echo "Rollup native binary already present"
+            exit 0
+          fi
+
+          ROLLUP_VERSION="$(node -p "require('./node_modules/rollup/package.json').version")"
+          echo "Installing missing Rollup native binary @rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
+          npm install --no-save "@rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
+
+      - name: Resolve build mode
+        shell: bash
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          BUILD_SCRIPT="build"
+
+          if [[ "$TAG_NAME" == *-pre ]]; then
+            BUILD_SCRIPT="build:pre"
+          elif [[ "$TAG_NAME" == *-test ]]; then
+            BUILD_SCRIPT="build:test"
+          else
+            # Pure V* tag without suffix — production build with different dist name
+            BUILD_SCRIPT="build"
+            DIST_DIR_NAME="1N1Z2U2EWtbL616ux8quHq5LDx2H6F2qP6"
+          fi
+
+          ARCHIVE_NAME="${DIST_DIR_NAME}.zip"
+
+          echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT" >> "$GITHUB_ENV"
+          echo "DIST_DIR_NAME=$DIST_DIR_NAME" >> "$GITHUB_ENV"
+          echo "ARCHIVE_NAME=$ARCHIVE_NAME" >> "$GITHUB_ENV"
+
+          echo "Resolved tag: $TAG_NAME"
+          echo "Resolved build script: $BUILD_SCRIPT"
+          echo "Resolved local dist dir: $DIST_DIR_NAME"
+          echo "Resolved archive name: $ARCHIVE_NAME"
+
+      - name: Build project
+        run: npm run "$BUILD_SCRIPT"
+
+      - name: Rename dist directory
+        shell: bash
+        run: |
+          if [[ ! -d "dist" ]]; then
+            echo "dist directory not found after build"
+            exit 1
+          fi
+
+          if [[ "$DIST_DIR_NAME" == "dist" ]]; then
+            echo "DIST_DIR_NAME is dist, skip rename"
+            exit 0
+          fi
+
+          if [[ -e "$DIST_DIR_NAME" ]]; then
+            echo "Target directory $DIST_DIR_NAME already exists"
+            exit 1
+          fi
+
+          mv dist "$DIST_DIR_NAME"
+          echo "Renamed dist -> $DIST_DIR_NAME"
+
+      - name: Create release archive
+        shell: bash
+        run: |
+          if [[ ! -d "$DIST_DIR_NAME" ]]; then
+            echo "Target dist directory $DIST_DIR_NAME not found"
+            exit 1
+          fi
+
+          rm -f "$ARCHIVE_NAME"
+          zip -r "$ARCHIVE_NAME" "$DIST_DIR_NAME"
+          echo "Created archive $ARCHIVE_NAME"
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
+          generate_release_notes: true
+          files: ${{ env.ARCHIVE_NAME }}
+          overwrite_files: true

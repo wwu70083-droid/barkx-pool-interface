@@ -1,0 +1,1042 @@
+{
+  "app": {
+    "name": "BarkX Mining",
+    "brand": "BarkX"
+  },
+  "common": {
+    "modals": {
+      "close": "Закрыть",
+      "nodeStatus": {
+        "title": "Статус узла",
+        "active": "Активный узел",
+        "inactive": "Неактивный узел",
+        "currentStatus": "Текущий статус:",
+        "howToMaintain": "Как сохранить Активный статус?",
+        "descriptionHtml": "Узел считается <strong style=\"color: var(--green);\">Активный</strong> если он поддерживает <strong>360-дневная позиция</strong> вBarkX Pool. Это означает, что необходимо держать по крайней мере <strong>1VN</strong> и любое количество <strong>LPтокены</strong> настроен на 360-дневный цикл блокировки. Разблокированные активы в этом цикле по-прежнему засчитываются в активный статус."
+      },
+      "compoundEligibility": {
+        "title": "Комплексное право на участие",
+        "lifetimeRatio": "Пожизненный коэффициент начисления процентов:",
+        "metricHint": "Этот показатель представляет собой процент от общего количества заявленных вами вознагражденийBARKXотBarkX Pool, которые были реинвестированы в токеныLP.",
+        "rulesTitle": "Правила составных медалей:",
+        "rulesHtml": "BarkAIоценивает это соотношение для каждого пользователя каждые 7 дней. Если ваше соотношение <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> на следующем снимке вы получите Комплексную медаль, открывающую множитель доходности, действительный в течение последующих 7 дней."
+      }
+    },
+    "balance": "Баланс:{amount}",
+    "unlocked": "Разблокировано:{amount}",
+    "max": "МАКС",
+    "lockPeriods": {
+      "hours24": "24 часа",
+      "days90": "90 дней",
+      "days360": "360 дней"
+    },
+    "duration": {
+      "hours24": "24 часа",
+      "day": "{count} день",
+      "days": "{count} дней",
+      "hour": "{count} час",
+      "hours": "{count} часов",
+      "minute": "{count} минута",
+      "minutes": "{count} минут",
+      "lessThanMinute": "< 1 минута"
+    }
+  },
+  "routes": {
+    "titles": {
+      "dashboard": "Панель",
+      "swap": "Обмен",
+      "liquidity": "Ликвидность",
+      "pool": "BarkX Pool",
+      "ePool": "BarkX Elite Pool",
+      "vPool": "BarkX VIP Pool",
+      "incubator": "Инкубатор",
+      "nodeBoost": "Node Boost",
+      "barkdao": "BarkDAO",
+      "settings": "Настройки",
+      "noticeTest": "Тест уведомления BarkX Pool"
+    }
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "swap": "Обмен",
+    "liquidity": "Ликвидность",
+    "pool": "BarkX Pool",
+    "featuredPools": "Избранные пулы",
+    "ePool": "BarkX Elite Pool",
+    "vPool": "BarkX VIP Pool",
+    "incubator": "Инкубатор",
+    "nodeBoost": "Node Boost",
+    "vn": "Vector Nexus",
+    "barkdao": "BarkDAO",
+    "partnership": "Партнерство",
+    "openDao": "OpenDAO",
+    "settings": "Настройки"
+  },
+  "wallet": {
+    "install": "Установить кошелек",
+    "connect": "Подключить кошелек",
+    "connecting": "Подключение...",
+    "reconnect": "Переподключить кошелек",
+    "switch": "Переключить {chain}",
+    "switchTo": "Переключиться на {chain}",
+    "target": "Цель: {chain}",
+    "unknownNetwork": "Неизвестная сеть",
+    "networkSwitchHint": "{network} · переключиться на {chain}",
+    "notConnected": "Кошелек не подключен",
+    "noInjected": "Injected-кошелек не найден",
+    "disconnectHint": "Отключите доступ в расширении кошелька, если хотите его отозвать.",
+    "pending": "Ожидание...",
+    "errors": {
+      "noInjected": "Кошелек не найден. Установите MetaMask или совместимый кошелек.",
+      "noAccount": "Кошелек не вернул аккаунт.",
+      "rejected": "Вы отменили запрос кошелька.",
+      "addChain": "Добавьте {chain} в кошелек и попробуйте снова.",
+      "untrustedHost": "Текущая среда не является доверенной. Откройте приложение из одобренного источника.",
+      "switchNetwork": "Переключитесь на {chain}.",
+      "generic": "Не удалось подключить кошелек. Попробуйте еще раз."
+    }
+  },
+  "components": {
+    "swapOptions": {
+      "slippage": {
+        "low": "0.1%",
+        "medium": "0.5%",
+        "high": "1.0%"
+      },
+      "slippageTolerance": "Допуск проскальзывания",
+      "transactionDeadline": "Срок транзакции",
+      "minutes": "минуты",
+      "expertMode": "Экспертный режим",
+      "expertModeHint": "Разрешить сделки с высоким проскальзыванием",
+      "custom": "Пользовательский"
+    },
+    "approvalActionGroup": {
+      "connectWallet": "Подключить кошелек",
+      "approve": "Утвердить{token}",
+      "approving": "Утверждение{token}...",
+      "checking": "Проверка..."
+    },
+    "pendingNotice": {
+      "default": "В ожидании..."
+    },
+    "collapsibleCard": {
+      "poolStatus": "Статус пула",
+      "options": "Опции",
+      "swapOptions": "Варианты обмена"
+    },
+    "poolStatus": {
+      "totalLiquidity": "Общая ликвидность",
+      "lpMinted": "LPОтчеканено",
+      "barkxReserve": "BARKXРезерв",
+      "usdtReserve": "USDTРезерв"
+    }
+  },
+  "pages": {
+    "ePool": {
+      "depositVbarkx": {
+        "infoAfter": ".",
+        "infoBefore": "Внесите свойvBARKXвUSDTдля автоматического выпускаLP. ВсеvBARKXпревращаются вBARKXв ",
+        "depositVbarkx": "ДепозитvBARKX",
+        "convertToDeposit": "Конвертировать в депозит",
+        "pairingWith": "Сопряжение с",
+        "predictedLp": "Прогнозируемая суммаLP",
+        "action": "ДепозитvBARKX+USDT",
+        "pending": "ВнесениеvBARKX+USDT...",
+        "minimum": "Минимум{amount}vBARKX",
+        "success": "vBARKXуспешно депонирован.",
+        "failure": "Не удалось внести депозитvBARKX.",
+        "paused": "ДепозитvBARKXв настоящее время приостановлен.",
+        "depositVnFirst": "Сначала внеситеVN, чтобы разблокировать емкостьLP.",
+        "priceUnavailable": "ЦенаBARKXсейчас недоступна.",
+        "insufficientUsdt": "Недостаточно балансаUSDT.",
+        "capExceeded": "LPПревышено эффективное ограничение."
+      },
+      "title": "BarkX Elite Pool",
+      "subtitle": "Майнинг ликвидности для элитного клуба",
+      "tabs": {
+        "depositVn": "ДепозитVN",
+        "depositVbarkx": "ДепозитvBARKX",
+        "withdraw": "Вывести",
+        "rewards": "Награды"
+      },
+      "common": {
+        "apr": "APR",
+        "nodeBoostTitle": "Просмотр разбивки повышения мощности узла",
+        "lockPeriod": "Период блокировки",
+        "unlockLater": "Разблокируйте{lockPeriod}позже.",
+        "barkxPrice": "BARKXЦена:{price}USDT"
+      },
+      "depositVn": {
+        "info": "Для расширения эффективного ограниченияLPвBarkX Elite Poolможно принять только новыйVN. Все новыеVN, депонированные здесь, останутся новыми и их по-прежнему можно будет использовать вBarkX Poolдля получения бонусаBARKX.",
+        "depositNewVn": "Депозит НовыйVN",
+        "capIncrease": "LPУвеличение эффективного предела",
+        "action": "ДепозитVN",
+        "pending": "ВнесениеVN...",
+        "success": "VNуспешно депонирован.",
+        "failure": "Не удалось внести депозитVN.",
+        "paused": "ДепозитVNв настоящее время приостановлен."
+      },
+      "withdraw": {
+        "info": "Выберите разблокированные депозитные записи, чтобы вывести свои активы. Ваш эффективный лимитLPи мощность майнинга соответственно уменьшатся.",
+        "selectAllCurrentPage": "Выбрать все на текущей странице",
+        "statusUnlocked": "РАЗБЛОКИРОВАНО",
+        "selectedSummary": "Выбрано для отзыва (агрегировано)",
+        "totalVn": "ВсегоVN",
+        "totalLp": "ВсегоLP",
+        "capDecrease": "LPУменьшение лимита",
+        "withdrawSelected": "Снять выбранное",
+        "withdrawPending": "Вывод выбранных активов...",
+        "withdrawSuccess": "Выбранные активы изъяты.",
+        "withdrawFailure": "Вывести не удалось.",
+        "vnPaused": "ВыводVNв настоящее время приостановлен.",
+        "lpPaused": "ВыводLPв настоящее время приостановлен.",
+        "withdrawLpFirst": "Сначала снимитеLPили выберите меньше сегментовVN."
+      },
+      "rewards": {
+        "info": "Получите свои элитные награды прямо на свой кошелек. Взимается нулевая комиссия!",
+        "autoAccumulated": "Награды автоматически накапливаются каждые 24 часа.",
+        "pendingRewards": "Ожидаемые награды",
+        "directClaim": "Прямая претензия",
+        "feeRate": "Ставка комиссии",
+        "receivingAmount": "Полученная сумма",
+        "claimToWallet": "Подать заявку на кошелек",
+        "lessThanOneAction": "Менее 1BARKX",
+        "claimPending": "Требование вознаграждений...",
+        "claimSuccess": "Заявлен{amount}BARKX.",
+        "claimFailure": "Претензия не удалась."
+      },
+      "depositStatus": {
+        "title": "Личный статус",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPТокен",
+        "lpCap": "LPЭффективное ограничение",
+        "unusedCap": "{amount}LPКрышка не используется",
+        "note": "У вас есть неиспользованная емкостьLP.",
+        "cta": "Внесите большеLP",
+        "tail": "чтобы максимизировать мощность майнинга!",
+        "estimate": "Оценка"
+      },
+      "estimate": {
+        "title": "LPОценка",
+        "emptyMessage": "Текущее доступное эффективное ограничениеLPслишком мало для оценки.",
+        "emptyActionBefore": "Пожалуйста, внесите как минимум",
+        "emptyActionAfter": "чтобы расширить свой эффективный лимитLPперед оценкой требований к ликвидности.",
+        "barkxPrice": "BARKXЦена",
+        "plannedLp": "ПланируетсяLP",
+        "assetsRequired": "Оценка необходимых активов"
+      },
+      "leaderboard": {
+        "title": "Таблица лидеров",
+        "topBurn": "Топ Берн",
+        "topDeposit": "Верхний депозит"
+      },
+      "time": {
+        "fallback": "180 дней",
+        "day": "{count} день",
+        "days": "{count} дней",
+        "hour": "{count} час",
+        "hours": "{count} часов",
+        "minute": "{count} минута",
+        "minutes": "{count} минут",
+        "lessThanMinute": "< 1 минута"
+      },
+      "errors": {
+        "belowMinDeposit": "Ниже минимального депозитаvBARKX.",
+        "insufficientBalance": "Недостаточный баланс.",
+        "invalidBucket": "Неверный выбор сегмента.",
+        "invalidParam": "Неверные параметры транзакции.",
+        "invalidSignature": "Неверная подпись претензии.",
+        "lpCapExceeded": "LPПревышено эффективное ограничение.",
+        "noVnStaked": "Сначала внеситеVN, чтобы разблокировать емкостьLP.",
+        "nothingToWithdraw": "Нечего отозвать.",
+        "paused": "В настоящее время это действие приостановлено.",
+        "signatureExpired": "Срок действия подписи претензии истек.",
+        "slippageExceeded": "Проскальзывание превышено. Пожалуйста, попробуйте еще раз.",
+        "stillLocked": "Выбранные ресурсы по-прежнему заблокированы.",
+        "zeroAmount": "Сумма должна быть больше 0."
+      }
+    },
+    "barkdao": {
+      "incentive": {
+        "zeroFee": "0%",
+        "title": "Стимулирование узла",
+        "qualified": "Квалифицированный",
+        "unqualified": "Неквалифицированный",
+        "pending": "ОЖИДАЕМОЕ СТИМУЛИРОВАНИЕ",
+        "infoStart": "Объедините накопленные вами вознаграждения за узлы в свойBarkX Pool. ",
+        "pendingRewards": "Ожидаемые награды",
+        "infoMiddle": " для предъявления претензий или составления сложных процентов. ",
+        "infoEnd": " взимается комиссия!",
+        "reqTitle": "Требуемая квалификация:",
+        "reqText": "Ваши сетевые вознаграждения безопасно накапливаются, но для их объединения вам необходимо поддерживать активную 360-дневную позицию (удерживая 1VN+LP) вBarkX Pool. Разблокированные активы по-прежнему действительны.",
+        "mergeTitle": "Объединить с наградами",
+        "feeRate": "Ставка комиссии",
+        "receiving": "Полученная сумма",
+        "mergingAmount": "Объединение суммы",
+        "merge": "Объединить с наградами",
+        "merging": "Слияние...",
+        "mergedSuccess": "Объединено успешно",
+        "goToRewards": "Перейти к наградам",
+        "claiming": "Утверждение...",
+        "claim": "Подать заявку на кошелек"
+      },
+      "subtitle": "Сеть лидеров узлов",
+      "actionRequired": "Требуется действие",
+      "tabs": {
+        "invite": "Пригласить",
+        "network": "Сеть",
+        "incentive": "Стимул"
+      },
+      "unregistered": {
+        "title": "Вы еще не присоединились кBarkDAO.",
+        "desc": "Для участия в сети вам необходимо зарегистрировать адрес кошелька вашего Node Leader. Это определяет ваше положение в иерархииBarkDAO.",
+        "warningTitle": "КРИТИЧЕСКОЕ ПРЕДУПРЕЖДЕНИЕ:",
+        "warningText": "Адрес лидера, который вы вводите ниже, НЕ МОЖЕТ БЫТЬ ИЗМЕНЕН после регистрации в смарт-контракте. Пожалуйста, дважды проверьте и убедитесь, что адрес на 100% точен, прежде чем подтвердить.",
+        "leaderLabel": "Адрес кошелька лидера",
+        "feeLabel": "Регистрационный взнос",
+        "feeSub": "Это плата за протокол, исключая стандартную сетьGas.",
+        "register": "Подтвердите и зарегистрируйтесь",
+        "registerPending": "Регистрация...",
+        "registerSuccess": "Регистрация завершена. ЧленствоBarkDAOтеперь активно.",
+        "registerFailure": "Регистрация не удалась. Пожалуйста, попробуйте еще раз.",
+        "contractNotConfigured": "Адрес контрактаBarkDAOне настроен в этой среде.",
+        "registerDisabled": "Регистрация на данный момент приостановлена.",
+        "paymentDisabled": "РегистрацияETHв настоящее время недоступна.",
+        "rootForbidden": "Вы не можете зарегистрироваться непосредственно под корневым адресом.",
+        "parentNotFound": "Адрес лидера не зарегистрирован вBarkDAO.",
+        "parentDisabled": "Этот адрес лидера в настоящее время не принимает новых участников.",
+        "alreadyRegistered": "Этот кошелек уже зарегистрирован вBarkDAO."
+      },
+      "invite": {
+        "badge": "Активный член",
+        "title": "Добро пожаловать в вашу сеть узлов",
+        "desc": "Вы официально зарегистрированы вBarkDAO. Пригласите других присоединиться к вашей сети, поделившись адресом своего кошелька. При регистрации они должны ввести ваш адрес как своего лидера.",
+        "addressLabel": "Адрес вашего кошелька (для приглашений)",
+        "invitedByLabel": "Приглашен",
+        "copy": "Копировать адрес",
+        "copied": "Скопировано!"
+      },
+      "network": {
+        "title": "Визуализация BarkX",
+        "howToExplore": "Как исследовать",
+        "viewLabel": "Просмотр:{label}",
+        "permissions": {
+          "max": "Макс (20↑ / 20↓)",
+          "medium": "Средний (20↑/3↓)",
+          "min": "Мин (1↑ / 1↓)"
+        },
+        "guideTitle": "Руководство по исследованию",
+        "guideDrag": "Перетащите",
+        "guideDragDesc": "холст для панорамирования.",
+        "guideTap": "Нажмите",
+        "guideTapDesc": "узел, чтобы просмотреть его адрес. Нажмите пустое место, чтобы закрыть.",
+        "guideDouble": "Дважды коснитесь",
+        "guideDoubleDesc": "твердые узлы для расширения.",
+        "guideLimit": "Ограничение:",
+        "guideLimitDesc": "Вы можете исследовать максимум{levels}уровней от вашего узла.",
+        "legend": "Легенда",
+        "legendRoot": "Корень",
+        "legendHigher": "Высший лидер",
+        "legendDirect": "Прямой лидер",
+        "legendYou": "ты",
+        "legendSub": "Подсеть",
+        "legendSingle": "Один узел",
+        "legendCluster": "Кластеризованные одиночные узлы"
+      },
+      "signal": {
+        "title": "Расстройство сетевого сигнала",
+        "about": "О сети BarkX и стимулах:",
+        "rule1": "1. Эффективность вашего стимулирования зависит от масштаба вашей нижестоящей сети.",
+        "rule2": "2. Уровень сигнала снижается с увеличением расстояния. Каждый последующий уровень сохраняет 70% предыдущего.",
+        "rule3": "3. Сигнал узла может достигать максимальной глубины в 20 уровней.",
+        "colStrength": "Уровень сигнала",
+        "colDistance": "Расстояние",
+        "colNodes": "Активные узлы",
+        "colContribution": "Вклад",
+        "unauthorized": "Данные несанкционированы",
+        "summary": "Резюме/Всего:"
+      }
+    },
+    "settings": {
+      "title": "Настройки",
+      "subtitle": "Параметры и ссылки",
+      "wallet": {
+        "title": "Кошелек",
+        "copy": "Копировать",
+        "copied": "Скопировано",
+        "switchWallet": "Сменить кошелек",
+        "disconnect": "Отключить"
+      },
+      "contracts": {
+        "title": "Смарт-контракты",
+        "copy": "Копировать адрес контракта"
+      },
+      "display": {
+        "title": "Отображение",
+        "language": "Язык",
+        "selectLanguage": "Выберите язык",
+        "en": "EN",
+        "cn": "CN"
+      },
+      "about": {
+        "title": "О проекте",
+        "version": "Версия",
+        "tutorial": "Руководство",
+        "docs": "Документы",
+        "discord": "Discord"
+      }
+    },
+    "dashboard": {
+      "title": "Панель управления",
+      "subtitle": "BARKXМайнинг ликвидности",
+      "metrics": {
+        "price": "BARKX/USDTЦена",
+        "apy": "APR",
+        "marketCap": "BARKXРыночная капитализация"
+      },
+      "nodeWeight": {
+        "title": "Вес узла",
+        "yesterdayWeight": "Вчерашний вес:",
+        "fetchedFrom": "Это значение безопасно извлекается из",
+        "sourceName": "OpenDAOAPI",
+        "multiplierBefore": "Он действует как множитель, применяемый непосредственно к вашему",
+        "averageBalance": "Средний баланс за 30 дней",
+        "multiplierAfter": ". Более высокий весовой коэффициент значительно увеличивает вашу конкурентоспособную долю в ежедневном снимке, обеспечивая большую долю квоты конверсийBARKX.",
+        "learnBefore": "Чтобы узнать, как увеличить вес узла, посетите",
+        "linkText": "OpenDAO",
+        "learnAfter": "для подробных требований."
+      },
+      "mainPool": {
+        "title": "МойBarkX Pool",
+        "detailsTitle": "МоиBarkX PoolПодробности",
+        "boostedApr": "УсиленныйAPR",
+        "boostedApy": "УсиленныйAPY",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPТокен",
+        "pendingRewards": "Ожидаемые награды",
+        "totalAchieved": "Всего достигнуто"
+      },
+      "elitePool": {
+        "title": "МойBarkX Elite Pool"
+      },
+      "vipPool": {
+        "title": "МойBarkX VIP Pool",
+        "apr": "APR"
+      },
+      "incubator": {
+        "title": "Мой инкубатор",
+        "myDeposit": "Мой депозит",
+        "average30Day": "Среднее значение за 30 дней",
+        "myQuotaToday": "Моя квота сегодня",
+        "totalIncubated": "Всего инкубированных"
+      },
+      "cards": {
+        "newVn": "НовыйVN",
+        "newVnInWallet": "НовыйVNв кошельке",
+        "usedVn": "ИспользуетсяVN",
+        "usedVnInWallet": "ИспользованVNв кошельке",
+        "barkx": "BARKX",
+        "barkxInWallet": "BARKXв кошельке",
+        "lpToken": "LPТокен",
+        "lpTokenInWallet": "LPТокен в кошельке",
+        "pendingRewards": "Ожидаемые награды",
+        "achievedRewards": "Достигнутые награды",
+        "inWallet": "в кошельке"
+      },
+      "depositStatus": {
+        "title": "Статус моего депозита",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPТокен",
+        "lpCap": "LPЭффективное ограничение",
+        "lpCapUnused": "{amount}LPКрышка не используется",
+        "note": "У вас есть неиспользованная емкостьLP.",
+        "cta": "Внесите большеLP",
+        "tail": "чтобы максимизировать мощность майнинга!",
+        "noteOver70": "Вы использовали более 70 % емкостиLP. Не забывайте всегда оставлять место для компаундирования."
+      },
+      "assetsInWallet": {
+        "title": "Активы в кошельке",
+        "overviewTitle": "Полный обзор активов",
+        "newVn": "НовыйVector Nexus",
+        "usedVn": "ИспользуетсяVector Nexus",
+        "usedVn1": "ИспользованVector NexusI",
+        "usedVn2": "Б/уVector NexusII",
+        "barkx": "BARKXТокен",
+        "vbarkx": "vBARKXТокен",
+        "lp": "LPТокен",
+        "vlp": "vLPТокен"
+      },
+      "poolRewards": {
+        "title": "BarkX PoolНаграды",
+        "pendingMining": "Ожидаемые награды за майнинг",
+        "totalAchieved": "Всего достигнуто"
+      },
+      "vipPoolRewards": {
+        "title": "BarkX VIP PoolНаграды",
+        "pendingMining": "Ожидаемые награды за майнинг",
+        "totalAchieved": "Всего достигнуто"
+      }
+    },
+    "incubator": {
+      "title": "Инкубатор",
+      "subtitle": "Шлюз vBARKX-BARKX",
+      "updateTime": "00:45 UTC",
+      "oneToOne": "1 vBARKX = 1 BARKX",
+      "connectPrompt": "Подключите кошелек, чтобы просмотреть данные инкубации.",
+      "tabs": {
+        "normal": "Обычная инкубация",
+        "leader": "Инкубация лидеров"
+      },
+      "normalInfo": "Конвертируйте внесенные vBARKX в BARKX в пределах выделенной вам квоты. Любая неиспользованная за день квота конвертации сгорает и не переносится на следующий день.",
+      "leaderInfo": "Инкубатор лидеров сопоставляет ежедневную квоту конвертации с данными о доходах модели сигналов узлов и модели обратной связи узлов OpenDAO. В любой день динамическое вознаграждение и вознаграждение за обратную связь узла автоматически сопоставляются с его ежедневной квотой конвертации в Инкубаторе лидеров. Если ежедневная квота конвертации не использована, она автоматически накапливается.",
+      "stats": {
+        "myInjection": "Мой внесенный объем",
+        "avgWeighted": "30-дневное средневзвешенное значение",
+        "nodeWeight": "Вес узла OpenDAO",
+        "quotaShare": "Текущая доля квоты",
+        "globalQuota": "Глобальная квота на сегодня",
+        "myQuota": "Моя квота на сегодня",
+        "dynamicReward": "Динамическое вознаграждение",
+        "feedbackReward": "Вознаграждение за обратную связь",
+        "mappingEfficiency": "Эффективность сопоставления OpenDAO",
+        "leaderQuotaGrowth": "Рост квоты лидеров",
+        "totalUnused": "Всего неиспользованной квоты лидеров"
+      },
+      "preview": {
+        "amountToIncubate": "Сумма для инкубации",
+        "injected": "Внесено: {amount} vBARKX",
+        "convertedAmount": "Сконвертированная сумма"
+      },
+      "buttons": {
+        "incubate": "Инкубировать в BARKX",
+        "insufficientInjection": "Недостаточный внесенный объем",
+        "lessThanOne": "Менее 1 BARKX",
+        "inject": "Внести vBARKX",
+        "approve": "Утвердить vBARKX",
+        "insufficientBalance": "Недостаточный баланс",
+        "suspended": "Conversion Paused"
+      },
+      "done": {
+        "normalTitle": "Обычная инкубация завершена",
+        "leaderTitle": "Инкубация лидеров завершена",
+        "normalDesc": "Вы уже выполнили конвертацию в Обычном инкубаторе на сегодня.",
+        "leaderDesc": "Вы уже выполнили конвертацию в Инкубаторе лидеров на сегодня.",
+        "comeBack": "Пожалуйста, вернитесь завтра в {time}."
+      },
+      "inject": {
+        "title": "Внести vBARKX",
+        "info": "Внесите ваши vBARKX, чтобы сформировать 30-дневный средний баланс. Ежедневные снимки, делаемые в <strong>00:45 UTC</strong>, определяют вашу долю квоты конвертации в BARKX на следующий день.",
+        "amount": "Сумма для внесения",
+        "warning": "Внимание: внесение необратимо. Внесенные vBARKX можно только конвертировать, но не вывести.",
+        "success": "Внесение выполнено успешно. Внесено {amount} vBARKX.",
+        "failure": "Не удалось."
+      },
+      "confirm": {
+        "title": "Подтвердите инкубацию",
+        "confirm": "Подтвердить",
+        "success": "Инкубация выполнена успешно. Сконвертировано {amount} BARKX.",
+        "failure": "Не удалось.",
+        "messageNormal": "Вы собираетесь инкубировать вашу обычную квоту в размере <strong>{amount} vBARKX</strong> в BARKX по курсу 1:1.",
+        "messageLeader": "Вы собираетесь инкубировать вашу накопленную квоту лидера в размере <strong>{amount} vBARKX</strong> в BARKX по курсу 1:1.",
+        "pending": "Конвертация уже выполняется. Пожалуйста, подождите немного и повторите попытку.",
+        "cooldown": "Пожалуйста, подождите несколько секунд перед повторной конвертацией.",
+        "inProgress": "Ожидание ретрансляции",
+        "inCooldown": "Конвертация на перезарядке"
+      },
+      "weightModal": {
+        "title": "Вес узла OpenDAO",
+        "desc": "Это значение безопасно получается через <strong>OpenDAO Partner API</strong>.<br><br>Оно действует как множитель, применяемый непосредственно к вашему 30-дневному среднему внесенному объему. Более высокий весовой коэффициент значительно увеличивает вашу конкурентную долю в ежедневном снимке, обеспечивая большую долю квоты конвертации в BARKX.",
+        "colTier": "Уровень узла",
+        "colWeight": "Вес узла"
+      },
+      "dynamicModal": {
+        "title": "Сопоставление динамического вознаграждения",
+        "desc": "Это значение безопасно получается через <strong>OpenDAO Partner API</strong>.<br><br>Оно действует как коэффициент для прямого сопоставления вашего динамического вознаграждения OpenDAO с квотой инкубации лидера.",
+        "colEfficiency": "Эффективность сопоставления"
+      },
+      "feedbackModal": {
+        "title": "Сопоставление вознаграждения за обратную связь",
+        "desc": "Это значение безопасно получается через <strong>OpenDAO Partner API</strong>.<br><br>Оно действует как коэффициент для прямого сопоставления вашего вознаграждения за обратную связь OpenDAO с квотой инкубации лидера.",
+        "colEfficiency": "Эффективность сопоставления"
+      },
+      "leaderboard": {
+        "title": "Таблица лидеров инкубации",
+        "value": "{amount} BARKX"
+      },
+      "errors": {
+        "userSuspended": "Your incubation conversion is paused.",
+        "alreadyConverted": "This incubation conversion has already been completed today.",
+        "insufficientInjection": "Insufficient injection for this conversion.",
+        "quotaBelowMin": "Quota is below 1 BARKX.",
+        "approverLocked": "The backend signing service is locked. Please try again later.",
+        "notConfigured": "The incubator service is not configured yet.",
+        "authRequired": "Wallet authorization expired. Please confirm again.",
+        "badSignature": "Wallet signature verification failed. Please try again.",
+        "badChallenge": "Wallet verification expired. Please confirm again.",
+        "rateLimited": "Too many requests. Please try again later.",
+        "signFailed": "The backend failed to generate a conversion signature. Please try again later."
+      }
+    },
+    "swap": {
+      "title": "Обмен",
+      "subtitle": "Uniswap V2•Arbitrum One",
+      "pay": "Вы платите",
+      "receive": "Вы получаете",
+      "rate": "Оценить",
+      "priceImpact": "Влияние на цену",
+      "minimumReceived": "Минимум получено",
+      "networkFee": "Сетевая плата",
+      "action": "Обмен",
+      "priceImpactTooHigh": "Влияние цены слишком велико",
+      "pending": "Обмен..."
+    },
+    "liquidity": {
+      "title": "Ликвидность",
+      "subtitle": "ОбеспечитьBARKX-USDTликвидность",
+      "tabs": {
+        "add": "Добавить ликвидность",
+        "remove": "Удалить ликвидность"
+      },
+      "add": {
+        "tokenA": "Токен А",
+        "tokenB": "Токен Б",
+        "receive": "Вы получите",
+        "shareOfPool": "Доля пула",
+        "action": "Добавить ликвидность",
+        "pending": "Добавляем ликвидность..."
+      },
+      "remove": {
+        "lpAmount": "LPСумма токена",
+        "receive": "Вы получите",
+        "action": "Удалить ликвидность",
+        "pending": "Удаление ликвидности..."
+      }
+    },
+    "pool": {
+      "title": "BarkX Pool",
+      "subtitle": "BARKX-USDTМайнинг ликвидности",
+      "personalBoostedApy": "Ваш личный бонусAPY",
+      "common": {
+        "nodeBoostTitle": "Просмотр разбивки повышения мощности узла"
+      },
+      "tabs": {
+        "depositVn": "ДепозитVN",
+        "depositMore": "Внесите больше",
+        "withdraw": "Вывести",
+        "rewards": "Награды"
+      },
+      "depositVn": {
+        "info": "Внесите новыйVNвUSDTдля автоматического выпускаLP. Получите бонус{bonus}BARKXзаVN!",
+        "infoBefore": "Внесите новыйVNвUSDTдля автоматического созданияLP. Получить ",
+        "infoAfter": " бонус заVN!",
+        "currentApy": "APR",
+        "lockPeriod": "Период блокировки",
+        "depositNewVn": "Депозит НовыйVN",
+        "bonusToDeposit": "Бонус на депозит",
+        "barkxPrice": "BARKXЦена:{price}USDT",
+        "pairingWith": "Сопряжение с",
+        "predictedLp": "Прогнозируемая суммаLP",
+        "action": "ДепозитVN+LP",
+        "pending": "ВнесениеVN+LP...",
+        "unlockDate": "Дата разблокировки:{date}"
+      },
+      "depositMore": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "wvnInfo": "Внесите использованныйVN, чтобы расширить эффективный лимитLP.",
+        "lpInfo": "Внесите свойLP, чтобы увеличить мощность майнинга.",
+        "depositUsedVn": "Депозит использованVN",
+        "depositLp": "ДепозитLP",
+        "capIncrease": "LPУвеличение эффективного предела",
+        "unlockLater": "Разблокируйте{lockPeriod}позже.",
+        "depositWvnAction": "ДепозитwVN",
+        "depositWvnPending": "ВнесениеwVN...",
+        "depositLpAction": "ДепозитLP",
+        "depositLpPending": "ВнесениеLP..."
+      },
+      "withdraw": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "tabWvnLp": "360 дней",
+        "tabWvnOrLp": "24 часа",
+        "tabLpOnly": "90 дней",
+        "info": "Выберите разблокированные депозитные записи, чтобы вывести свои активы. Ваш эффективный лимитLPи мощность майнинга соответственно уменьшатся.",
+        "miningPower": "Горнодобывающая мощность",
+        "selectAll": "Выбрать все на текущей странице",
+        "noRecords": "Нет разблокированных записей",
+        "unlocked": "РАЗБЛОКИРОВАНО",
+        "locked": "ЗАБЛОКИРОВАНО",
+        "confirming": "ПОДТВЕРЖДАЕМ",
+        "selectedSummary": "Выбрано для отзыва (агрегировано)",
+        "totalWvn": "ВсегоwVN",
+        "totalLp": "ВсегоLP",
+        "capDecrease": "LPУменьшение лимита",
+        "withdrawSelected": "Снять выбранное",
+        "withdrawPending": "Снятие...",
+        "successMessage": "Вывод завершен.",
+        "wvnInfo": "Выведите разблокированныйVNиз пула. Ваш эффективный лимитLPуменьшится.",
+        "lpInfo": "Выведите разблокированныйLPиз пула. Ваша мощность майнинга уменьшится.",
+        "withdrawWvn": "ВывестиwVN",
+        "withdrawLp": "ВывестиLP",
+        "withdrawWvnAction": "ВывестиwVN",
+        "withdrawWvnPending": "СнятиеwVN...",
+        "withdrawLpAction": "ВывестиLP",
+        "withdrawLpPending": "СнятиеLP..."
+      },
+      "rewards": {
+        "info": "Получите вознаграждение на свой кошелек или объедините его в новыйLP, чтобы сэкономить{discount}на комиссиях!",
+        "infoBefore": "Получите вознаграждение на свой кошелек или объедините его в новыйLP, чтобы сэкономить. ",
+        "infoAfter": " на сборах!",
+        "autoAccumulated": "Награды автоматически накапливаются каждые 24 часа.",
+        "pendingRewards": "Ожидаемые награды",
+        "directClaim": "Прямая претензия",
+        "feeRate": "Ставка комиссии",
+        "receivingAmount": "Полученная сумма",
+        "directClaimAction": "Прямая претензия",
+        "lessThanOneAction": "Менее 1BARKX",
+        "directClaimPending": "Утверждение...",
+        "compoundTitle": "Соединение сLP",
+        "lockPeriod": "Период блокировки",
+        "utilizedAmount": "Использованная сумма",
+        "predictedLp": "Прогнозируемая суммаLP",
+        "compoundAction": "Соединение",
+        "compoundPending": "Усугубление...",
+        "lockedUntil": "LPЗаблокировано до:{date}"
+      },
+      "depositStatus": {
+        "title": "Личный статус",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPТокен",
+        "lpCap": "LPЭффективное ограничение",
+        "unusedCap": "{amount}LPКрышка не используется",
+        "note": "У вас есть неиспользованная емкостьLP.",
+        "cta": "Внесите большеLP",
+        "tail": "чтобы максимизировать мощность майнинга!",
+        "estimate": "Оценка",
+        "noteOver70": "Вы использовали более 70 % емкостиLP. Не забывайте всегда оставлять место для компаундирования."
+      },
+      "estimate": {
+        "title": "LPОценка",
+        "emptyMessage": "Текущее доступное эффективное ограничениеLPслишком мало для оценки.",
+        "emptyActionBefore": "Пожалуйста, внесите как минимум",
+        "emptyActionAfter": "чтобы расширить свой эффективный лимитLPперед оценкой требований к ликвидности.",
+        "barkxPrice": "BARKXЦена",
+        "plannedLp": "ПланируетсяLP",
+        "assetsRequired": "Оценка необходимых активов"
+      }
+    },
+    "vPool": {
+      "badge": "Только по приглашению",
+      "viewInvitation": "Посмотреть приглашение",
+      "title": "BarkX VIP Pool",
+      "subtitle": "vLPМайнинговый пул",
+      "notWhitelisted": "Ваш адрес не внесен в белый список VIP-пула. Свяжитесь с командой, чтобы подать заявку.",
+      "invitation": {
+        "changeLanguage": "Нажмите, чтобы изменить язык",
+        "lines": {
+          "greeting": "Уважаемый гость,",
+          "welcome": "Добро пожаловать в эксклюзивныйBarkX VIP Pool.",
+          "contribution": "Ваш замечательный вклад и стойкое доверие выделили вас в нашей экосистеме. В подтверждение вашего статуса это частное убежище предназначено для максимизации ваших активов с помощью нашего высшего уровня премиальной доходности.",
+          "honor": "Для нас большая честь служить вам.",
+          "rewards": "Пожалуйста, наслаждайтесь исключительными наградами."
+        },
+        "signature": "С уважением"
+      },
+      "tabs": {
+        "depositVn": "ДепозитVN",
+        "depositVlp": "ДепозитvLP",
+        "withdraw": "Вывести",
+        "rewards": "Награды"
+      },
+      "common": {
+        "vipApy": "APR",
+        "lockPeriod": "Период блокировки",
+        "unlockLater": "Разблокируйте{lockPeriod}позже."
+      },
+      "depositVn": {
+        "info": "Внесите свойVN, чтобы расширить эффективный лимитvLP.",
+        "vn": "VN",
+        "wvn": "wVN",
+        "wvn2": "wVN2",
+        "depositNewVn": "Депозит НовыйVN",
+        "depositWvn": "ДепозитwVN",
+        "depositWvn2": "ДепозитwVN2",
+        "capIncrease": "vLPУвеличение лимита",
+        "depositVnAction": "ДепозитVN",
+        "depositVnPending": "ВнесениеVN...",
+        "depositWvnAction": "ДепозитwVN",
+        "depositWvnPending": "ВнесениеwVN...",
+        "depositWvn2Action": "ДепозитwVN2",
+        "depositWvn2Pending": "ВнесениеwVN2...",
+        "depositVnSuccess": "Депозит завершен. Ваш эффективный лимитvLPувеличен.",
+        "depositVnFailure": "Депозит не удался. Пожалуйста, попробуйте еще раз.",
+        "depositWvnSuccess": "Депозит завершен. Ваш эффективный лимитvLPувеличен.",
+        "depositWvnFailure": "Депозит не удался. Пожалуйста, попробуйте еще раз.",
+        "depositWvn2Success": "Депозит завершен. Ваш эффективный лимитvLPувеличен.",
+        "depositWvn2Failure": "Депозит не удался. Пожалуйста, попробуйте еще раз.",
+        "vnCapReached": "Не удалось. Персональная емкостьVNдостигнута.",
+        "unlockLater": "Разблокируйте{lockPeriod}позже."
+      },
+      "depositVlp": {
+        "info": "Внесите свойvLP, чтобы увеличить мощность майнинга.",
+        "unlockLater": "Разблокируйте{lockPeriod}позже.",
+        "depositVlp": "ДепозитvLP",
+        "action": "ДепозитvLP",
+        "pending": "ВнесениеvLP...",
+        "depositVlpSuccess": "Депозит завершен. Теперь у вас больше мощности для майнинга.",
+        "depositVlpFailure": "Депозит не удался. Пожалуйста, попробуйте еще раз."
+      },
+      "withdraw": {
+        "info": "Выберите разблокированные депозитные записи, чтобы вывести свои активы. Ваш эффективный лимитvLPи мощность майнинга соответственно уменьшатся.",
+        "selectAllCurrentPage": "Выбрать все на текущей странице",
+        "noUnlockedRecords": "Разблокированных записей не найдено.",
+        "statusUnlocked": "Разблокировано",
+        "selectedSummary": "Выбрано для отзыва (агрегировано)",
+        "totalWvn2": "ВсегоwVN2",
+        "totalVlp": "ВсегоvLP",
+        "capDecrease": "vLPУменьшение лимита",
+        "statusLocked": "Заблокировано",
+        "statusConfirming": "ПОДТВЕРЖДАЕМ",
+        "withdrawSelected": "Снять выбранное",
+        "withdrawPending": "Снятие...",
+        "withdrawSuccess": "Вывод завершен. Ваш эффективный лимитvLPснизился.",
+        "withdrawFailure": "Вывод не удался. Пожалуйста, попробуйте еще раз.",
+        "withdrawFailureCapExceeded": "Вывод не удался. ВыводwVN2превысит ваш эффективный лимитvLP. Пожалуйста, сначала снимите немногоvLP."
+      },
+      "rewards": {
+        "info": "Получите VIP-награды прямо на свой кошелек. Взимается нулевая комиссия!",
+        "autoAccumulated": "Награды автоматически накапливаются каждые 24 часа.",
+        "pendingRewards": "Ожидаемые награды",
+        "directClaim": "Прямая претензия",
+        "feeRate": "Ставка комиссии",
+        "receivingAmount": "Полученная сумма",
+        "claimToWallet": "Подать заявку на кошелек",
+        "lessThanOneAction": "Менее 1BARKX",
+        "claimPending": "Требование вознаграждений...",
+        "claimSuccess": "Заявлено{amount}BARKXна ваш кошелек.",
+        "claimFailure": "Претензия не удалась. Пожалуйста, попробуйте еще раз.",
+        "noDeposits": "Депозиты, подходящие для подачи заявки, не найдены."
+      },
+      "depositStatus": {
+        "title": "Личный статус",
+        "personalCapacity": "ЛичнаяVNемкость",
+        "vlpToken": "vLPТокен",
+        "vlpCap": "vLPЭффективное ограничение",
+        "unusedCap": "{amount}vLPКрышка не используется",
+        "note": "У вас есть неиспользованная емкостьvLP.",
+        "cta": "Внесите большеvLP",
+        "tail": "чтобы максимизировать мощность майнинга!"
+      }
+    },
+    "nodeBoost": {
+      "title": "Увеличение узла",
+      "subtitle": "Управление персональными бустами",
+      "days": "Дни",
+      "status": {
+        "noRecord": "Для этого кошелька пока не найдена записьBarkX Pool. Сначала внесите депозит в пул, чтобы разблокировать персонализированные усиления.",
+        "loadFailed": "Данные Node Boost не удалось обновить. На странице показаны безопасные резервные значения."
+      },
+      "toggle": {
+        "emptyState": "Переключить пустое состояние",
+        "mockData": "Просмотр: фиктивные данные"
+      },
+      "modal": {
+        "close": "Закрыть модальное окно"
+      },
+      "totalCard": {
+        "title": "BarkX PoolБазовыйAPRМножитель"
+      },
+      "active": {
+        "title": "Распределение активного усиления",
+        "empty": "Для этого аккаунта не найдено активных усилений."
+      },
+      "available": {
+        "title": "Доступные усиления для разблокировки",
+        "allUnlocked": "В настоящее время у вас есть все доступные усиления!"
+      },
+      "boosts": {
+        "permanent": {
+          "name": "Постоянное усиление",
+          "meta": "Пожизненная привилегия аккаунта"
+        },
+        "leadership": {
+          "name": "Повышение медали за лидерство",
+          "expiresIn": "Срок действия истекает через:",
+          "unlockHint": "Создайте свою сеть узлов BarkX",
+          "upTo": "До{rate}"
+        },
+        "compound": {
+          "name": "Комплексное повышение медалей",
+          "nextEvaluation": "Следующая оценка через:",
+          "globalEvaluation": "Глобальная оценка в:",
+          "evaluatedRatio": "Последнее оцененное соотношение:",
+          "weeklyEvaluation": "Еженедельная глобальная оценка",
+          "liveRatio": "Соотношение живого соединения:",
+          "upTo": "До{rate}"
+        },
+        "device": {
+          "name": "Повышение устройства",
+          "meta": "Соответствующий бонус за интеллектуальное оборудование"
+        },
+        "penalty": {
+          "name": "Корректировка штрафа",
+          "meta": "Корректировка контроля рисков протокола"
+        }
+      },
+      "modals": {
+        "permanent": {
+          "title": "Постоянное усиление",
+          "text": "Благодарим вас за ваш огромный вклад в экосистемуBarkAI. Это ваша пожизненная честь."
+        },
+        "leadership": {
+          "title": "Повышение медали за лидерство",
+          "text": "Ваше недавнее лидерство в создании сети узлов BarkX принесло вам эту медаль."
+        },
+        "compound": {
+          "title": "Комплексное повышение медалей",
+          "text": "Если ваш сложный коэффициент за весь срок службы вBarkX Poolостается выше <strong>{threshold}%</strong>, вы продолжите получать эту медаль в следующую дату оценки. Ваше сложное соотношение при последней оценке было <strong style=\"color: var(--amber);\">{ratio}%</strong>."
+        },
+        "device": {
+          "title": "Повышение устройства",
+          "text": "Это повышение зарезервировано для соответствующих льгот по интеллектуальному оборудованию. Текущий общедоступныйAPIраскрывает только применяемую ставку, а не сведения о квалификации."
+        },
+        "penalty": {
+          "title": "Корректировка штрафа",
+          "text": "Ставка штрафа — это корректировка протокола контроля рисков, применяемая к вашему окончательному множителю Node Boost. Отрицательное значение уменьшает эффективный мультипликатор доходности."
+        },
+        "protocol": {
+          "title": "Параметр безопасности протокола",
+          "text": "Мультипликатор совокупной доходности жестко ограничен на уровне <strong style=\"color: var(--amber);\">х2,00</strong>. Совокупные бонусы, превышающие +100%, усекаются, чтобы обеспечить устойчивость сети и соответствовать строгим протоколам управления рисками механизма ускорения."
+        }
+      }
+    },
+    "vn": {
+      "title": "Vector Nexus",
+      "subtitle": "Трансферные услуги",
+      "tabs": {
+        "newVn": "НовыйVN",
+        "usedVn": "ИспользуетсяVN"
+      },
+      "recipientAddress": "Адрес получателя",
+      "addressPlaceholder": "0х...",
+      "transferAmount": "Сумма перевода",
+      "balance": "Баланс",
+      "newVn": {
+        "info": "Перенесите свой новыйVector Nexus(VN) на другой адрес кошелька. Операции в блокчейне необратимы.",
+        "btn": "ПередачаVN"
+      },
+      "usedVn": {
+        "info": "Перенесите использованныйVector Nexus(wVN/wVN2). Обратите внимание, что переводыERC721предполагают несколько более высокую комиссию за газ.",
+        "btn": "Трансфер"
+      },
+      "modal": {
+        "title": "Подтвердить перевод",
+        "confirm": "Подпишите и продолжайте",
+        "pending": "Перенос...",
+        "aboutToTransfer": "Вы собираетесь перенести",
+        "toAddress": "по следующему адресу:",
+        "warning": "⚠️ Пожалуйста, внимательно проверьте адрес получателя. Передачи блокчейна не могут быть отменены."
+      },
+      "transfer": {
+        "pending": "Перенос{asset}...",
+        "success": "Перенос завершен.",
+        "failed": "Передача не удалась."
+      }
+    },
+    "noticeTest": {
+      "eyebrow": "Тестовый маршрут",
+      "title": "Предварительный просмотр уведомления",
+      "subtitle": "Этот тестовый маршрут используется только для предварительного просмотра компонентов уведомления без подключения их к реальным бизнес-потокам. В настоящее время он включает копии сообщенийBarkX PoolиUniswap. Нажмите любую кнопку предварительного просмотра, чтобы отобразить уведомление в виде всплывающего всплывающего уведомления по центру нижней части экрана.",
+      "path": "Путь: /test/barkx-pool-notice",
+      "floatingPreview": "Предварительный просмотр плавающего уведомления",
+      "noActiveNotice": "Нет активного уведомления",
+      "sourceBarkx": "BarkX",
+      "sourceUniswap": "Uniswap",
+      "showBarkxExample": "Показать пример BarkX",
+      "showUniswapExample": "Показать примерUniswap",
+      "hideNotice": "Скрыть уведомление",
+      "pendingNotice": "Ожидается уведомление",
+      "pendingHint": "Плавающее уведомление по центру нижней части экрана; Кнопки кошелька остаются заблокированными, пока они видны.",
+      "showPending": "Показать в ожидании",
+      "hidePending": "Скрыть в ожидании",
+      "itemsCount": "{count}элементов",
+      "preview": "Предварительный просмотр",
+      "outcomeSuccess": "успех",
+      "outcomeFailure": "неудача",
+      "uniswapPreview": "UniswapПредварительный просмотр",
+      "pair": "BARKX/USDT"
+    }
+  },
+  "messages": {
+    "barkxPool": {
+      "groups": {
+        "depositVnLp": "ДепозитVN+LP",
+        "depositWvnOnly": "Депозит толькоwVN",
+        "depositLpOnly": "Депозит толькоLP",
+        "withdrawWvn": "ВывестиwVN",
+        "withdrawLp": "ВывестиLP",
+        "directClaim": "Прямая претензия",
+        "compound": "Соединение"
+      },
+      "items": {
+        "deposit_vn_lp_success": "Депозит завершен.{lpAmount}LPсоздан и отправлен в пул майнинга.",
+        "deposit_vn_lp_failure_cap_reached": "Не удалось.LPДостигнут эффективный предел. Пожалуйста, сначала внесите ещеVN.",
+        "deposit_vn_lp_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "deposit_wvn_only_success": "Депозит завершен. Ваш эффективный лимитLPувеличен.",
+        "deposit_wvn_only_failure_requires_lp": "Неуспешный. Прежде чем вносить дополнительныеwVN, у вас должно быть как минимум{lpAmount}LPв пуле майнинга.",
+        "deposit_wvn_only_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "deposit_lp_only_success": "Депозит завершен. Теперь у вас больше мощности для майнинга.",
+        "deposit_lp_only_failure_requires_vn": "Не удалось. Прежде чем вносить дополнительныеLP, у вас должно быть как минимум{vnAmount}VNв пуле майнинга.",
+        "deposit_lp_only_failure_cap_reached": "Не удалось.LPДостигнут эффективный предел. Пожалуйста, сначала внесите ещеVN.",
+        "deposit_lp_only_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "withdraw_wvn_success_cap_decreased": "Вывод завершен. Ваш эффективный лимитLPснизился.",
+        "withdraw_wvn_success_all_removed": "Вывод завершен. Все вашиwVNиLPбыли удалены и возвращены в ваш кошелек.",
+        "withdraw_wvn_failure_cap_exceeded": "Неуспешный.LPЭффективный лимит будет превышен после выводаVN. Пожалуйста, сначала удалитеLP.",
+        "withdraw_wvn_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "withdraw_lp_success": "Вывод завершен. Ваша мощность майнинга снизилась.",
+        "withdraw_lp_failure_requires_lp": "Не удалось. У вас должно быть как минимум{lpAmount}LP, когда у вас естьVNв пуле майнинга.",
+        "withdraw_lp_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "direct_claim_success": "Молодец.{barkxAmount}BARKXзаявлен на кошелек.",
+        "direct_claim_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "compound_success": "Молодец.{barkxAmount}BARKXбыл объединен в{lpAmount}LPи отправлен в пул майнинга.",
+        "compound_failure_cap_exceeded": "Неуспешный.LPЭффективный верхний предел будет превышен после начисления сложных процентов. Пожалуйста, сначала внесите ещеVN.",
+        "compound_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз."
+      }
+    },
+    "uniswap": {
+      "groups": {
+        "swap": "Обмен",
+        "addLiquidity": "Добавить ликвидность",
+        "removeLiquidity": "Удалить ликвидность"
+      },
+      "items": {
+        "uniswap_swap_success": "Обмен завершен.",
+        "uniswap_swap_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз.",
+        "uniswap_add_liquidity_success": "Ликвидность обеспечена.{lpAmount}LPсоздан.",
+        "uniswap_add_liquidity_failure_retry": "Неуспешный. Пожалуйста, попробуйте еще раз.",
+        "uniswap_remove_liquidity_success": "Ликвидность удалена.{lpAmount}LPсожжен.",
+        "uniswap_remove_liquidity_failure_retry": "Не удалось. Пожалуйста, попробуйте еще раз."
+      }
+    }
+  },
+  "errors": {
+    "barkxPool": {
+      "paused": "В настоящее время это действие приостановлено.",
+      "stillLocked": "Этот актив все еще заблокирован.",
+      "lpCapExceeded": "LPПревышено эффективное ограничение. Сначала добавьте дополнительную емкостьVN.",
+      "noVnStaked": "НикакойVNне поставлен на хранение, поэтомуLPне может быть депонирован сам по себе.",
+      "insufficientLp": "Текущая позицияLPслишком мала, чтобы внести большеwVN1.",
+      "belowLpMin": "Этот вывод приведет к снижениюLPниже минимального требования.",
+      "mustWithdrawAllLp": "Вы должны удалить всеLPпри удалении последнегоVN.",
+      "invalidSignature": "Неверная подпись. Пожалуйста, запросите новую подпись.",
+      "signatureExpired": "Срок действия подписи истек. Пожалуйста, запросите новую подпись.",
+      "alreadyUsedInModeA": "ЭтотwVN1уже использовался в режиме A и не может снова получить бонус.",
+      "zeroAmount": "Сумма должна быть больше нуля.",
+      "nothingToWithdraw": "Нет ничего, что можно было бы вывести.",
+      "invalidBucket": "Выбранный сегмент не существует.",
+      "slippageExceeded": "Превышен лимит проскальзывания. Пожалуйста, измените параметры и повторите попытку.",
+      "insufficientBalance": "Баланс вознаграждений пула недостаточен.",
+      "invalidParam": "Неверный параметр. Пожалуйста, проверьте введенные значения."
+    }
+  }
+}

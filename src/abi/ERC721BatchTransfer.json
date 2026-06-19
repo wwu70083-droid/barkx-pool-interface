@@ -1,0 +1,26 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        { "internalType": "contract IERC721", "name": "token", "type": "address" },
+        { "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" },
+        { "internalType": "address", "name": "to", "type": "address" }
+      ],
+      "name": "batchTransferToOne",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "contract IERC721", "name": "token", "type": "address" },
+        { "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" },
+        { "internalType": "address[]", "name": "recipients", "type": "address[]" }
+      ],
+      "name": "batchTransferToMany",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}

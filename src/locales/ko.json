@@ -1,0 +1,1042 @@
+{
+  "app": {
+    "name": "BarkX Mining",
+    "brand": "BarkX"
+  },
+  "common": {
+    "modals": {
+      "close": "닫기",
+      "nodeStatus": {
+        "title": "노드 상태",
+        "active": "활성 노드",
+        "inactive": "비활성 노드",
+        "currentStatus": "현재 상태:",
+        "howToMaintain": "활성 상태를 유지하는 방법은 무엇입니까?",
+        "descriptionHtml": "노드가 고려됩니다. <strong style=\"color: var(--green);\">활성</strong> 그것이 유지된다면 <strong>360일 위치</strong> BarkX Pool에. 이는 최소한 보유하고 있음을 의미합니다. <strong>1VN</strong> 그리고 금액에 관계없이 <strong>LP토큰</strong> 360일 잠금 주기로 구성되었습니다. 이 주기 내에서 잠금 해제된 자산은 여전히 ​​활성 상태에 포함됩니다."
+      },
+      "compoundEligibility": {
+        "title": "복합 자격",
+        "lifetimeRatio": "평생 복리 비율:",
+        "metricHint": "이 지표는BarkX Pool에서 청구한 총BARKX보상 중LP토큰에 재투자된 비율을 나타냅니다.",
+        "rulesTitle": "복합 메달 규칙:",
+        "rulesHtml": "BarkAI은 7일마다 각 사용자에 대해 이 비율을 평가합니다. 당신의 비율이 <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> 다음 스냅샷에서는 복합 메달을 받게 되며 이후 7일 동안 유효한 수확량 배율이 잠금 해제됩니다."
+      }
+    },
+    "balance": "잔액:{amount}",
+    "unlocked": "잠금 해제됨:{amount}",
+    "max": "최대",
+    "lockPeriods": {
+      "hours24": "24시간",
+      "days90": "90일",
+      "days360": "360일"
+    },
+    "duration": {
+      "hours24": "24시간",
+      "day": "{count}일",
+      "days": "{count}일",
+      "hour": "{count}시",
+      "hours": "{count}시간",
+      "minute": "{count}분",
+      "minutes": "{count}분",
+      "lessThanMinute": "< 1분"
+    }
+  },
+  "routes": {
+    "titles": {
+      "dashboard": "대시보드",
+      "swap": "스왑",
+      "liquidity": "유동성",
+      "pool": "BarkX Pool",
+      "ePool": "BarkX Elite Pool",
+      "vPool": "BarkX VIP Pool",
+      "incubator": "인큐베이터",
+      "nodeBoost": "Node Boost",
+      "barkdao": "BarkDAO",
+      "settings": "설정",
+      "noticeTest": "BarkX Pool 알림 테스트"
+    }
+  },
+  "nav": {
+    "dashboard": "대시보드",
+    "swap": "스왑",
+    "liquidity": "유동성",
+    "pool": "BarkX Pool",
+    "featuredPools": "추천 풀",
+    "ePool": "BarkX Elite Pool",
+    "vPool": "BarkX VIP Pool",
+    "incubator": "인큐베이터",
+    "nodeBoost": "Node Boost",
+    "vn": "Vector Nexus",
+    "barkdao": "BarkDAO",
+    "partnership": "파트너십",
+    "openDao": "OpenDAO",
+    "settings": "설정"
+  },
+  "wallet": {
+    "install": "지갑 설치",
+    "connect": "지갑 연결",
+    "connecting": "연결 중...",
+    "reconnect": "지갑 다시 연결",
+    "switch": "{chain} 전환",
+    "switchTo": "{chain}로 전환",
+    "target": "대상: {chain}",
+    "unknownNetwork": "알 수 없는 네트워크",
+    "networkSwitchHint": "{network} · {chain}로 전환",
+    "notConnected": "지갑이 연결되지 않음",
+    "noInjected": "주입 지갑 없음",
+    "disconnectHint": "접근 권한을 취소하려면 지갑 확장 프로그램에서 연결을 해제하세요.",
+    "pending": "처리 중...",
+    "errors": {
+      "noInjected": "MetaMask 또는 호환 지갑을 설치해 주세요.",
+      "noAccount": "지갑 계정이 반환되지 않았습니다.",
+      "rejected": "지갑 요청을 취소했습니다.",
+      "addChain": "{chain}을 지갑에 추가한 후 다시 시도하세요.",
+      "untrustedHost": "현재 호스트 환경을 신뢰할 수 없습니다. 승인된 경로에서 다시 여세요.",
+      "switchNetwork": "{chain}로 전환해 주세요.",
+      "generic": "지갑 연결에 실패했습니다. 다시 시도해 주세요."
+    }
+  },
+  "components": {
+    "swapOptions": {
+      "slippage": {
+        "low": "0.1%",
+        "medium": "0.5%",
+        "high": "1.0%"
+      },
+      "slippageTolerance": "미끄러짐 공차",
+      "transactionDeadline": "거래 마감일",
+      "minutes": "분",
+      "expertMode": "전문가 모드",
+      "expertModeHint": "높은 미끄러짐 거래 허용",
+      "custom": "맞춤"
+    },
+    "approvalActionGroup": {
+      "connectWallet": "지갑 연결",
+      "approve": "{token}승인",
+      "approving": "{token}승인 중...",
+      "checking": "확인 중..."
+    },
+    "pendingNotice": {
+      "default": "보류 중..."
+    },
+    "collapsibleCard": {
+      "poolStatus": "풀 상태",
+      "options": "옵션",
+      "swapOptions": "스왑 옵션"
+    },
+    "poolStatus": {
+      "totalLiquidity": "총 유동성",
+      "lpMinted": "LP발행됨",
+      "barkxReserve": "BARKX예약",
+      "usdtReserve": "USDT예약"
+    }
+  },
+  "pages": {
+    "ePool": {
+      "depositVbarkx": {
+        "infoAfter": ".",
+        "infoBefore": "vBARKX을USDT과 함께 입금하여LP을 자동 발행하세요. 모든vBARKX은(는)BARKX로 변경됩니다. ",
+        "depositVbarkx": "vBARKX입금",
+        "convertToDeposit": "예금으로 전환",
+        "pairingWith": "다음과 페어링",
+        "predictedLp": "예상LP금액",
+        "action": "vBARKX+USDT입금",
+        "pending": "vBARKX+USDT입금 중...",
+        "minimum": "최소{amount}vBARKX",
+        "success": "vBARKX이 성공적으로 입금되었습니다.",
+        "failure": "vBARKX입금에 실패했습니다.",
+        "paused": "vBARKX입금이 현재 일시중지되었습니다.",
+        "depositVnFirst": "LP용량을 잠금 해제하려면 먼저VN을 입금하세요.",
+        "priceUnavailable": "BARKX가격은 현재 알 수 없습니다.",
+        "insufficientUsdt": "USDT잔액이 부족합니다.",
+        "capExceeded": "LP유효 한도를 초과했습니다."
+      },
+      "title": "BarkX Elite Pool",
+      "subtitle": "엘리트 클럽을 위한 유동성 채굴",
+      "tabs": {
+        "depositVn": "VN입금",
+        "depositVbarkx": "vBARKX입금",
+        "withdraw": "철수",
+        "rewards": "보상"
+      },
+      "common": {
+        "apr": "APR",
+        "nodeBoostTitle": "노드 부스트 분석 보기",
+        "lockPeriod": "잠금 기간",
+        "unlockLater": "나중에{lockPeriod}을(를) 잠금 해제하세요.",
+        "barkxPrice": "BARKX가격:{price}USDT"
+      },
+      "depositVn": {
+        "info": "BarkX Elite Pool에서LP유효 한도를 확장하려면 새로운VN만 허용될 수 있습니다. 여기에 입금된 모든 새로운VN은 새 것으로 유지되며BarkX Pool에서BARKX보너스로 계속 사용할 수 있습니다.",
+        "depositNewVn": "신규VN입금",
+        "capIncrease": "LP유효 한도 증가",
+        "action": "VN입금",
+        "pending": "VN입금 중...",
+        "success": "VN이 성공적으로 입금되었습니다.",
+        "failure": "VN입금에 실패했습니다.",
+        "paused": "VN입금이 현재 일시중지되었습니다."
+      },
+      "withdraw": {
+        "info": "자산을 출금하려면 잠금 해제된 입금 기록을 선택하세요. 귀하의LP유효 한도 및 채굴 능력은 그에 따라 감소합니다.",
+        "selectAllCurrentPage": "현재 페이지에서 모두 선택",
+        "statusUnlocked": "잠금 해제됨",
+        "selectedSummary": "탈퇴 대상으로 선정됨(합계)",
+        "totalVn": "합계VN",
+        "totalLp": "합계LP",
+        "capDecrease": "LP한도 감소",
+        "withdrawSelected": "선택철회",
+        "withdrawPending": "선택한 자산을 철회하는 중...",
+        "withdrawSuccess": "선택된 자산이 인출되었습니다.",
+        "withdrawFailure": "출금에 실패했습니다.",
+        "vnPaused": "VN출금이 현재 일시중지되었습니다.",
+        "lpPaused": "LP출금이 현재 일시중지되었습니다.",
+        "withdrawLpFirst": "LP을 먼저 철회하거나VN버킷을 더 적게 선택하세요."
+      },
+      "rewards": {
+        "info": "엘리트 보상을 지갑으로 직접 청구하세요. 수수료 제로!",
+        "autoAccumulated": "보상은 24시간마다 자동으로 누적됩니다.",
+        "pendingRewards": "보류 중인 보상",
+        "directClaim": "직접 청구",
+        "feeRate": "수수료율",
+        "receivingAmount": "수령금액",
+        "claimToWallet": "월렛에 소유권 주장",
+        "lessThanOneAction": "1BARKX미만",
+        "claimPending": "보상 청구 중...",
+        "claimSuccess": "{amount}BARKX에 소유권이 주장되었습니다.",
+        "claimFailure": "소유권을 주장하지 못했습니다."
+      },
+      "depositStatus": {
+        "title": "개인 상태",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LP토큰",
+        "lpCap": "LP유효 한도",
+        "unusedCap": "{amount}LP캡 미사용",
+        "note": "사용하지 않은LP용량이 있습니다.",
+        "cta": "LP더 입금하세요",
+        "tail": "채굴력을 극대화하기 위해!",
+        "estimate": "견적"
+      },
+      "estimate": {
+        "title": "LP추정",
+        "emptyMessage": "현재 사용 가능한LP유효 한도가 너무 작아 추정을 지원할 수 없습니다.",
+        "emptyActionBefore": "최소 입금해주세요",
+        "emptyActionAfter": "유동성 요구 사항을 추정하기 전에LP유효 한도를 확장하세요.",
+        "barkxPrice": "BARKX가격",
+        "plannedLp": "LP예정",
+        "assetsRequired": "필요한 추정 자산"
+      },
+      "leaderboard": {
+        "title": "리더보드",
+        "topBurn": "탑번",
+        "topDeposit": "최고 예금"
+      },
+      "time": {
+        "fallback": "180일",
+        "day": "{count}일",
+        "days": "{count}일",
+        "hour": "{count}시",
+        "hours": "{count}시간",
+        "minute": "{count}분",
+        "minutes": "{count}분",
+        "lessThanMinute": "< 1분"
+      },
+      "errors": {
+        "belowMinDeposit": "최소vBARKX보증금 미만입니다.",
+        "insufficientBalance": "잔액이 부족합니다.",
+        "invalidBucket": "버킷 선택이 잘못되었습니다.",
+        "invalidParam": "잘못된 거래 매개변수입니다.",
+        "invalidSignature": "잘못된 소유권 주장 서명입니다.",
+        "lpCapExceeded": "LP유효 한도를 초과했습니다.",
+        "noVnStaked": "LP용량을 잠금 해제하려면 먼저VN을 입금하세요.",
+        "nothingToWithdraw": "철회할 것이 없습니다.",
+        "paused": "이 작업은 현재 일시중지되었습니다.",
+        "signatureExpired": "청구서 서명이 만료되었습니다.",
+        "slippageExceeded": "미끄러짐이 초과되었습니다. 다시 시도해 주세요.",
+        "stillLocked": "선택한 자산은 여전히 잠겨 있습니다.",
+        "zeroAmount": "금액은 0보다 커야 합니다."
+      }
+    },
+    "barkdao": {
+      "incentive": {
+        "zeroFee": "0%",
+        "title": "노드 인센티브",
+        "qualified": "자격을 갖춘",
+        "unqualified": "부적격",
+        "pending": "보류 중인 인센티브",
+        "infoStart": "누적된 노드 인센티브를BarkX Pool에 병합하세요. ",
+        "pendingRewards": "보류 중인 보상",
+        "infoMiddle": " 청구 또는 합성을 위해. ",
+        "infoEnd": " 수수료가 적용됩니다!",
+        "reqTitle": "필요한 자격:",
+        "reqText": "네트워크 인센티브가 안전하게 축적되고 있지만 이를 병합하려면BarkX Pool에서 활성 360일 포지션(1VN+LP보유)을 유지해야 합니다. 잠금 해제된 자산은 여전히 ​​유효합니다.",
+        "mergeTitle": "보상에 병합",
+        "feeRate": "수수료율",
+        "receiving": "수령금액",
+        "mergingAmount": "병합 금액",
+        "merge": "보상에 병합",
+        "merging": "병합 중...",
+        "mergedSuccess": "성공적으로 병합되었습니다",
+        "goToRewards": "리워드로 이동",
+        "claiming": "소유권 주장 중...",
+        "claim": "월렛에 소유권 주장"
+      },
+      "subtitle": "노드 리더십 네트워크",
+      "actionRequired": "필요한 조치",
+      "tabs": {
+        "invite": "초대",
+        "network": "네트워크",
+        "incentive": "인센티브"
+      },
+      "unregistered": {
+        "title": "아직BarkDAO에 가입하지 않았습니다.",
+        "desc": "네트워크에 참여하기 위해서는 노드리더의 지갑 주소를 등록해야 합니다. 이는BarkDAO계층 구조 내에서 귀하의 위치를 ​​설정합니다.",
+        "warningTitle": "중요한 경고:",
+        "warningText": "아래에 입력한 리더 주소는 스마트 계약에 등록된 후에는 변경할 수 없습니다. 확인하기 전에 주소가 100% 정확한지 다시 확인하고 확인하십시오.",
+        "leaderLabel": "리더의 지갑 주소",
+        "feeLabel": "등록비",
+        "feeSub": "이는 표준 네트워크Gas을 제외한 프로토콜 요금입니다.",
+        "register": "확인 및 등록",
+        "registerPending": "등록 중...",
+        "registerSuccess": "등록이 완료되었습니다.BarkDAO멤버십이 활성화되었습니다.",
+        "registerFailure": "등록에 실패했습니다. 다시 시도해 주세요.",
+        "contractNotConfigured": "이 환경에서는BarkDAO계약 주소가 구성되지 않았습니다.",
+        "registerDisabled": "현재 등록이 일시 중지되었습니다.",
+        "paymentDisabled": "ETH등록은 현재 불가능합니다.",
+        "rootForbidden": "루트 주소로는 직접 등록할 수 없습니다.",
+        "parentNotFound": "리더 주소가BarkDAO에 등록되어 있지 않습니다.",
+        "parentDisabled": "이 리더 주소는 현재 신규 회원을 받지 않습니다.",
+        "alreadyRegistered": "이 지갑은 이미BarkDAO에 등록되어 있습니다."
+      },
+      "invite": {
+        "badge": "정회원",
+        "title": "노드 네트워크에 오신 것을 환영합니다",
+        "desc": "귀하는BarkDAO에 공식적으로 등록되었습니다. 지갑 주소를 공유하여 다른 사람들을 네트워크에 참여하도록 초대하세요. 등록할 때 귀하의 주소를 리더로 입력해야 합니다.",
+        "addressLabel": "귀하의 지갑 주소(초대용)",
+        "invitedByLabel": "초대자",
+        "copy": "주소 복사",
+        "copied": "복사되었습니다!"
+      },
+      "network": {
+        "title": "BarkX 시각화",
+        "howToExplore": "탐색 방법",
+        "viewLabel": "보기:{label}",
+        "permissions": {
+          "max": "맥스 (20↑ / 20↓)",
+          "medium": "중형 (20↑ / 3↓)",
+          "min": "최소 (1↑ / 1↓)"
+        },
+        "guideTitle": "탐험 가이드",
+        "guideDrag": "드래그",
+        "guideDragDesc": "팬할 캔버스.",
+        "guideTap": "탭",
+        "guideTapDesc": "노드의 주소를 볼 수 있습니다. 닫으려면 빈 공간을 탭하세요.",
+        "guideDouble": "두 번 탭하기",
+        "guideDoubleDesc": "확장할 솔리드 노드.",
+        "guideLimit": "한도:",
+        "guideLimitDesc": "노드에서 최대{levels}레벨까지 탐색할 수 있습니다.",
+        "legend": "범례",
+        "legendRoot": "루트",
+        "legendHigher": "더 높은 지도자",
+        "legendDirect": "직속 리더",
+        "legendYou": "당신",
+        "legendSub": "하위 네트워크",
+        "legendSingle": "단일 노드",
+        "legendCluster": "클러스터된 단일 노드"
+      },
+      "signal": {
+        "title": "네트워크 신호 분석",
+        "about": "BarkX 네트워크 및 인센티브 정보:",
+        "rule1": "1. 인센티브 효율성은 다운스트림 네트워크의 규모에 따라 달라집니다.",
+        "rule2": "2. 신호 강도는 거리에 따라 감소합니다. 각 후속 레벨은 이전 레벨의 70%를 유지합니다.",
+        "rule3": "3. 노드의 신호는 최대 20레벨까지 도달할 수 있습니다.",
+        "colStrength": "신호 강도",
+        "colDistance": "거리",
+        "colNodes": "활성 노드",
+        "colContribution": "기여",
+        "unauthorized": "승인되지 않은 데이터",
+        "summary": "요약/전체:"
+      }
+    },
+    "settings": {
+      "title": "설정",
+      "subtitle": "환경 설정 및 링크",
+      "wallet": {
+        "title": "지갑",
+        "copy": "복사",
+        "copied": "복사됨",
+        "switchWallet": "지갑 전환",
+        "disconnect": "연결 해제"
+      },
+      "contracts": {
+        "title": "스마트 계약",
+        "copy": "계약 주소 복사"
+      },
+      "display": {
+        "title": "표시",
+        "language": "언어",
+        "selectLanguage": "언어 선택",
+        "en": "EN",
+        "cn": "CN"
+      },
+      "about": {
+        "title": "정보",
+        "version": "버전",
+        "tutorial": "튜토리얼",
+        "docs": "문서",
+        "discord": "Discord"
+      }
+    },
+    "dashboard": {
+      "title": "대시보드",
+      "subtitle": "BARKX유동성 채굴",
+      "metrics": {
+        "price": "BARKX/USDT가격",
+        "apy": "APR",
+        "marketCap": "BARKX시가총액"
+      },
+      "nodeWeight": {
+        "title": "노드 가중치",
+        "yesterdayWeight": "어제의 몸무게:",
+        "fetchedFrom": "이 값은 다음에서 안전하게 가져옵니다.",
+        "sourceName": "OpenDAOAPI",
+        "multiplierBefore": "이는 직접 적용되는 승수 역할을 합니다.",
+        "averageBalance": "30일 평균잔고",
+        "multiplierAfter": ". 가중치가 높을수록 일일 스냅샷에서 경쟁 비율이 크게 증폭되어BARKX전환 할당량에서 더 큰 점유율을 확보하게 됩니다.",
+        "learnBefore": "노드 가중치를 늘리는 방법을 알아보려면 다음을 방문하세요.",
+        "linkText": "OpenDAO",
+        "learnAfter": "자세한 요구 사항은."
+      },
+      "mainPool": {
+        "title": "내BarkX Pool",
+        "detailsTitle": "내BarkX Pool세부정보",
+        "boostedApr": "부스트됨APR",
+        "boostedApy": "부스트됨APY",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LP토큰",
+        "pendingRewards": "보류 중인 보상",
+        "totalAchieved": "달성한 총계"
+      },
+      "elitePool": {
+        "title": "내BarkX Elite Pool"
+      },
+      "vipPool": {
+        "title": "내BarkX VIP Pool",
+        "apr": "APR"
+      },
+      "incubator": {
+        "title": "나의 인큐베이터",
+        "myDeposit": "내 예금",
+        "average30Day": "30일 평균",
+        "myQuotaToday": "오늘 내 할당량",
+        "totalIncubated": "총 배양"
+      },
+      "cards": {
+        "newVn": "새로운VN",
+        "newVnInWallet": "Wallet의 새로운VN",
+        "usedVn": "VN사용됨",
+        "usedVnInWallet": "월렛에서VN을(를) 사용했습니다.",
+        "barkx": "BARKX",
+        "barkxInWallet": "월렛의BARKX",
+        "lpToken": "LP토큰",
+        "lpTokenInWallet": "LP지갑의 토큰",
+        "pendingRewards": "보류 중인 보상",
+        "achievedRewards": "달성한 보상",
+        "inWallet": "월렛에서"
+      },
+      "depositStatus": {
+        "title": "나의 입금현황",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LP토큰",
+        "lpCap": "LP유효 한도",
+        "lpCapUnused": "{amount}LP캡 미사용",
+        "note": "사용하지 않은LP용량이 있습니다.",
+        "cta": "LP더 입금하세요",
+        "tail": "채굴력을 극대화하기 위해!",
+        "noteOver70": "LP용량의 70% 이상을 사용했습니다. 항상 컴파운딩을 위한 공간을 남겨두는 것을 잊지 마세요."
+      },
+      "assetsInWallet": {
+        "title": "월렛 자산",
+        "overviewTitle": "전체 자산 개요",
+        "newVn": "새로운Vector Nexus",
+        "usedVn": "Vector Nexus사용됨",
+        "usedVn1": "Vector NexusI 사용",
+        "usedVn2": "Vector NexusII 사용됨",
+        "barkx": "BARKX토큰",
+        "vbarkx": "vBARKX토큰",
+        "lp": "LP토큰",
+        "vlp": "vLP토큰"
+      },
+      "poolRewards": {
+        "title": "BarkX Pool보상",
+        "pendingMining": "보류 중인 채굴 보상",
+        "totalAchieved": "달성한 총계"
+      },
+      "vipPoolRewards": {
+        "title": "BarkX VIP Pool보상",
+        "pendingMining": "보류 중인 채굴 보상",
+        "totalAchieved": "달성한 총계"
+      }
+    },
+    "incubator": {
+      "title": "인큐베이터",
+      "subtitle": "vBARKX-BARKX 게이트웨이",
+      "updateTime": "00:45 UTC",
+      "oneToOne": "1 vBARKX = 1 BARKX",
+      "connectPrompt": "인큐베이션 데이터를 보려면 지갑을 연결하세요.",
+      "tabs": {
+        "normal": "일반 인큐베이션",
+        "leader": "리더 인큐베이션"
+      },
+      "normalInfo": "할당된 한도에 따라 주입한 vBARKX를 BARKX로 전환하세요. 당일 사용하지 않은 전환 한도는 소멸되며 다음 날로 이월되지 않습니다.",
+      "leaderInfo": "리더 인큐베이터는 OpenDAO 노드 시그널 모델 및 노드 피드백 모델의 수익 데이터로부터 일일 전환 한도를 매핑합니다. 특정 날짜에 노드의 동적 보상과 피드백 보상이 리더 인큐베이터의 일일 전환 한도에 자동으로 매핑됩니다. 일일 전환 한도를 사용하지 않으면 자동으로 누적됩니다.",
+      "stats": {
+        "myInjection": "내 주입량",
+        "avgWeighted": "30일 가중 평균",
+        "nodeWeight": "OpenDAO 노드 가중치",
+        "quotaShare": "현재 한도 점유율",
+        "globalQuota": "오늘의 전체 한도",
+        "myQuota": "오늘의 내 한도",
+        "dynamicReward": "동적 보상",
+        "feedbackReward": "피드백 보상",
+        "mappingEfficiency": "OpenDAO 매핑 효율",
+        "leaderQuotaGrowth": "리더 한도 증가",
+        "totalUnused": "미사용 리더 한도 총계"
+      },
+      "preview": {
+        "amountToIncubate": "인큐베이션할 금액",
+        "injected": "주입됨: {amount} vBARKX",
+        "convertedAmount": "전환된 금액"
+      },
+      "buttons": {
+        "incubate": "BARKX로 인큐베이션",
+        "insufficientInjection": "주입량 부족",
+        "lessThanOne": "1 BARKX 미만",
+        "inject": "vBARKX 주입",
+        "approve": "vBARKX 승인",
+        "insufficientBalance": "잔액 부족",
+        "suspended": "Conversion Paused"
+      },
+      "done": {
+        "normalTitle": "일반 인큐베이션 완료",
+        "leaderTitle": "리더 인큐베이션 완료",
+        "normalDesc": "오늘은 이미 일반 인큐베이터에서 전환을 실행했습니다.",
+        "leaderDesc": "오늘은 이미 리더 인큐베이터에서 전환을 실행했습니다.",
+        "comeBack": "내일 {time}에 다시 방문해 주세요."
+      },
+      "inject": {
+        "title": "vBARKX 주입",
+        "info": "vBARKX를 주입하여 30일 평균 잔액을 형성하세요. <strong>00:45 UTC</strong>에 촬영되는 일일 스냅샷이 다음 날 BARKX 전환 한도에 대한 귀하의 점유율을 결정합니다.",
+        "amount": "주입할 금액",
+        "warning": "경고: 주입은 되돌릴 수 없습니다. 주입된 vBARKX는 전환만 가능하며 인출할 수 없습니다.",
+        "success": "주입에 성공했습니다. {amount} vBARKX가 주입되었습니다.",
+        "failure": "실패했습니다."
+      },
+      "confirm": {
+        "title": "인큐베이션 확인",
+        "confirm": "확인",
+        "success": "인큐베이션에 성공했습니다. {amount} BARKX가 전환되었습니다.",
+        "failure": "실패했습니다.",
+        "messageNormal": "1:1 비율로 일반 한도 <strong>{amount} vBARKX</strong>를 BARKX로 인큐베이션하려고 합니다.",
+        "messageLeader": "1:1 비율로 누적된 리더 한도 <strong>{amount} vBARKX</strong>를 BARKX로 인큐베이션하려고 합니다.",
+        "pending": "이미 전환이 진행 중입니다. 잠시 기다린 후 다시 시도해 주세요.",
+        "cooldown": "다시 전환하기 전에 몇 초간 기다려 주세요.",
+        "inProgress": "릴레이 대기 중",
+        "inCooldown": "전환 쿨다운 중"
+      },
+      "weightModal": {
+        "title": "OpenDAO 노드 가중치",
+        "desc": "이 값은 <strong>OpenDAO Partner API</strong>에서 안전하게 가져옵니다.<br><br>이 값은 귀하의 30일 평균 주입량에 직접 적용되는 승수로 작동합니다. 가중치 계수가 높을수록 일일 스냅샷에서 경쟁 비율이 크게 증폭되어 더 많은 BARKX 전환 한도 점유율을 확보합니다.",
+        "colTier": "노드 등급",
+        "colWeight": "노드 가중치"
+      },
+      "dynamicModal": {
+        "title": "동적 보상 매핑",
+        "desc": "이 값은 <strong>OpenDAO Partner API</strong>에서 안전하게 가져옵니다.<br><br>이 값은 귀하의 OpenDAO 동적 보상을 리더의 인큐베이션 한도로 직접 매핑하는 계수로 작동합니다.",
+        "colEfficiency": "매핑 효율"
+      },
+      "feedbackModal": {
+        "title": "피드백 보상 매핑",
+        "desc": "이 값은 <strong>OpenDAO Partner API</strong>에서 안전하게 가져옵니다.<br><br>이 값은 귀하의 OpenDAO 피드백 보상을 리더의 인큐베이션 한도로 직접 매핑하는 계수로 작동합니다.",
+        "colEfficiency": "매핑 효율"
+      },
+      "leaderboard": {
+        "title": "인큐베이션 리더보드",
+        "value": "{amount} BARKX"
+      },
+      "errors": {
+        "userSuspended": "Your incubation conversion is paused.",
+        "alreadyConverted": "This incubation conversion has already been completed today.",
+        "insufficientInjection": "Insufficient injection for this conversion.",
+        "quotaBelowMin": "Quota is below 1 BARKX.",
+        "approverLocked": "The backend signing service is locked. Please try again later.",
+        "notConfigured": "The incubator service is not configured yet.",
+        "authRequired": "Wallet authorization expired. Please confirm again.",
+        "badSignature": "Wallet signature verification failed. Please try again.",
+        "badChallenge": "Wallet verification expired. Please confirm again.",
+        "rateLimited": "Too many requests. Please try again later.",
+        "signFailed": "The backend failed to generate a conversion signature. Please try again later."
+      }
+    },
+    "swap": {
+      "title": "스왑",
+      "subtitle": "Uniswap V2•Arbitrum One",
+      "pay": "당신은 지불",
+      "receive": "당신은 받습니다",
+      "rate": "요금",
+      "priceImpact": "가격 영향",
+      "minimumReceived": "최소 수령",
+      "networkFee": "네트워크 수수료",
+      "action": "스왑",
+      "priceImpactTooHigh": "가격 영향이 너무 높음",
+      "pending": "교환 중..."
+    },
+    "liquidity": {
+      "title": "유동성",
+      "subtitle": "BARKX-USDT유동성 제공",
+      "tabs": {
+        "add": "유동성 추가",
+        "remove": "유동성 제거"
+      },
+      "add": {
+        "tokenA": "토큰 A",
+        "tokenB": "토큰 B",
+        "receive": "당신은 받게됩니다",
+        "shareOfPool": "풀 점유율",
+        "action": "유동성 추가",
+        "pending": "유동성 추가..."
+      },
+      "remove": {
+        "lpAmount": "LP토큰 금액",
+        "receive": "당신은 받게됩니다",
+        "action": "유동성 제거",
+        "pending": "유동성 제거 중..."
+      }
+    },
+    "pool": {
+      "title": "BarkX Pool",
+      "subtitle": "BARKX-USDT유동성 채굴",
+      "personalBoostedApy": "귀하의 개인 부스트APY",
+      "common": {
+        "nodeBoostTitle": "노드 부스트 분석 보기"
+      },
+      "tabs": {
+        "depositVn": "VN입금",
+        "depositMore": "더 많이 입금하세요",
+        "withdraw": "철수",
+        "rewards": "보상"
+      },
+      "depositVn": {
+        "info": "LP을 자동 발행하려면 새VN을USDT과 함께 입금하세요.VN마다{bonus}BARKX보너스를 받으세요!",
+        "infoBefore": "LP을 자동 발행하려면 새VN을USDT과 함께 입금하세요. 받기 ",
+        "infoAfter": " VN당 보너스!",
+        "currentApy": "APR",
+        "lockPeriod": "잠금 기간",
+        "depositNewVn": "신규VN입금",
+        "bonusToDeposit": "입금 보너스",
+        "barkxPrice": "BARKX가격:{price}USDT",
+        "pairingWith": "다음과 페어링",
+        "predictedLp": "예상LP금액",
+        "action": "VN+LP입금",
+        "pending": "VN+LP입금 중...",
+        "unlockDate": "잠금 해제 날짜:{date}"
+      },
+      "depositMore": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "wvnInfo": "사용한VN을 예치하여LP유효 용량을 확장하세요.",
+        "lpInfo": "채굴 능력을 높이려면LP을 예치하세요.",
+        "depositUsedVn": "사용된 예금VN",
+        "depositLp": "LP입금",
+        "capIncrease": "LP유효 한도 증가",
+        "unlockLater": "나중에{lockPeriod}을(를) 잠금 해제하세요.",
+        "depositWvnAction": "wVN입금",
+        "depositWvnPending": "wVN입금 중...",
+        "depositLpAction": "LP입금",
+        "depositLpPending": "LP입금 중..."
+      },
+      "withdraw": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "tabWvnLp": "360일",
+        "tabWvnOrLp": "24시간",
+        "tabLpOnly": "90일",
+        "info": "자산을 출금하려면 잠금 해제된 입금 기록을 선택하세요. 귀하의LP유효 한도 및 채굴 능력은 그에 따라 감소합니다.",
+        "miningPower": "채굴력",
+        "selectAll": "현재 페이지에서 모두 선택",
+        "noRecords": "잠금 해제된 기록이 없습니다.",
+        "unlocked": "잠금 해제됨",
+        "locked": "잠김",
+        "confirming": "확인 중",
+        "selectedSummary": "탈퇴 대상으로 선정됨(합계)",
+        "totalWvn": "합계wVN",
+        "totalLp": "합계LP",
+        "capDecrease": "LP한도 감소",
+        "withdrawSelected": "선택철회",
+        "withdrawPending": "철수 중...",
+        "successMessage": "출금이 완료되었습니다.",
+        "wvnInfo": "풀에서 잠금 해제된VN을 철회합니다.LP유효 한도가 감소합니다.",
+        "lpInfo": "풀에서 잠금 해제된LP을 철회합니다. 채굴력이 감소합니다.",
+        "withdrawWvn": "wVN인출",
+        "withdrawLp": "LP인출",
+        "withdrawWvnAction": "wVN인출",
+        "withdrawWvnPending": "wVN철회 중...",
+        "withdrawLpAction": "LP인출",
+        "withdrawLpPending": "LP철회 중..."
+      },
+      "rewards": {
+        "info": "지갑에 보상을 요청하거나 새로운LP에 합산하여{discount}수수료를 절약하세요!",
+        "infoBefore": "지갑에 보상을 요청하거나 새로운LP에 합산하여 절약하세요 ",
+        "infoAfter": " 수수료에!",
+        "autoAccumulated": "보상은 24시간마다 자동으로 누적됩니다.",
+        "pendingRewards": "보류 중인 보상",
+        "directClaim": "직접 청구",
+        "feeRate": "수수료율",
+        "receivingAmount": "수령금액",
+        "directClaimAction": "직접 청구",
+        "lessThanOneAction": "1BARKX미만",
+        "directClaimPending": "소유권 주장 중...",
+        "compoundTitle": "LP에 복리 투자",
+        "lockPeriod": "잠금 기간",
+        "utilizedAmount": "이용금액",
+        "predictedLp": "예상LP금액",
+        "compoundAction": "복리 투자",
+        "compoundPending": "합성...",
+        "lockedUntil": "LP잠김 기한:{date}"
+      },
+      "depositStatus": {
+        "title": "개인 상태",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LP토큰",
+        "lpCap": "LP유효 한도",
+        "unusedCap": "{amount}LP캡 미사용",
+        "note": "사용하지 않은LP용량이 있습니다.",
+        "cta": "LP더 입금하세요",
+        "tail": "채굴력을 극대화하기 위해!",
+        "estimate": "견적",
+        "noteOver70": "LP용량의 70% 이상을 사용했습니다. 항상 컴파운딩을 위한 공간을 남겨두는 것을 잊지 마세요."
+      },
+      "estimate": {
+        "title": "LP추정",
+        "emptyMessage": "현재 사용 가능한LP유효 한도가 너무 작아 추정을 지원할 수 없습니다.",
+        "emptyActionBefore": "최소 입금해주세요",
+        "emptyActionAfter": "유동성 요구 사항을 추정하기 전에LP유효 한도를 확장하세요.",
+        "barkxPrice": "BARKX가격",
+        "plannedLp": "LP예정",
+        "assetsRequired": "필요한 추정 자산"
+      }
+    },
+    "vPool": {
+      "badge": "초대 전용 회원",
+      "viewInvitation": "초대장 보기",
+      "title": "BarkX VIP Pool",
+      "subtitle": "vLP채굴 풀",
+      "notWhitelisted": "귀하의 주소는 VIP 풀의 화이트리스트에 포함되어 있지 않습니다. 신청하려면 팀에 문의하세요.",
+      "invitation": {
+        "changeLanguage": "언어를 변경하려면 클릭하세요.",
+        "lines": {
+          "greeting": "귀빈 여러분,",
+          "welcome": "독점적인BarkX VIP Pool에 오신 것을 환영합니다.",
+          "contribution": "귀하의 놀라운 기여와 확고한 신뢰는 우리 생태계 내에서 귀하를 돋보이게 했습니다. 귀하의 지위에 대한 증거로 이 개인 보호구역은 최고 수준의 프리미엄 수익률로 귀하의 자산을 극대화하도록 설계되었습니다.",
+          "honor": "당신을 섬기는 것은 우리의 깊은 영광입니다.",
+          "rewards": "파격적인 보상을 누려보세요."
+        },
+        "signature": "진심으로"
+      },
+      "tabs": {
+        "depositVn": "VN입금",
+        "depositVlp": "vLP입금",
+        "withdraw": "철수",
+        "rewards": "보상"
+      },
+      "common": {
+        "vipApy": "APR",
+        "lockPeriod": "잠금 기간",
+        "unlockLater": "나중에{lockPeriod}을(를) 잠금 해제하세요."
+      },
+      "depositVn": {
+        "info": "VN을 입금하여vLP유효 한도를 확장하세요.",
+        "vn": "VN",
+        "wvn": "wVN",
+        "wvn2": "wVN2",
+        "depositNewVn": "신규VN입금",
+        "depositWvn": "wVN입금",
+        "depositWvn2": "wVN2입금",
+        "capIncrease": "vLP한도 증가",
+        "depositVnAction": "VN입금",
+        "depositVnPending": "VN입금 중...",
+        "depositWvnAction": "wVN입금",
+        "depositWvnPending": "wVN입금 중...",
+        "depositWvn2Action": "wVN2입금",
+        "depositWvn2Pending": "wVN2입금 중...",
+        "depositVnSuccess": "입금이 완료되었습니다.vLP유효 한도가 확장되었습니다.",
+        "depositVnFailure": "입금에 실패했습니다. 다시 시도해 주세요.",
+        "depositWvnSuccess": "입금이 완료되었습니다.vLP유효 한도가 확장되었습니다.",
+        "depositWvnFailure": "입금에 실패했습니다. 다시 시도해 주세요.",
+        "depositWvn2Success": "입금이 완료되었습니다.vLP유효 한도가 확장되었습니다.",
+        "depositWvn2Failure": "입금에 실패했습니다. 다시 시도해 주세요.",
+        "vnCapReached": "실패했습니다. 개인VN수용 인원에 도달했습니다.",
+        "unlockLater": "나중에{lockPeriod}을(를) 잠금 해제하세요."
+      },
+      "depositVlp": {
+        "info": "채굴 능력을 높이려면vLP을 예치하세요.",
+        "unlockLater": "나중에{lockPeriod}을(를) 잠금 해제하세요.",
+        "depositVlp": "vLP입금",
+        "action": "vLP입금",
+        "pending": "vLP입금 중...",
+        "depositVlpSuccess": "입금이 완료되었습니다. 이제 더 많은 채굴 능력을 갖게 되었습니다.",
+        "depositVlpFailure": "입금에 실패했습니다. 다시 시도해 주세요."
+      },
+      "withdraw": {
+        "info": "자산을 출금하려면 잠금 해제된 입금 기록을 선택하세요. 귀하의vLP유효 한도 및 채굴 능력은 그에 따라 감소합니다.",
+        "selectAllCurrentPage": "현재 페이지에서 모두 선택",
+        "noUnlockedRecords": "잠금해제된 기록이 없습니다.",
+        "statusUnlocked": "잠금 해제됨",
+        "selectedSummary": "탈퇴 대상으로 선정됨(합계)",
+        "totalWvn2": "합계wVN2",
+        "totalVlp": "합계vLP",
+        "capDecrease": "vLP한도 감소",
+        "statusLocked": "잠김",
+        "statusConfirming": "확인 중",
+        "withdrawSelected": "선택철회",
+        "withdrawPending": "철수 중...",
+        "withdrawSuccess": "출금이 완료되었습니다.vLP유효 한도가 감소했습니다.",
+        "withdrawFailure": "출금에 실패했습니다. 다시 시도해 주세요.",
+        "withdrawFailureCapExceeded": "출금에 실패했습니다.wVN2을 인출하면vLP유효 한도를 초과하게 됩니다. 먼저vLP일부를 인출하세요."
+      },
+      "rewards": {
+        "info": "VIP 보상을 지갑으로 직접 청구하세요. 수수료 제로!",
+        "autoAccumulated": "보상은 24시간마다 자동으로 누적됩니다.",
+        "pendingRewards": "보류 중인 보상",
+        "directClaim": "직접 청구",
+        "feeRate": "수수료율",
+        "receivingAmount": "수령금액",
+        "claimToWallet": "월렛에 소유권 주장",
+        "lessThanOneAction": "1BARKX미만",
+        "claimPending": "보상 청구 중...",
+        "claimSuccess": "지갑에{amount}BARKX을(를) 청구했습니다.",
+        "claimFailure": "소유권을 주장하지 못했습니다. 다시 시도해 주세요.",
+        "noDeposits": "청구할 수 있는 적격 예금을 찾을 수 없습니다."
+      },
+      "depositStatus": {
+        "title": "개인 상태",
+        "personalCapacity": "개인VN용량",
+        "vlpToken": "vLP토큰",
+        "vlpCap": "vLP유효 한도",
+        "unusedCap": "{amount}vLP캡 미사용",
+        "note": "사용하지 않은vLP용량이 있습니다.",
+        "cta": "vLP더 입금하세요",
+        "tail": "채굴력을 극대화하기 위해!"
+      }
+    },
+    "nodeBoost": {
+      "title": "노드 부스트",
+      "subtitle": "개인 부스트 관리",
+      "days": "일",
+      "status": {
+        "noRecord": "아직 이 지갑에 대한BarkX Pool기록을 찾을 수 없습니다. 맞춤형 부스트를 잠금 해제하려면 먼저 풀에 입금하세요.",
+        "loadFailed": "노드 부스트 데이터를 새로 고칠 수 없습니다. 페이지에 안전한 대체 값이 표시됩니다."
+      },
+      "toggle": {
+        "emptyState": "빈 상태 전환",
+        "mockData": "보기: 모의 데이터"
+      },
+      "modal": {
+        "close": "모달 닫기"
+      },
+      "totalCard": {
+        "title": "BarkX Pool기본APR승수"
+      },
+      "active": {
+        "title": "활성 부스트 분석",
+        "empty": "이 계정에는 활성 부스트가 없습니다."
+      },
+      "available": {
+        "title": "잠금 해제 가능한 부스트",
+        "allUnlocked": "현재 사용 가능한 모든 부스트를 보유하고 있습니다!"
+      },
+      "boosts": {
+        "permanent": {
+          "name": "영구 부스트",
+          "meta": "평생 계정 특권"
+        },
+        "leadership": {
+          "name": "리더십 메달 부스트",
+          "expiresIn": "만료 날짜:",
+          "unlockHint": "BarkX 노드 네트워크 구축",
+          "upTo": "최대{rate}"
+        },
+        "compound": {
+          "name": "복합 메달 부스트",
+          "nextEvaluation": "다음 평가:",
+          "globalEvaluation": "글로벌 평가:",
+          "evaluatedRatio": "마지막 평가 비율:",
+          "weeklyEvaluation": "주간 글로벌 평가",
+          "liveRatio": "라이브 화합물 비율:",
+          "upTo": "최대{rate}"
+        },
+        "device": {
+          "name": "장치 부스트",
+          "meta": "적격 스마트 하드웨어 보너스"
+        },
+        "penalty": {
+          "name": "페널티 조정",
+          "meta": "프로토콜 위험 통제 조정"
+        }
+      },
+      "modals": {
+        "permanent": {
+          "title": "영구 부스트",
+          "text": "BarkAI생태계에 막대한 기여를 해주셔서 감사합니다. 이것은 당신의 평생 영광입니다."
+        },
+        "leadership": {
+          "title": "리더십 메달 부스트",
+          "text": "BarkX 노드 네트워크 구축에 대한 귀하의 최근 리더십으로 이 메달을 획득하셨습니다."
+        },
+        "compound": {
+          "title": "복합 메달 부스트",
+          "text": "BarkX Pool의 평생 복합 비율이 위에 유지되는 경우 <strong>{threshold}%</strong>, 다음 평가 날짜에도 이 메달을 계속 획득할 수 있습니다. 지난 평가 시 귀하의 복합 비율은 다음과 같습니다. <strong style=\"color: var(--amber);\">{ratio}%</strong>."
+        },
+        "device": {
+          "title": "장치 부스트",
+          "text": "이 부스트는 적격 스마트 하드웨어 인센티브를 위해 예약되어 있습니다. 현재 공개API은 자격 세부정보가 아닌 적용 요율만 노출합니다."
+        },
+        "penalty": {
+          "title": "페널티 조정",
+          "text": "페널티 비율은 최종 Node Boost 승수에 적용되는 프로토콜 위험 제어 조정입니다. 음수 값은 유효 수확량 승수를 감소시킵니다."
+        },
+        "protocol": {
+          "title": "프로토콜 보안 매개변수",
+          "text": "총수익률 승수는 다음과 같이 엄격하게 제한되어 있습니다. <strong style=\"color: var(--amber);\">x2.00</strong>. +100%를 초과하는 누적 보너스는 네트워크 지속 가능성을 보장하고 가속 엔진의 엄격한 위험 관리 프로토콜을 준수하기 위해 잘립니다."
+        }
+      }
+    },
+    "vn": {
+      "title": "Vector Nexus",
+      "subtitle": "환승 서비스",
+      "tabs": {
+        "newVn": "새로운VN",
+        "usedVn": "VN사용됨"
+      },
+      "recipientAddress": "수취인 주소",
+      "addressPlaceholder": "0x...",
+      "transferAmount": "이체금액",
+      "balance": "잔액",
+      "newVn": {
+        "info": "새로운Vector Nexus(VN)을 다른 지갑 주소로 이체하세요. 블록체인에서는 작업을 되돌릴 수 없습니다.",
+        "btn": "VN환승"
+      },
+      "usedVn": {
+        "info": "중고Vector Nexus(wVN/wVN2)을 이전하세요.ERC721전송에는 약간 더 높은 가스 요금이 포함됩니다.",
+        "btn": "환승"
+      },
+      "modal": {
+        "title": "전송 확인",
+        "confirm": "서명 및 진행",
+        "pending": "전송 중...",
+        "aboutToTransfer": "이전하려고 합니다.",
+        "toAddress": "다음 주소로:",
+        "warning": "⚠️ 수취인 주소를 꼼꼼히 확인해주세요. 블록체인 전송은 되돌릴 수 없습니다."
+      },
+      "transfer": {
+        "pending": "{asset}전송 중...",
+        "success": "전송이 완료되었습니다.",
+        "failed": "전송에 실패했습니다."
+      }
+    },
+    "noticeTest": {
+      "eyebrow": "테스트 경로",
+      "title": "공지사항 미리보기",
+      "subtitle": "이 테스트 경로는 실제 비즈니스 흐름에 연결하지 않고 알림 구성 요소를 미리 보는 데에만 사용됩니다. 현재BarkX Pool및Uniswap메시지 복사본이 모두 포함되어 있습니다. 미리보기 버튼을 클릭하면 알림이 화면 하단 중앙에 떠 있는 토스트로 표시됩니다.",
+      "path": "경로: /test/barkx-pool-notice",
+      "floatingPreview": "부동 공지 미리보기",
+      "noActiveNotice": "활성 알림 없음",
+      "sourceBarkx": "BarkX",
+      "sourceUniswap": "Uniswap",
+      "showBarkxExample": "BarkX 예 표시",
+      "showUniswapExample": "Uniswap예 표시",
+      "hideNotice": "공지 숨기기",
+      "pendingNotice": "보류 중인 통지",
+      "pendingHint": "화면 하단 중앙에 떠 있는 알림; 지갑 버튼은 보이는 동안 잠긴 상태로 유지됩니다.",
+      "showPending": "표시 보류 중",
+      "hidePending": "보류 중인 숨기기",
+      "itemsCount": "{count}항목",
+      "preview": "미리보기",
+      "outcomeSuccess": "성공",
+      "outcomeFailure": "실패",
+      "uniswapPreview": "Uniswap미리보기",
+      "pair": "BARKX/USDT"
+    }
+  },
+  "messages": {
+    "barkxPool": {
+      "groups": {
+        "depositVnLp": "VN+LP입금",
+        "depositWvnOnly": "wVN만 입금",
+        "depositLpOnly": "LP만 입금",
+        "withdrawWvn": "wVN인출",
+        "withdrawLp": "LP인출",
+        "directClaim": "직접 청구",
+        "compound": "화합물"
+      },
+      "items": {
+        "deposit_vn_lp_success": "입금이 완료되었습니다.{lpAmount}LP이 생성되어 마이닝 풀로 전송되었습니다.",
+        "deposit_vn_lp_failure_cap_reached": "실패했습니다.LP유효 한도에 도달했습니다. 먼저VN을(를) 더 입금해 주세요.",
+        "deposit_vn_lp_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "deposit_wvn_only_success": "입금이 완료되었습니다.LP유효 한도가 확장되었습니다.",
+        "deposit_wvn_only_failure_requires_lp": "실패한. 추가로wVN을 예치하기 전에 채굴 풀에 최소{lpAmount}LP이 있어야 합니다.",
+        "deposit_wvn_only_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "deposit_lp_only_success": "입금이 완료되었습니다. 이제 더 많은 채굴 능력을 갖게 되었습니다.",
+        "deposit_lp_only_failure_requires_vn": "실패했습니다. 추가로LP을 예치하기 전에 채굴 풀에 최소{vnAmount}VN이 있어야 합니다.",
+        "deposit_lp_only_failure_cap_reached": "실패했습니다.LP유효 한도에 도달했습니다. 먼저VN을(를) 더 입금해 주세요.",
+        "deposit_lp_only_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "withdraw_wvn_success_cap_decreased": "출금이 완료되었습니다.LP유효 한도가 감소했습니다.",
+        "withdraw_wvn_success_all_removed": "출금이 완료되었습니다.wVN및LP이 모두 제거되어 지갑으로 반환되었습니다.",
+        "withdraw_wvn_failure_cap_exceeded": "실패한.LPVN철회 후 유효 한도가 초과됩니다. 먼저LP을(를) 제거하세요.",
+        "withdraw_wvn_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "withdraw_lp_success": "출금이 완료되었습니다. 채굴력이 감소했습니다.",
+        "withdraw_lp_failure_requires_lp": "실패했습니다. 채굴 풀에VN이 있을 때 최소{lpAmount}LP을 입금해야 합니다.",
+        "withdraw_lp_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "direct_claim_success": "잘했어요.{barkxAmount}BARKX이 지갑에 청구되었습니다.",
+        "direct_claim_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "compound_success": "잘했어요.{barkxAmount}BARKX은{lpAmount}LP으로 합성되어 채굴 풀로 전송되었습니다.",
+        "compound_failure_cap_exceeded": "실패한.LP합성 후 유효 한도가 초과됩니다. 먼저VN을(를) 더 입금해 주세요.",
+        "compound_failure_retry": "실패했습니다. 다시 시도해 주세요."
+      }
+    },
+    "uniswap": {
+      "groups": {
+        "swap": "스왑",
+        "addLiquidity": "유동성 추가",
+        "removeLiquidity": "유동성 제거"
+      },
+      "items": {
+        "uniswap_swap_success": "교환이 완료되었습니다.",
+        "uniswap_swap_failure_retry": "실패했습니다. 다시 시도해 주세요.",
+        "uniswap_add_liquidity_success": "유동성이 제공됩니다.{lpAmount}LP이(가) 생성되었습니다.",
+        "uniswap_add_liquidity_failure_retry": "실패한. 다시 시도해 주세요.",
+        "uniswap_remove_liquidity_success": "유동성이 제거됩니다.{lpAmount}LP이 소각되었습니다.",
+        "uniswap_remove_liquidity_failure_retry": "실패했습니다. 다시 시도해 주세요."
+      }
+    }
+  },
+  "errors": {
+    "barkxPool": {
+      "paused": "이 작업은 현재 일시중지되었습니다.",
+      "stillLocked": "이 자산은 아직 잠겨 있습니다.",
+      "lpCapExceeded": "LP유효 한도를 초과했습니다. 먼저VN용량을 더 추가하세요.",
+      "noVnStaked": "VN은 스테이킹되어 있지 않으므로LP은 단독으로 입금할 수 없습니다.",
+      "insufficientLp": "현재LP포지션이 너무 낮아wVN1을(를) 더 입금할 수 없습니다.",
+      "belowLpMin": "이번 인출로 인해 최소 요구 사항보다LP이 낮아집니다.",
+      "mustWithdrawAllLp": "마지막VN을 제거할 때LP을 모두 철회해야 합니다.",
+      "invalidSignature": "서명이 잘못되었습니다. 새 서명을 요청하세요.",
+      "signatureExpired": "서명이 만료되었습니다. 새 서명을 요청하세요.",
+      "alreadyUsedInModeA": "이wVN1은(는) 이미 모드 A에서 사용되었으므로 보너스를 다시 받을 수 없습니다.",
+      "zeroAmount": "금액은 0보다 커야 합니다.",
+      "nothingToWithdraw": "인출할 수 있는 항목이 없습니다.",
+      "invalidBucket": "선택한 버킷이 존재하지 않습니다.",
+      "slippageExceeded": "미끄러짐 한도를 초과했습니다. 매개변수를 조정하고 다시 시도하십시오.",
+      "insufficientBalance": "풀 보상 잔액이 부족합니다.",
+      "invalidParam": "매개변수가 잘못되었습니다. 입력값을 확인해주세요."
+    }
+  }
+}

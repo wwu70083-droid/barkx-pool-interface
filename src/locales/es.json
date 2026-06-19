@@ -1,0 +1,1042 @@
+{
+  "app": {
+    "name": "BarkX Mining",
+    "brand": "BarkX"
+  },
+  "common": {
+    "modals": {
+      "close": "Cerrar",
+      "nodeStatus": {
+        "title": "Estado del nodo",
+        "active": "Nodo activo",
+        "inactive": "Nodo inactivo",
+        "currentStatus": "Estado actual:",
+        "howToMaintain": "¿Cómo mantener el estado Activo?",
+        "descriptionHtml": "Se considera un nodo <strong style=\"color: var(--green);\">Activo</strong> si mantiene un <strong>posición de 360 ​​días</strong> en elBarkX Pool. Esto significa mantener al menos <strong>1VN</strong> y cualquier cantidad de <strong>LPtokens</strong> configurado para el ciclo de bloqueo de 360 días. Los activos desbloqueados dentro de este ciclo aún cuentan para el estado activo."
+      },
+      "compoundEligibility": {
+        "title": "Elegibilidad compuesta",
+        "lifetimeRatio": "Relación de capitalización de por vida:",
+        "metricHint": "Esta métrica representa el porcentaje del total de recompensasBARKXreclamadas deBarkX Poolque se han reinvertido en tokensLP.",
+        "rulesTitle": "Reglas de medallas compuestas:",
+        "rulesHtml": "BarkAIevalúa este ratio para cada usuario cada 7 días. Si su proporción es <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> en la siguiente instantánea, se le otorgará la medalla compuesta, lo que desbloqueará un multiplicador de rendimiento válido durante los siguientes 7 días."
+      }
+    },
+    "balance": "Saldo:{amount}",
+    "unlocked": "Desbloqueado:{amount}",
+    "max": "MÁXIMO",
+    "lockPeriods": {
+      "hours24": "24 Horas",
+      "days90": "90 días",
+      "days360": "360 días"
+    },
+    "duration": {
+      "hours24": "24 Horas",
+      "day": "{count}Día",
+      "days": "{count}Días",
+      "hour": "{count}Hora",
+      "hours": "{count}Horas",
+      "minute": "{count}Minuto",
+      "minutes": "{count}Minutos",
+      "lessThanMinute": "< 1 minuto"
+    }
+  },
+  "routes": {
+    "titles": {
+      "dashboard": "Panel",
+      "swap": "Intercambio",
+      "liquidity": "Liquidez",
+      "pool": "BarkX Pool",
+      "ePool": "BarkX Elite Pool",
+      "vPool": "BarkX VIP Pool",
+      "incubator": "Incubadora",
+      "nodeBoost": "Node Boost",
+      "barkdao": "BarkDAO",
+      "settings": "Configuración",
+      "noticeTest": "Prueba de aviso de BarkX Pool"
+    }
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "swap": "Intercambio",
+    "liquidity": "Liquidez",
+    "pool": "BarkX Pool",
+    "featuredPools": "Pools destacados",
+    "ePool": "BarkX Elite Pool",
+    "vPool": "BarkX VIP Pool",
+    "incubator": "Incubadora",
+    "nodeBoost": "Node Boost",
+    "vn": "Vector Nexus",
+    "barkdao": "BarkDAO",
+    "partnership": "Asociaciones",
+    "openDao": "OpenDAO",
+    "settings": "Configuración"
+  },
+  "wallet": {
+    "install": "Instalar billetera",
+    "connect": "Conectar billetera",
+    "connecting": "Conectando...",
+    "reconnect": "Reconectar billetera",
+    "switch": "Cambiar {chain}",
+    "switchTo": "Cambiar a {chain}",
+    "target": "Objetivo: {chain}",
+    "unknownNetwork": "Red desconocida",
+    "networkSwitchHint": "{network} · cambiar a {chain}",
+    "notConnected": "Billetera no conectada",
+    "noInjected": "No hay billetera inyectada",
+    "disconnectHint": "Desconecta desde la extensión de la billetera si quieres revocar el acceso.",
+    "pending": "Pendiente...",
+    "errors": {
+      "noInjected": "No se encontró una billetera. Instala MetaMask o una billetera compatible.",
+      "noAccount": "No se recibió ninguna cuenta de la billetera.",
+      "rejected": "Cancelaste la solicitud de la billetera.",
+      "addChain": "Agrega {chain} a tu billetera e inténtalo de nuevo.",
+      "untrustedHost": "El entorno actual no es confiable. Vuelve a abrir la app desde una fuente aprobada.",
+      "switchNetwork": "Cambia a {chain}.",
+      "generic": "La conexión de la billetera falló. Inténtalo de nuevo."
+    }
+  },
+  "components": {
+    "swapOptions": {
+      "slippage": {
+        "low": "0.1%",
+        "medium": "0.5%",
+        "high": "1.0%"
+      },
+      "slippageTolerance": "Tolerancia al deslizamiento",
+      "transactionDeadline": "Fecha límite de transacción",
+      "minutes": "minutos",
+      "expertMode": "Modo experto",
+      "expertModeHint": "Permitir operaciones con alto deslizamiento",
+      "custom": "personalizado"
+    },
+    "approvalActionGroup": {
+      "connectWallet": "Conectar billetera",
+      "approve": "Aprobar{token}",
+      "approving": "Aprobando{token}...",
+      "checking": "Comprobando..."
+    },
+    "pendingNotice": {
+      "default": "Pendiente..."
+    },
+    "collapsibleCard": {
+      "poolStatus": "Estado de la piscina",
+      "options": "Opciones",
+      "swapOptions": "Opciones de intercambio"
+    },
+    "poolStatus": {
+      "totalLiquidity": "Liquidez Total",
+      "lpMinted": "LPAcuñado",
+      "barkxReserve": "BARKXReserva",
+      "usdtReserve": "USDTReserva"
+    }
+  },
+  "pages": {
+    "ePool": {
+      "depositVbarkx": {
+        "infoAfter": ".",
+        "infoBefore": "Deposite suvBARKXconUSDTpara acuñar automáticamenteLP. TodovBARKXse convierte enBARKXen ",
+        "depositVbarkx": "DepósitovBARKX",
+        "convertToDeposit": "Convertir en depósito",
+        "pairingWith": "Emparejamiento con",
+        "predictedLp": "Monto previstoLP",
+        "action": "DepósitovBARKX+USDT",
+        "pending": "DepositandovBARKX+USDT...",
+        "minimum": "Mínimo{amount}vBARKX",
+        "success": "vBARKXdepositado exitosamente.",
+        "failure": "El depósitovBARKXfalló.",
+        "paused": "El depósitovBARKXestá actualmente en pausa.",
+        "depositVnFirst": "DepositeVNprimero para desbloquear la capacidad deLP.",
+        "priceUnavailable": "El precioBARKXno está disponible en este momento.",
+        "insufficientUsdt": "InsufficientUSDTbalance.",
+        "capExceeded": "LPSe superó el límite efectivo."
+      },
+      "title": "BarkX Elite Pool",
+      "subtitle": "Minería de liquidez para Elite Club",
+      "tabs": {
+        "depositVn": "DepósitoVN",
+        "depositVbarkx": "DepósitovBARKX",
+        "withdraw": "Retirar",
+        "rewards": "Recompensas"
+      },
+      "common": {
+        "apr": "APR",
+        "nodeBoostTitle": "Ver desglose del impulso de nodo",
+        "lockPeriod": "Período de bloqueo",
+        "unlockLater": "Desbloquea{lockPeriod}más tarde.",
+        "barkxPrice": "BARKXPrecio:{price}USDT"
+      },
+      "depositVn": {
+        "info": "Solo se pueden aceptar nuevosVNpara ampliar el límite efectivo deLPenBarkX Elite Pool. Todos losVNnuevos depositados aquí permanecerán nuevos y aún podrán usarse enBarkX Poolpara obtener un bono deBARKX.",
+        "depositNewVn": "Depositar nuevoVN",
+        "capIncrease": "LPAumento del límite efectivo",
+        "action": "DepósitoVN",
+        "pending": "DepositandoVN...",
+        "success": "VNdepositado exitosamente.",
+        "failure": "El depósitoVNfalló.",
+        "paused": "El depósitoVNestá actualmente en pausa."
+      },
+      "withdraw": {
+        "info": "Seleccione registros de depósito desbloqueados para retirar sus activos. SuLPLímite efectivo y poder de minería disminuirán en consecuencia.",
+        "selectAllCurrentPage": "Seleccionar todo en la página actual",
+        "statusUnlocked": "DESBLOQUEADO",
+        "selectedSummary": "Seleccionado para retirarse (agregado)",
+        "totalVn": "TotalVN",
+        "totalLp": "TotalLP",
+        "capDecrease": "LPDisminución del límite",
+        "withdrawSelected": "Retirar Seleccionado",
+        "withdrawPending": "Retirando activos seleccionados...",
+        "withdrawSuccess": "Activos seleccionados retirados.",
+        "withdrawFailure": "El retiro falló.",
+        "vnPaused": "El retiroVNestá actualmente en pausa.",
+        "lpPaused": "El retiroLPestá actualmente en pausa.",
+        "withdrawLpFirst": "RetireLPprimero o seleccione menos depósitosVN."
+      },
+      "rewards": {
+        "info": "Reclame sus recompensas Elite directamente en su billetera. ¡Se aplican cero tarifas!",
+        "autoAccumulated": "Las recompensas se acumulan automáticamente cada 24 horas.",
+        "pendingRewards": "Recompensas pendientes",
+        "directClaim": "Reclamación Directa",
+        "feeRate": "Tasa de tarifa",
+        "receivingAmount": "Monto recibido",
+        "claimToWallet": "Reclamar a Wallet",
+        "lessThanOneAction": "Menos de 1BARKX",
+        "claimPending": "Reclamando recompensas...",
+        "claimSuccess": "Reclamado{amount}BARKX.",
+        "claimFailure": "Reclamación fallida."
+      },
+      "depositStatus": {
+        "title": "Estado personal",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPFicha",
+        "lpCap": "LPLímite efectivo",
+        "unusedCap": "{amount}LPTapa sin usar",
+        "note": "Tiene capacidadLPno utilizada.",
+        "cta": "Deposite másLP",
+        "tail": "para maximizar el poder minero!",
+        "estimate": "Estimar"
+      },
+      "estimate": {
+        "title": "LPEstimación",
+        "emptyMessage": "Su límite efectivoLPdisponible actualmente es demasiado pequeño para respaldar la estimación.",
+        "emptyActionBefore": "Por favor deposite al menos",
+        "emptyActionAfter": "para ampliar su límite efectivoLPantes de estimar los requisitos de liquidez.",
+        "barkxPrice": "BARKXPrecio",
+        "plannedLp": "PlanificadoLP",
+        "assetsRequired": "Activos estimados necesarios"
+      },
+      "leaderboard": {
+        "title": "Tabla de clasificación",
+        "topBurn": "Quemado superior",
+        "topDeposit": "Depósito superior"
+      },
+      "time": {
+        "fallback": "180 días",
+        "day": "{count}Día",
+        "days": "{count}Días",
+        "hour": "{count}Hora",
+        "hours": "{count}Horas",
+        "minute": "{count}Minuto",
+        "minutes": "{count}Minutos",
+        "lessThanMinute": "< 1 minuto"
+      },
+      "errors": {
+        "belowMinDeposit": "Por debajo del depósito mínimovBARKX.",
+        "insufficientBalance": "Saldo insuficiente.",
+        "invalidBucket": "Selección de depósito no válida.",
+        "invalidParam": "Parámetros de transacción no válidos.",
+        "invalidSignature": "Firma de reclamo no válida.",
+        "lpCapExceeded": "LPSe superó el límite efectivo.",
+        "noVnStaked": "DepositeVNprimero para desbloquear la capacidad deLP.",
+        "nothingToWithdraw": "Nada que retirar.",
+        "paused": "Esta acción está actualmente pausada.",
+        "signatureExpired": "La firma del reclamo expiró.",
+        "slippageExceeded": "Se superó el deslizamiento. Por favor inténtalo de nuevo.",
+        "stillLocked": "Los activos seleccionados todavía están bloqueados.",
+        "zeroAmount": "La cantidad debe ser mayor que 0."
+      }
+    },
+    "barkdao": {
+      "incentive": {
+        "zeroFee": "0%",
+        "title": "Incentivo de nodo",
+        "qualified": "Calificado",
+        "unqualified": "No calificado",
+        "pending": "INCENTIVO PENDIENTE",
+        "infoStart": "Fusiona tus incentivos de nodo acumulados en tuBarkX Pool ",
+        "pendingRewards": "Recompensas pendientes",
+        "infoMiddle": " para reclamar o componer. ",
+        "infoEnd": " tarifas aplicadas!",
+        "reqTitle": "Calificación requerida:",
+        "reqText": "Los incentivos de su red se están acumulando de forma segura, pero para fusionarlos, debe mantener una posición activa durante 360 días (con 1VN+LP) enBarkX Pool. Los activos desbloqueados siguen siendo válidos.",
+        "mergeTitle": "Fusionarse con recompensas",
+        "feeRate": "Tasa de tarifa",
+        "receiving": "Monto recibido",
+        "mergingAmount": "Cantidad de fusión",
+        "merge": "Fusionarse con recompensas",
+        "merging": "Fusionando...",
+        "mergedSuccess": "Fusionado con éxito",
+        "goToRewards": "Ir a recompensas",
+        "claiming": "Reclamando...",
+        "claim": "Reclamar a Wallet"
+      },
+      "subtitle": "Red de liderazgo de nodos",
+      "actionRequired": "Acción requerida",
+      "tabs": {
+        "invite": "invitar",
+        "network": "Red",
+        "incentive": "incentivo"
+      },
+      "unregistered": {
+        "title": "Aún no te has unido aBarkDAO.",
+        "desc": "Para participar en la red, debe registrar la dirección de billetera de su Líder de Nodo. Esto establece su posición dentro de la jerarquíaBarkDAO.",
+        "warningTitle": "ADVERTENCIA CRÍTICA:",
+        "warningText": "The leader address you enter below CANNOT BE CHANGED once registered on the smart contract. Vuelva a verificar y asegúrese de que la dirección sea 100% precisa antes de confirmar.",
+        "leaderLabel": "Dirección de la billetera del líder",
+        "feeLabel": "Cuota de inscripción",
+        "feeSub": "Se trata de una tarifa de protocolo, excluida la red estándarGas.",
+        "register": "Confirmar y registrarse",
+        "registerPending": "Registrando...",
+        "registerSuccess": "Registro completado. La membresíaBarkDAOahora está activa.",
+        "registerFailure": "El registro falló. Por favor inténtalo de nuevo.",
+        "contractNotConfigured": "La dirección del contratoBarkDAOno está configurada en este entorno.",
+        "registerDisabled": "Actualmente el registro está en pausa.",
+        "paymentDisabled": "El registroETHno está disponible actualmente.",
+        "rootForbidden": "No puede registrarse directamente bajo la dirección raíz.",
+        "parentNotFound": "La dirección del líder no está registrada enBarkDAO.",
+        "parentDisabled": "Esta dirección de líder actualmente no acepta nuevos miembros.",
+        "alreadyRegistered": "Esta billetera ya está registrada enBarkDAO."
+      },
+      "invite": {
+        "badge": "Miembro Activo",
+        "title": "Bienvenido a tu Red de Nodos",
+        "desc": "Estás registrado oficialmente enBarkDAO. Invite a otros a unirse a su red compartiendo su dirección de billetera. Cuando se registren, deberán ingresar su dirección como su líder.",
+        "addressLabel": "Su dirección de billetera (para invitaciones)",
+        "invitedByLabel": "Invitado por",
+        "copy": "Copiar dirección",
+        "copied": "¡Copiado!"
+      },
+      "network": {
+        "title": "Visualización de BarkX",
+        "howToExplore": "Cómo explorar",
+        "viewLabel": "Ver:{label}",
+        "permissions": {
+          "max": "Máx. (20 ↑ / 20 ↓)",
+          "medium": "Medio (20 ↑ / 3 ↓)",
+          "min": "Mín (1 ↑ / 1 ↓)"
+        },
+        "guideTitle": "Guía de exploración",
+        "guideDrag": "Arrastrar",
+        "guideDragDesc": "el lienzo para realizar una panorámica.",
+        "guideTap": "Toque",
+        "guideTapDesc": "un nodo para ver su dirección. Toca el espacio vacío para cerrar.",
+        "guideDouble": "Toca dos veces",
+        "guideDoubleDesc": "nodos sólidos para expandirse.",
+        "guideLimit": "Límite:",
+        "guideLimitDesc": "Puede explorar hasta un máximo de{levels}niveles lejos de su nodo.",
+        "legend": "Leyenda",
+        "legendRoot": "raíz",
+        "legendHigher": "Líder superior",
+        "legendDirect": "Líder directo",
+        "legendYou": "tu",
+        "legendSub": "Subred",
+        "legendSingle": "Nodo único",
+        "legendCluster": "Nodos individuales agrupados"
+      },
+      "signal": {
+        "title": "Desglose de la señal de red",
+        "about": "Acerca de la red BarkX y los incentivos:",
+        "rule1": "1. La eficiencia de sus incentivos depende de la escala de su red descendente.",
+        "rule2": "2. La intensidad de la señal disminuye según la distancia. Cada nivel posterior conserva el 70% del anterior.",
+        "rule3": "3. La señal de un nodo puede alcanzar una profundidad máxima de 20 niveles.",
+        "colStrength": "Fuerza de la señal",
+        "colDistance": "Distancia",
+        "colNodes": "Nodos activos",
+        "colContribution": "Contribución",
+        "unauthorized": "Datos no autorizados",
+        "summary": "Resumen / Total:"
+      }
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Preferencias y enlaces",
+      "wallet": {
+        "title": "Billetera",
+        "copy": "Copiar",
+        "copied": "Copiado",
+        "switchWallet": "Cambiar billetera",
+        "disconnect": "Desconectar"
+      },
+      "contracts": {
+        "title": "Contratos inteligentes",
+        "copy": "Copiar dirección del contrato"
+      },
+      "display": {
+        "title": "Pantalla",
+        "language": "Idioma",
+        "selectLanguage": "Seleccionar idioma",
+        "en": "EN",
+        "cn": "CN"
+      },
+      "about": {
+        "title": "Acerca de",
+        "version": "Versión",
+        "tutorial": "Tutorial",
+        "docs": "Documentos",
+        "discord": "Discord"
+      }
+    },
+    "dashboard": {
+      "title": "Panel de control",
+      "subtitle": "BARKXMinería de liquidez",
+      "metrics": {
+        "price": "BARKX/USDTPrecio",
+        "apy": "APR",
+        "marketCap": "BARKXCapitalización de mercado"
+      },
+      "nodeWeight": {
+        "title": "Peso del nodo",
+        "yesterdayWeight": "Peso de ayer:",
+        "fetchedFrom": "Este valor se obtiene de forma segura del",
+        "sourceName": "OpenDAOAPI",
+        "multiplierBefore": "Actúa como un multiplicador aplicado directamente a tu",
+        "averageBalance": "Saldo promedio de 30 días",
+        "multiplierAfter": ". Un factor de ponderación más alto amplifica significativamente su proporción competitiva en la instantánea diaria, asegurando una mayor proporción de la cuota de conversiónBARKX.",
+        "learnBefore": "Para aprender cómo aumentar el peso de su nodo, visite",
+        "linkText": "OpenDAO",
+        "learnAfter": "para requisitos detallados."
+      },
+      "mainPool": {
+        "title": "MiBarkX Pool",
+        "detailsTitle": "Mis detalles deBarkX Pool",
+        "boostedApr": "ImpulsadoAPR",
+        "boostedApy": "ImpulsadoAPY",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPFicha",
+        "pendingRewards": "Recompensas pendientes",
+        "totalAchieved": "Total alcanzado"
+      },
+      "elitePool": {
+        "title": "MiBarkX Elite Pool"
+      },
+      "vipPool": {
+        "title": "MiBarkX VIP Pool",
+        "apr": "APR"
+      },
+      "incubator": {
+        "title": "mi incubadora",
+        "myDeposit": "Mi deposito",
+        "average30Day": "Promedio de 30 días",
+        "myQuotaToday": "Mi cuota hoy",
+        "totalIncubated": "Total incubados"
+      },
+      "cards": {
+        "newVn": "NuevoVN",
+        "newVnInWallet": "NuevoVNen Wallet",
+        "usedVn": "UsadoVN",
+        "usedVnInWallet": "UsadoVNen Wallet",
+        "barkx": "BARKX",
+        "barkxInWallet": "BARKXen Monedero",
+        "lpToken": "LPFicha",
+        "lpTokenInWallet": "LPToken en Monedero",
+        "pendingRewards": "Recompensas pendientes",
+        "achievedRewards": "Recompensas conseguidas",
+        "inWallet": "en billetera"
+      },
+      "depositStatus": {
+        "title": "Mi estado de depósito",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPFicha",
+        "lpCap": "LPLímite efectivo",
+        "lpCapUnused": "{amount}LPTapa sin usar",
+        "note": "Tiene capacidadLPno utilizada.",
+        "cta": "Deposite másLP",
+        "tail": "para maximizar el poder minero!",
+        "noteOver70": "Ha utilizado más del 70 % de su capacidadLP. Recuerde dejar siempre algo de espacio para la composición."
+      },
+      "assetsInWallet": {
+        "title": "Activos en Wallet",
+        "overviewTitle": "Descripción completa de los activos",
+        "newVn": "NuevoVector Nexus",
+        "usedVn": "UsadoVector Nexus",
+        "usedVn1": "UsadoVector NexusI",
+        "usedVn2": "UsadoVector NexusII",
+        "barkx": "BARKXFicha",
+        "vbarkx": "vBARKXFicha",
+        "lp": "LPFicha",
+        "vlp": "vLPFicha"
+      },
+      "poolRewards": {
+        "title": "BarkX PoolRecompensas",
+        "pendingMining": "Recompensas mineras pendientes",
+        "totalAchieved": "Total alcanzado"
+      },
+      "vipPoolRewards": {
+        "title": "BarkX VIP PoolRecompensas",
+        "pendingMining": "Recompensas mineras pendientes",
+        "totalAchieved": "Total alcanzado"
+      }
+    },
+    "incubator": {
+      "title": "Incubadora",
+      "subtitle": "Puerta de enlace vBARKX-BARKX",
+      "updateTime": "00:45 UTC",
+      "oneToOne": "1 vBARKX = 1 BARKX",
+      "connectPrompt": "Conecta tu billetera para ver tus datos de incubación.",
+      "tabs": {
+        "normal": "Incubación normal",
+        "leader": "Incubación de líder"
+      },
+      "normalInfo": "Convierte tu vBARKX inyectado a BARKX según tu cuota asignada. Cualquier cuota de conversión no utilizada durante el día se perderá y no se transfiere al día siguiente.",
+      "leaderInfo": "La Incubadora de líder asigna la cuota de conversión diaria a partir de los datos de ingresos del Modelo de Señal de Nodo y del Modelo de Retroalimentación de Nodo de OpenDAO. En cualquier día determinado, la Recompensa Dinámica y la Recompensa de Retroalimentación de un nodo se asignan automáticamente a su cuota de conversión diaria en la Incubadora de líder. Si la cuota de conversión diaria no se utiliza, se acumulará automáticamente.",
+      "stats": {
+        "myInjection": "Mi inyección",
+        "avgWeighted": "Promedio ponderado de 30 días",
+        "nodeWeight": "Peso del nodo de OpenDAO",
+        "quotaShare": "Participación de cuota actual",
+        "globalQuota": "Cuota global de hoy",
+        "myQuota": "Mi cuota de hoy",
+        "dynamicReward": "Recompensa Dinámica",
+        "feedbackReward": "Recompensa de Retroalimentación",
+        "mappingEfficiency": "Eficiencia de asignación de OpenDAO",
+        "leaderQuotaGrowth": "Crecimiento de cuota de líder",
+        "totalUnused": "Cuota de líder total no utilizada"
+      },
+      "preview": {
+        "amountToIncubate": "Cantidad a incubar",
+        "injected": "Inyectado: {amount} vBARKX",
+        "convertedAmount": "Cantidad convertida"
+      },
+      "buttons": {
+        "incubate": "Incubar a BARKX",
+        "insufficientInjection": "Inyección insuficiente",
+        "lessThanOne": "Menos de 1 BARKX",
+        "inject": "Inyectar vBARKX",
+        "approve": "Aprobar vBARKX",
+        "insufficientBalance": "Saldo insuficiente",
+        "suspended": "Conversion Paused"
+      },
+      "done": {
+        "normalTitle": "Incubación normal completada",
+        "leaderTitle": "Incubación de líder completada",
+        "normalDesc": "Ya has ejecutado tu conversión en la Incubadora normal de hoy.",
+        "leaderDesc": "Ya has ejecutado tu conversión en la Incubadora de líder de hoy.",
+        "comeBack": "Vuelve mañana a las {time}."
+      },
+      "inject": {
+        "title": "Inyectar vBARKX",
+        "info": "Inyecta tu vBARKX para construir tu saldo promedio de 30 días. Las instantáneas diarias tomadas a las <strong>00:45 UTC</strong> determinan tu participación en la cuota de conversión de BARKX del día siguiente.",
+        "amount": "Cantidad a inyectar",
+        "warning": "Advertencia: La inyección es irreversible. El vBARKX inyectado solo se puede convertir, no retirar.",
+        "success": "Inyección exitosa. Se han inyectado {amount} vBARKX.",
+        "failure": "Error."
+      },
+      "confirm": {
+        "title": "Confirmar incubación",
+        "confirm": "Confirmar",
+        "success": "Incubación exitosa. Se han convertido {amount} BARKX.",
+        "failure": "Error.",
+        "messageNormal": "Estás a punto de incubar tu cuota normal de <strong>{amount} vBARKX</strong> a BARKX con una proporción 1:1.",
+        "messageLeader": "Estás a punto de incubar tu cuota de líder acumulada de <strong>{amount} vBARKX</strong> a BARKX con una proporción 1:1.",
+        "pending": "Ya hay una conversión en curso. Espera un momento e inténtalo de nuevo.",
+        "cooldown": "Espera unos segundos antes de volver a convertir.",
+        "inProgress": "Pendiente de retransmisión",
+        "inCooldown": "Conversión en enfriamiento"
+      },
+      "weightModal": {
+        "title": "Peso del nodo de OpenDAO",
+        "desc": "Este valor se obtiene de forma segura desde la <strong>OpenDAO Partner API</strong>.<br><br>Actúa como un multiplicador aplicado directamente a tu Inyección promedio de 30 días. Un factor de peso más alto amplifica significativamente tu proporción competitiva en la instantánea diaria, asegurando una mayor participación de la cuota de conversión de BARKX.",
+        "colTier": "Nivel del nodo",
+        "colWeight": "Peso del nodo"
+      },
+      "dynamicModal": {
+        "title": "Asignación de Recompensa Dinámica",
+        "desc": "Este valor se obtiene de forma segura desde la <strong>OpenDAO Partner API</strong>.<br><br>Actúa como un factor para asignar directamente tu Recompensa Dinámica de OpenDAO a la cuota de incubación del líder.",
+        "colEfficiency": "Eficiencia de asignación"
+      },
+      "feedbackModal": {
+        "title": "Asignación de Recompensa de Retroalimentación",
+        "desc": "Este valor se obtiene de forma segura desde la <strong>OpenDAO Partner API</strong>.<br><br>Actúa como un factor para asignar directamente tu Recompensa de Retroalimentación de OpenDAO a la cuota de incubación del líder.",
+        "colEfficiency": "Eficiencia de asignación"
+      },
+      "leaderboard": {
+        "title": "Tabla de clasificación de incubación",
+        "value": "{amount} BARKX"
+      },
+      "errors": {
+        "userSuspended": "Your incubation conversion is paused.",
+        "alreadyConverted": "This incubation conversion has already been completed today.",
+        "insufficientInjection": "Insufficient injection for this conversion.",
+        "quotaBelowMin": "Quota is below 1 BARKX.",
+        "approverLocked": "The backend signing service is locked. Please try again later.",
+        "notConfigured": "The incubator service is not configured yet.",
+        "authRequired": "Wallet authorization expired. Please confirm again.",
+        "badSignature": "Wallet signature verification failed. Please try again.",
+        "badChallenge": "Wallet verification expired. Please confirm again.",
+        "rateLimited": "Too many requests. Please try again later.",
+        "signFailed": "The backend failed to generate a conversion signature. Please try again later."
+      }
+    },
+    "swap": {
+      "title": "Intercambiar",
+      "subtitle": "Uniswap V2•Arbitrum One",
+      "pay": "tu pagas",
+      "receive": "Recibes",
+      "rate": "Tarifa",
+      "priceImpact": "Impacto en el precio",
+      "minimumReceived": "Mínimo recibido",
+      "networkFee": "Tarifa de red",
+      "action": "Intercambiar",
+      "priceImpactTooHigh": "Impacto en el precio demasiado alto",
+      "pending": "Intercambiando..."
+    },
+    "liquidity": {
+      "title": "Liquidez",
+      "subtitle": "Proporcionar liquidezBARKX-USDT",
+      "tabs": {
+        "add": "Agregar liquidez",
+        "remove": "Eliminar liquidez"
+      },
+      "add": {
+        "tokenA": "Ficha A",
+        "tokenB": "Ficha B",
+        "receive": "Recibirás",
+        "shareOfPool": "Participación del fondo común",
+        "action": "Agregar liquidez",
+        "pending": "Agregando liquidez..."
+      },
+      "remove": {
+        "lpAmount": "LPMonto del token",
+        "receive": "Recibirás",
+        "action": "Eliminar liquidez",
+        "pending": "Eliminando liquidez..."
+      }
+    },
+    "pool": {
+      "title": "BarkX Pool",
+      "subtitle": "BARKX-USDTMinería de liquidez",
+      "personalBoostedApy": "Su impulso personalAPY",
+      "common": {
+        "nodeBoostTitle": "Ver desglose del impulso de nodo"
+      },
+      "tabs": {
+        "depositVn": "DepósitoVN",
+        "depositMore": "Depositar más",
+        "withdraw": "Retirar",
+        "rewards": "Recompensas"
+      },
+      "depositVn": {
+        "info": "Deposite su nuevoVNconUSDTpara acuñar automáticamenteLP. ¡Obtenga un bono{bonus}BARKXporVN!",
+        "infoBefore": "Deposite su nuevoVNconUSDTpara acuñar automáticamenteLP. Obtener ",
+        "infoAfter": " bonificación porVN!",
+        "currentApy": "APR",
+        "lockPeriod": "Período de bloqueo",
+        "depositNewVn": "Depositar nuevoVN",
+        "bonusToDeposit": "Bono por depositar",
+        "barkxPrice": "BARKXPrecio:{price}USDT",
+        "pairingWith": "Emparejamiento con",
+        "predictedLp": "Monto previstoLP",
+        "action": "DepósitoVN+LP",
+        "pending": "DepositandoVN+LP...",
+        "unlockDate": "Fecha de desbloqueo:{date}"
+      },
+      "depositMore": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "wvnInfo": "Deposite suVNusado para ampliar el límite efectivo deLP.",
+        "lpInfo": "Deposite suLPpara aumentar el poder minero.",
+        "depositUsedVn": "Depósito utilizadoVN",
+        "depositLp": "DepósitoLP",
+        "capIncrease": "LPAumento del límite efectivo",
+        "unlockLater": "Desbloquea{lockPeriod}más tarde.",
+        "depositWvnAction": "DepósitowVN",
+        "depositWvnPending": "DepositandowVN...",
+        "depositLpAction": "DepósitoLP",
+        "depositLpPending": "DepositandoLP..."
+      },
+      "withdraw": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "tabWvnLp": "360 días",
+        "tabWvnOrLp": "24 Horas",
+        "tabLpOnly": "90 días",
+        "info": "Seleccione registros de depósito desbloqueados para retirar sus activos. SuLPLímite efectivo y poder de minería disminuirán en consecuencia.",
+        "miningPower": "Energía minera",
+        "selectAll": "Seleccionar todo en la página actual",
+        "noRecords": "No hay registros desbloqueados",
+        "unlocked": "DESBLOQUEADO",
+        "locked": "BLOQUEADO",
+        "confirming": "CONFIRMANDO",
+        "selectedSummary": "Seleccionado para retirarse (agregado)",
+        "totalWvn": "TotalwVN",
+        "totalLp": "TotalLP",
+        "capDecrease": "LPDisminución del límite",
+        "withdrawSelected": "Retirar Seleccionado",
+        "withdrawPending": "Retirándose...",
+        "successMessage": "Se completa el retiro.",
+        "wvnInfo": "RetirarVNdesbloqueado del grupo. Su límite efectivoLPdisminuirá.",
+        "lpInfo": "RetirarLPdesbloqueado del grupo. Tu poder minero disminuirá.",
+        "withdrawWvn": "RetirarwVN",
+        "withdrawLp": "RetirarLP",
+        "withdrawWvnAction": "RetirarwVN",
+        "withdrawWvnPending": "RetirandowVN...",
+        "withdrawLpAction": "RetirarLP",
+        "withdrawLpPending": "RetirandoLP..."
+      },
+      "rewards": {
+        "info": "¡Reclame recompensas en su billetera o compóngalas en el nuevoLPpara ahorrar{discount}en tarifas!",
+        "infoBefore": "Reclame recompensas en su billetera o complételas en un nuevoLPpara ahorrar ",
+        "infoAfter": " en honorarios!",
+        "autoAccumulated": "Las recompensas se acumulan automáticamente cada 24 horas.",
+        "pendingRewards": "Recompensas pendientes",
+        "directClaim": "Reclamación Directa",
+        "feeRate": "Tasa de tarifa",
+        "receivingAmount": "Monto recibido",
+        "directClaimAction": "Reclamación Directa",
+        "lessThanOneAction": "Menos de 1BARKX",
+        "directClaimPending": "Reclamando...",
+        "compoundTitle": "Compuesto aLP",
+        "lockPeriod": "Período de bloqueo",
+        "utilizedAmount": "Cantidad utilizada",
+        "predictedLp": "Monto previstoLP",
+        "compoundAction": "compuesto",
+        "compoundPending": "Compuesto...",
+        "lockedUntil": "LPBloqueado hasta:{date}"
+      },
+      "depositStatus": {
+        "title": "Estado personal",
+        "vectorNexus": "Vector Nexus(VN)",
+        "lpToken": "LPFicha",
+        "lpCap": "LPLímite efectivo",
+        "unusedCap": "{amount}LPTapa sin usar",
+        "note": "Tiene capacidadLPno utilizada.",
+        "cta": "Deposite másLP",
+        "tail": "para maximizar el poder minero!",
+        "estimate": "Estimar",
+        "noteOver70": "Ha utilizado más del 70 % de su capacidadLP. Recuerde dejar siempre algo de espacio para la composición."
+      },
+      "estimate": {
+        "title": "LPEstimación",
+        "emptyMessage": "Su límite efectivoLPdisponible actualmente es demasiado pequeño para respaldar la estimación.",
+        "emptyActionBefore": "Por favor deposite al menos",
+        "emptyActionAfter": "para ampliar su límite efectivoLPantes de estimar los requisitos de liquidez.",
+        "barkxPrice": "BARKXPrecio",
+        "plannedLp": "PlanificadoLP",
+        "assetsRequired": "Activos estimados necesarios"
+      }
+    },
+    "vPool": {
+      "badge": "Miembros solo por invitación",
+      "viewInvitation": "Ver invitación",
+      "title": "BarkX VIP Pool",
+      "subtitle": "vLPGrupo minero",
+      "notWhitelisted": "Su dirección no está en la lista blanca del grupo VIP. Comuníquese con el equipo para postularse.",
+      "invitation": {
+        "changeLanguage": "Haga clic para cambiar el idioma",
+        "lines": {
+          "greeting": "Invitado Distinguido,",
+          "welcome": "Bienvenido al exclusivoBarkX VIP Pool.",
+          "contribution": "Sus notables contribuciones y su inquebrantable confianza lo han distinguido dentro de nuestro ecosistema. Como testimonio de su estatus, este santuario privado está diseñado para maximizar sus activos con nuestro nivel más alto de rendimientos premium.",
+          "honor": "Es un gran honor para nosotros servirle.",
+          "rewards": "Disfrute de sus recompensas excepcionales."
+        },
+        "signature": "Sinceramente"
+      },
+      "tabs": {
+        "depositVn": "DepósitoVN",
+        "depositVlp": "DepósitovLP",
+        "withdraw": "Retirar",
+        "rewards": "Recompensas"
+      },
+      "common": {
+        "vipApy": "APR",
+        "lockPeriod": "Período de bloqueo",
+        "unlockLater": "Desbloquea{lockPeriod}más tarde."
+      },
+      "depositVn": {
+        "info": "Deposite suVNpara ampliar el límite efectivo devLP.",
+        "vn": "VN",
+        "wvn": "wVN",
+        "wvn2": "wVN2",
+        "depositNewVn": "Depositar nuevoVN",
+        "depositWvn": "DepósitowVN",
+        "depositWvn2": "DepósitowVN2",
+        "capIncrease": "vLPAumento del límite",
+        "depositVnAction": "DepósitoVN",
+        "depositVnPending": "DepositandoVN...",
+        "depositWvnAction": "DepósitowVN",
+        "depositWvnPending": "DepositandowVN...",
+        "depositWvn2Action": "DepósitowVN2",
+        "depositWvn2Pending": "DepositandowVN2...",
+        "depositVnSuccess": "Depósito completado. Su límite efectivovLPse ha ampliado.",
+        "depositVnFailure": "El depósito falló. Por favor inténtalo de nuevo.",
+        "depositWvnSuccess": "Depósito completado. Su límite efectivovLPse ha ampliado.",
+        "depositWvnFailure": "El depósito falló. Por favor inténtalo de nuevo.",
+        "depositWvn2Success": "Depósito completado. Su límite efectivovLPse ha ampliado.",
+        "depositWvn2Failure": "El depósito falló. Por favor inténtalo de nuevo.",
+        "vnCapReached": "Fallido. PersonalVNSe alcanzó la capacidad.",
+        "unlockLater": "Desbloquea{lockPeriod}más tarde."
+      },
+      "depositVlp": {
+        "info": "Deposite suvLPpara aumentar el poder minero.",
+        "unlockLater": "Desbloquea{lockPeriod}más tarde.",
+        "depositVlp": "DepósitovLP",
+        "action": "DepósitovLP",
+        "pending": "DepositandovLP...",
+        "depositVlpSuccess": "Depósito completado. Ahora tienes más poder minero.",
+        "depositVlpFailure": "El depósito falló. Por favor inténtalo de nuevo."
+      },
+      "withdraw": {
+        "info": "Seleccione registros de depósito desbloqueados para retirar sus activos. SuvLPLímite efectivo y poder de minería disminuirán en consecuencia.",
+        "selectAllCurrentPage": "Seleccionar todo en la página actual",
+        "noUnlockedRecords": "No se encontraron registros desbloqueados.",
+        "statusUnlocked": "desbloqueado",
+        "selectedSummary": "Seleccionado para retirarse (agregado)",
+        "totalWvn2": "TotalwVN2",
+        "totalVlp": "TotalvLP",
+        "capDecrease": "vLPDisminución del límite",
+        "statusLocked": "bloqueado",
+        "statusConfirming": "CONFIRMANDO",
+        "withdrawSelected": "Retirar Seleccionado",
+        "withdrawPending": "Retirándose...",
+        "withdrawSuccess": "Retiro completado. Su límite efectivovLPha disminuido.",
+        "withdrawFailure": "El retiro falló. Por favor inténtalo de nuevo.",
+        "withdrawFailureCapExceeded": "El retiro falló. RetirarwVN2excedería su límite efectivo devLP. Primero retire algunosvLP."
+      },
+      "rewards": {
+        "info": "Reclame sus recompensas VIP directamente en su billetera. ¡Se aplican cero tarifas!",
+        "autoAccumulated": "Las recompensas se acumulan automáticamente cada 24 horas.",
+        "pendingRewards": "Recompensas pendientes",
+        "directClaim": "Reclamación Directa",
+        "feeRate": "Tasa de tarifa",
+        "receivingAmount": "Monto recibido",
+        "claimToWallet": "Reclamar a Wallet",
+        "lessThanOneAction": "Menos de 1BARKX",
+        "claimPending": "Reclamando recompensas...",
+        "claimSuccess": "Reclamó{amount}BARKXen su billetera.",
+        "claimFailure": "Reclamación fallida. Por favor inténtalo de nuevo.",
+        "noDeposits": "No se encontraron depósitos elegibles para reclamar."
+      },
+      "depositStatus": {
+        "title": "Estado personal",
+        "personalCapacity": "PersonalVNCapacidad",
+        "vlpToken": "vLPFicha",
+        "vlpCap": "vLPLímite efectivo",
+        "unusedCap": "{amount}vLPTapa sin usar",
+        "note": "Tiene capacidadvLPno utilizada.",
+        "cta": "Deposite másvLP",
+        "tail": "para maximizar el poder minero!"
+      }
+    },
+    "nodeBoost": {
+      "title": "Impulso de nodo",
+      "subtitle": "Gestión de impulsos personales",
+      "days": "dias",
+      "status": {
+        "noRecord": "Aún no se encontró ningún registroBarkX Poolpara esta billetera. Primero deposite en el grupo para desbloquear potenciadores personalizados.",
+        "loadFailed": "Los datos de Node Boost no se pudieron actualizar. La página muestra valores alternativos seguros."
+      },
+      "toggle": {
+        "emptyState": "Alternar estado vacío",
+        "mockData": "Ver: datos simulados"
+      },
+      "modal": {
+        "close": "Cerrar modal"
+      },
+      "totalCard": {
+        "title": "BarkX PoolBaseAPRMultiplicador"
+      },
+      "active": {
+        "title": "Desglose del impulso activo",
+        "empty": "No se encontraron impulsos activos para esta cuenta."
+      },
+      "available": {
+        "title": "Mejoras disponibles para desbloquear",
+        "allUnlocked": "¡Actualmente posees todos los potenciadores disponibles!"
+      },
+      "boosts": {
+        "permanent": {
+          "name": "Impulso permanente",
+          "meta": "Privilegio de cuenta de por vida"
+        },
+        "leadership": {
+          "name": "Impulso de medalla de liderazgo",
+          "expiresIn": "Vence en:",
+          "unlockHint": "Construya su red de nodos BarkX",
+          "upTo": "Hasta{rate}"
+        },
+        "compound": {
+          "name": "Aumento de medalla compuesto",
+          "nextEvaluation": "Próxima Evaluación en:",
+          "globalEvaluation": "Evaluación global en:",
+          "evaluatedRatio": "Último ratio evaluado:",
+          "weeklyEvaluation": "Evaluación global semanal",
+          "liveRatio": "Proporción de compuestos vivos:",
+          "upTo": "Hasta{rate}"
+        },
+        "device": {
+          "name": "Impulso del dispositivo",
+          "meta": "Bonificación de hardware inteligente elegible"
+        },
+        "penalty": {
+          "name": "Ajuste de penalización",
+          "meta": "Ajuste del protocolo de control de riesgos"
+        }
+      },
+      "modals": {
+        "permanent": {
+          "title": "Impulso permanente",
+          "text": "Gracias por su inmensa contribución al ecosistemaBarkAI. Este es el honor de tu vida."
+        },
+        "leadership": {
+          "title": "Impulso de medalla de liderazgo",
+          "text": "Su reciente liderazgo en la construcción de la red de nodos BarkX le ha valido esta medalla."
+        },
+        "compound": {
+          "title": "Aumento de medalla compuesto",
+          "text": "Si su ratio compuesto de por vida enBarkX Poolpermanece por encima <strong>{threshold}%</strong>, seguirás ganando esta medalla en la próxima fecha de evaluación. Su proporción compuesta en la última evaluación fue <strong style=\"color: var(--amber);\">{ratio}%</strong>."
+        },
+        "device": {
+          "title": "Impulso del dispositivo",
+          "text": "Este impulso está reservado para incentivos de hardware inteligente elegibles. ElAPIpúblico actual solo expone la tarifa aplicada, no los detalles de calificación."
+        },
+        "penalty": {
+          "title": "Ajuste de penalización",
+          "text": "La tasa de penalización es un ajuste de control de riesgo del protocolo que se aplica a su multiplicador final de Node Boost. Un valor negativo reduce su multiplicador de rendimiento efectivo."
+        },
+        "protocol": {
+          "title": "Parámetro de seguridad del protocolo",
+          "text": "El multiplicador de rendimiento agregado tiene un límite máximo de <strong style=\"color: var(--amber);\">x2.00</strong>. Las bonificaciones acumuladas que superan el +100 % se truncan para garantizar la sostenibilidad de la red y cumplir con los estrictos protocolos de gestión de riesgos del motor de aceleración."
+        }
+      }
+    },
+    "vn": {
+      "title": "Vector Nexus",
+      "subtitle": "Servicio de Transferencia",
+      "tabs": {
+        "newVn": "NuevoVN",
+        "usedVn": "UsadoVN"
+      },
+      "recipientAddress": "Dirección del destinatario",
+      "addressPlaceholder": "0x...",
+      "transferAmount": "Monto de la transferencia",
+      "balance": "Saldo",
+      "newVn": {
+        "info": "Transfiera su nuevoVector Nexus(VN) a otra dirección de billetera. Las operaciones son irreversibles en blockchain.",
+        "btn": "TransferirVN"
+      },
+      "usedVn": {
+        "info": "Transfiera suVector Nexususado (wVN/wVN2). Tenga en cuenta que las transferenciasERC721implican tarifas de gas ligeramente más altas.",
+        "btn": "Transferir"
+      },
+      "modal": {
+        "title": "Confirmar transferencia",
+        "confirm": "Firmar y continuar",
+        "pending": "Transferiendo...",
+        "aboutToTransfer": "Estás a punto de transferir",
+        "toAddress": "a la siguiente dirección:",
+        "warning": "⚠️ Verifique cuidadosamente la dirección del destinatario. Las transferencias de blockchain no se pueden revertir."
+      },
+      "transfer": {
+        "pending": "Transfiriendo{asset}...",
+        "success": "Transferencia completada.",
+        "failed": "La transferencia falló."
+      }
+    },
+    "noticeTest": {
+      "eyebrow": "Ruta de prueba",
+      "title": "Vista previa del aviso",
+      "subtitle": "Esta ruta de prueba solo se utiliza para obtener una vista previa de los componentes del aviso sin conectarlos a flujos comerciales reales. Actualmente incluye copia de mensajesBarkX PoolyUniswap. Haga clic en cualquier botón de vista previa para mostrar el aviso como un brindis flotante centrado en la parte inferior de la pantalla.",
+      "path": "Ruta: /test/barkx-pool-notice",
+      "floatingPreview": "Vista previa de aviso flotante",
+      "noActiveNotice": "Sin aviso activo",
+      "sourceBarkx": "BarkX",
+      "sourceUniswap": "Uniswap",
+      "showBarkxExample": "Mostrar ejemplo de BarkX",
+      "showUniswapExample": "Mostrar ejemploUniswap",
+      "hideNotice": "Ocultar aviso",
+      "pendingNotice": "Aviso pendiente",
+      "pendingHint": "Aviso flotante centrado en la parte inferior de la pantalla; Los botones de la billetera permanecen bloqueados mientras están visibles.",
+      "showPending": "Mostrar pendiente",
+      "hidePending": "Ocultar Pendiente",
+      "itemsCount": "{count}artículos",
+      "preview": "Vista previa",
+      "outcomeSuccess": "éxito",
+      "outcomeFailure": "fracaso",
+      "uniswapPreview": "UniswapVista previa",
+      "pair": "BARKX/USDT"
+    }
+  },
+  "messages": {
+    "barkxPool": {
+      "groups": {
+        "depositVnLp": "DepósitoVN+LP",
+        "depositWvnOnly": "DepósitowVNúnicamente",
+        "depositLpOnly": "DepósitoLPúnicamente",
+        "withdrawWvn": "RetirarwVN",
+        "withdrawLp": "RetirarLP",
+        "directClaim": "Reclamación Directa",
+        "compound": "compuesto"
+      },
+      "items": {
+        "deposit_vn_lp_success": "El depósito está completo.{lpAmount}LPse generó y se envió al grupo de minería.",
+        "deposit_vn_lp_failure_cap_reached": "Fallido.LPSe alcanzó el límite efectivo. Primero deposite másVN.",
+        "deposit_vn_lp_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "deposit_wvn_only_success": "El depósito está completo. Su límite efectivoLPse ha ampliado.",
+        "deposit_wvn_only_failure_requires_lp": "Fallido. Debe tener al menos{lpAmount}LPen el grupo de minería antes de depositarwVNadicional.",
+        "deposit_wvn_only_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "deposit_lp_only_success": "El depósito está completo. Ahora tienes más poder minero.",
+        "deposit_lp_only_failure_requires_vn": "Fallido. Debe tener al menos{vnAmount}VNen el grupo de minería antes de depositarLPadicional.",
+        "deposit_lp_only_failure_cap_reached": "Fallido.LPSe alcanzó el límite efectivo. Primero deposite másVN.",
+        "deposit_lp_only_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "withdraw_wvn_success_cap_decreased": "Se completa el retiro. Su límite efectivoLPha disminuido.",
+        "withdraw_wvn_success_all_removed": "Se completa el retiro. Todos suswVNyLPhan sido eliminados y devueltos a su billetera.",
+        "withdraw_wvn_failure_cap_exceeded": "Fallido.LPEl límite efectivo se excedería después de retirarVN. Primero elimineLP.",
+        "withdraw_wvn_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "withdraw_lp_success": "Se completa el retiro. Tu poder minero ha disminuido.",
+        "withdraw_lp_failure_requires_lp": "Fallido. Debes tener al menos{lpAmount}LPdepositado cuando tienesVNen el grupo de minería.",
+        "withdraw_lp_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "direct_claim_success": "Bien hecho.{barkxAmount}BARKXha sido reclamado en la billetera.",
+        "direct_claim_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "compound_success": "Bien hecho.{barkxAmount}BARKXse ha compuesto en{lpAmount}LPy se ha enviado al grupo de minería.",
+        "compound_failure_cap_exceeded": "Fallido.LPEl límite efectivo se excedería después de la capitalización. Primero deposite másVN.",
+        "compound_failure_retry": "Fallido. Por favor inténtalo de nuevo."
+      }
+    },
+    "uniswap": {
+      "groups": {
+        "swap": "Intercambiar",
+        "addLiquidity": "Agregar liquidez",
+        "removeLiquidity": "Eliminar liquidez"
+      },
+      "items": {
+        "uniswap_swap_success": "El intercambio está completo.",
+        "uniswap_swap_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "uniswap_add_liquidity_success": "Se proporciona liquidez. Se ha generado{lpAmount}LP.",
+        "uniswap_add_liquidity_failure_retry": "Fallido. Por favor inténtalo de nuevo.",
+        "uniswap_remove_liquidity_success": "Se elimina liquidez.{lpAmount}LPse ha quemado.",
+        "uniswap_remove_liquidity_failure_retry": "Fallido. Por favor inténtalo de nuevo."
+      }
+    }
+  },
+  "errors": {
+    "barkxPool": {
+      "paused": "Esta acción está actualmente pausada.",
+      "stillLocked": "Este activo todavía está bloqueado.",
+      "lpCapExceeded": "LPSe superó el límite efectivo. Primero agregue más capacidadVN.",
+      "noVnStaked": "No se apuesta ningúnVN, por lo queLPno se puede depositar por sí solo.",
+      "insufficientLp": "La posición actualLPes demasiado baja para depositar máswVN1.",
+      "belowLpMin": "Este retiro dejaríaLPpor debajo del requisito mínimo.",
+      "mustWithdrawAllLp": "Debe retirar todos losLPal eliminar el últimoVN.",
+      "invalidSignature": "Firma no válida. Solicite una nueva firma.",
+      "signatureExpired": "Firma caducada. Solicite una nueva firma.",
+      "alreadyUsedInModeA": "EstewVN1ya se usó en el Modo A y no puede volver a recibir el bono.",
+      "zeroAmount": "El importe debe ser mayor que cero.",
+      "nothingToWithdraw": "No hay nada disponible para retirar.",
+      "invalidBucket": "El depósito seleccionado no existe.",
+      "slippageExceeded": "Se superó el límite de deslizamiento. Ajuste los parámetros e inténtelo de nuevo.",
+      "insufficientBalance": "El saldo de recompensas del fondo común es insuficiente.",
+      "invalidParam": "Parámetro no válido. Por favor verifique los valores de entrada."
+    }
+  }
+}

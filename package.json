@@ -1,0 +1,35 @@
+{
+  "name": "demo2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "dev:pre": "vite --host --mode pre",
+    "dev:test": "vite --host --mode test",
+    "env:test": "vite --host --mode test",
+    "build": "vite build",
+    "build:test": "vite build --mode test",
+    "build:pre": "vite build --mode pre",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@uniswap/sdk-core": "^7.13.0",
+    "@uniswap/v2-sdk": "^4.20.0",
+    "less": "^4.5.1",
+    "pinia": "^3.0.4",
+    "relayx-api": "^0.0.3",
+    "unplugin-vue-components": "^30.0.0",
+    "vconsole": "^3.15.1",
+    "viem": "^2.47.6",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-pages": "^0.33.2",
+    "vue": "^3.5.24",
+    "vue-i18n": "^11.3.0",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.2.4"
+  }
+}
