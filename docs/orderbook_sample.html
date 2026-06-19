@@ -1,0 +1,1575 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Orderbook - BarkX Market</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 专属子选项卡样式 - 独立且无冲突 */
+            .sub-tab-container {
+                display: flex;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 4px;
+                margin-bottom: 20px;
+            }
+            .sub-tab-btn {
+                flex: 1;
+                padding: 10px;
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+            .sub-tab-btn.active {
+                background: rgba(56, 189, 248, 0.15);
+                color: var(--cyan);
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+            }
+            .sub-panel {
+                animation: fadeIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* 可折叠面板样式 */
+            .collapsible-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-dark);
+                border-radius: 20px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan);
+                font-size: 16px;
+            }
+            .collapsible-content {
+                padding: 0 20px 20px 20px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 订单列表 UI */
+            .order-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 12px;
+                min-height: 180px;
+                padding-right: 4px;
+            }
+            .order-item {
+                display: flex;
+                align-items: center;
+                padding: 14px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .order-item:hover {
+                border-color: var(--cyan);
+                background: rgba(56, 189, 248, 0.02);
+            }
+            .order-item.user-owned:hover {
+                border-color: var(--amber);
+                background: rgba(245, 158, 11, 0.02);
+            }
+            .order-checkbox {
+                margin-right: 14px;
+                accent-color: var(--cyan);
+                transform: scale(1.3);
+                cursor: pointer;
+            }
+            .order-checkbox.amber-check {
+                accent-color: var(--amber);
+            }
+
+            .order-details-left {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .order-id {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
+                color: var(--text-primary);
+                font-weight: 600;
+            }
+            .order-status {
+                font-size: 11px;
+                color: var(--text-muted);
+                font-weight: 500;
+            }
+
+            .order-assets-right {
+                text-align: right;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .asset-line {
+                font-size: 14px;
+                color: var(--text-secondary);
+                font-weight: 500;
+                font-family: "JetBrains Mono", monospace;
+            }
+            .asset-line-primary {
+                font-size: 14px;
+                color: var(--text-primary);
+                font-weight: 600;
+                font-family: "JetBrains Mono", monospace;
+            }
+
+            /* 分页按钮 UI */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 16px;
+                margin-top: 16px;
+                margin-bottom: 8px;
+            }
+            .page-btn {
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 8px;
+                color: var(--text-primary);
+                padding: 6px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            .page-btn:hover:not(:disabled) {
+                border-color: var(--cyan);
+                color: var(--cyan);
+                background: rgba(56, 189, 248, 0.1);
+            }
+            .page-btn.amber-btn:hover:not(:disabled) {
+                border-color: var(--amber);
+                color: var(--amber);
+                background: rgba(245, 158, 11, 0.1);
+            }
+            .page-btn:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+
+            /* 二级导航菜单系统 */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+
+            /* 快捷网格布局控制 */
+            .grid-price-selectors {
+                display: flex;
+                gap: 6px;
+                margin-bottom: 16px;
+                width: 100%;
+            }
+            .grid-price-selectors .p-btn {
+                flex: 1;
+                text-align: center;
+                padding: 10px 0;
+                font-weight: 600;
+                background: rgba(56, 189, 248, 0.05);
+                border: 1px solid rgba(56, 189, 248, 0.15);
+                color: var(--text-secondary);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .grid-price-selectors .p-btn:hover {
+                background: rgba(56, 189, 248, 0.1);
+                border-color: rgba(56, 189, 248, 0.3);
+            }
+            .grid-price-selectors .p-btn.active {
+                background: rgba(56, 189, 248, 0.2) !important;
+                color: var(--cyan) !important;
+                border-color: var(--cyan) !important;
+                box-shadow: 0 0 12px var(--cyan-glow);
+            }
+
+            .grid-amount-selectors {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            .grid-amount-selectors .p-btn {
+                text-align: center;
+                padding: 12px 0;
+                font-weight: 600;
+                font-size: 14px;
+                background: rgba(56, 189, 248, 0.05);
+                border: 1px solid rgba(56, 189, 248, 0.15);
+                color: var(--text-secondary);
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .grid-amount-selectors .p-btn:hover {
+                background: rgba(56, 189, 248, 0.1);
+                border-color: rgba(56, 189, 248, 0.3);
+            }
+            .grid-amount-selectors .p-btn.active {
+                background: rgba(56, 189, 248, 0.2) !important;
+                color: var(--cyan) !important;
+                border-color: var(--cyan) !important;
+                box-shadow: 0 0 12px var(--cyan-glow);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div
+                    class="brand-logo"
+                    title="BarkX"
+                    onclick="window.location.href = 'dashboard.html'"
+                    style="cursor: pointer"
+                ></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+                    <div
+                        class="nav-link nav-link-parent active"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div class="nav-back-btn" onclick="showNavLevel1()">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                    <a href="orderbook.html" class="nav-link active"
+                        >Orderbook</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div style="text-align: center; margin-bottom: 30px">
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Orderbook
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    vBARKX-BARKX Market
+                </p>
+            </div>
+
+            <div class="tabs">
+                <div
+                    class="tab active"
+                    id="main-tab-buy"
+                    onclick="switchMainTab('buy')"
+                >
+                    Buy vBARKX
+                </div>
+                <div
+                    class="tab"
+                    id="main-tab-sell"
+                    onclick="switchMainTab('sell')"
+                >
+                    Sell vBARKX
+                </div>
+            </div>
+
+            <div id="panel-buy" class="panel active">
+                <div class="info-box">
+                    Select your ideal price tier, then check orders from the
+                    list and pay BARKX to purchase vBARKX. Buyers bear a 0.5%
+                    transaction fee.
+                </div>
+
+                <div
+                    style="
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        margin-bottom: 8px;
+                        text-transform: uppercase;
+                    "
+                >
+                    Price Tier (BARKX per vBARKX)
+                </div>
+                <div class="sub-tab-container" id="buy-price-tabs">
+                    <button
+                        class="sub-tab-btn active"
+                        onclick="switchPriceTier('buy', '0.5')"
+                    >
+                        0.5
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchPriceTier('buy', '0.6')"
+                    >
+                        0.6
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchPriceTier('buy', '0.7')"
+                    >
+                        0.7
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchPriceTier('buy', '0.8')"
+                    >
+                        0.8
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchPriceTier('buy', '0.9')"
+                    >
+                        0.9
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchPriceTier('buy', '1.0')"
+                    >
+                        1.0
+                    </button>
+                </div>
+
+                <div
+                    class="data-row"
+                    style="
+                        background: rgba(0, 0, 0, 0.2);
+                        padding: 12px 16px;
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        margin-bottom: 12px;
+                    "
+                >
+                    <span class="data-lbl">Market Depth</span>
+                    <span class="data-val highlight" id="buy-depth-val"
+                        >0 vBARKX</span
+                    >
+                </div>
+
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 16px;
+                        margin-bottom: 4px;
+                    "
+                >
+                    <label
+                        style="
+                            display: flex;
+                            align-items: center;
+                            cursor: pointer;
+                            font-size: 13px;
+                            color: var(--text-secondary);
+                            font-weight: 500;
+                        "
+                    >
+                        <input
+                            type="checkbox"
+                            id="buy-select-all"
+                            style="
+                                margin-right: 8px;
+                                accent-color: var(--cyan);
+                                transform: scale(1.2);
+                            "
+                            onchange="toggleSelectAll('buy', this.checked)"
+                        />
+                        Select All on Current Page
+                    </label>
+                </div>
+
+                <div id="buy-order-list" class="order-list"></div>
+
+                <div class="pagination">
+                    <button
+                        id="buy-prev-page"
+                        class="page-btn"
+                        onclick="changePage('buy', -1)"
+                    >
+                        &#10094;
+                    </button>
+                    <span
+                        id="buy-page-info"
+                        style="
+                            font-size: 13px;
+                            color: var(--text-primary);
+                            font-weight: 600;
+                            letter-spacing: 1px;
+                        "
+                        >1 / 5</span
+                    >
+                    <button
+                        id="buy-next-page"
+                        class="page-btn"
+                        onclick="changePage('buy', 1)"
+                    >
+                        &#10095;
+                    </button>
+                </div>
+
+                <div
+                    style="
+                        background: rgba(0, 0, 0, 0.4);
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 16px;
+                        margin-top: 20px;
+                    "
+                >
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                            margin-bottom: 12px;
+                            letter-spacing: 0.5px;
+                        "
+                    >
+                        Selected to Purchase (Aggregated)
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Total Demand</span>
+                        <span
+                            class="data-val highlight"
+                            id="cart-buy-demand"
+                            style="font-size: 16px"
+                            >0 vBARKX</span
+                        >
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Total Payment</span>
+                        <span
+                            class="data-val highlight"
+                            id="cart-buy-payment"
+                            style="font-size: 16px"
+                            >0 BARKX</span
+                        >
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Fee (0.5% Burned)</span>
+                        <span
+                            class="data-val"
+                            id="cart-buy-fee"
+                            style="color: var(--red); font-size: 16px"
+                            >0 vBARKX</span
+                        >
+                    </div>
+                </div>
+
+                <button
+                    id="btn-buy-submit"
+                    class="btn-submit"
+                    onclick="handleWorkflow('buy')"
+                >
+                    Approve BARKX
+                </button>
+            </div>
+
+            <div
+                id="panel-sell"
+                class="panel"
+                style="
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                    box-shadow: none;
+                "
+            >
+                <div
+                    class="card"
+                    style="
+                        margin-bottom: 20px;
+                        border-color: rgba(56, 189, 248, 0.2);
+                    "
+                >
+                    <div
+                        class="card-title"
+                        style="
+                            color: var(--text-primary);
+                            border-bottom-color: rgba(255, 255, 255, 0.05);
+                            padding-bottom: 8px;
+                            margin-bottom: 16px;
+                        "
+                    >
+                        Place New Order
+                    </div>
+                    <div
+                        class="info-box"
+                        style="margin-bottom: 16px; font-size: 13px"
+                    >
+                        Specify a price tier, then choose the amount of vBARKX
+                        you wish to sell. Upon submission, your vBARKX will be
+                        escrowed in the smart contract. Listing is free of
+                        charge.
+                    </div>
+
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            margin-bottom: 8px;
+                            text-transform: uppercase;
+                        "
+                    >
+                        Select Price (BARKX per vBARKX)
+                    </div>
+                    <div class="grid-price-selectors">
+                        <button
+                            class="p-btn active"
+                            id="btn-p-05"
+                            onclick="setPlaceOrderPrice('0.5', this)"
+                        >
+                            0.5
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-p-06"
+                            onclick="setPlaceOrderPrice('0.6', this)"
+                        >
+                            0.6
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-p-07"
+                            onclick="setPlaceOrderPrice('0.7', this)"
+                        >
+                            0.7
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-p-08"
+                            onclick="setPlaceOrderPrice('0.8', this)"
+                        >
+                            0.8
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-p-09"
+                            onclick="setPlaceOrderPrice('0.9', this)"
+                        >
+                            0.9
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-p-10"
+                            onclick="setPlaceOrderPrice('1.0', this)"
+                        >
+                            1.0
+                        </button>
+                    </div>
+
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            margin-bottom: 8px;
+                            text-transform: uppercase;
+                        "
+                    >
+                        Select Amount (vBARKX)
+                    </div>
+                    <div class="grid-amount-selectors">
+                        <button
+                            class="p-btn active"
+                            id="btn-a-100"
+                            onclick="setPlaceOrderAmount(100, this)"
+                        >
+                            100
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-a-1000"
+                            onclick="setPlaceOrderAmount(1000, this)"
+                        >
+                            1,000
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-a-10000"
+                            onclick="setPlaceOrderAmount(10000, this)"
+                        >
+                            10,000
+                        </button>
+                        <button
+                            class="p-btn"
+                            id="btn-a-100000"
+                            onclick="setPlaceOrderAmount(100000, this)"
+                        >
+                            100,000
+                        </button>
+                    </div>
+
+                    <div
+                        class="data-row"
+                        style="padding-top: 4px; padding-bottom: 8px"
+                    >
+                        <span class="data-lbl">Estimated Value</span>
+                        <span
+                            class="data-val highlight"
+                            id="place-order-estimate"
+                            style="font-size: 18px; color: var(--cyan)"
+                            >50 BARKX</span
+                        >
+                    </div>
+                    <div
+                        class="data-row"
+                        style="
+                            border-bottom: none;
+                            padding-top: 8px;
+                            padding-bottom: 0;
+                        "
+                    >
+                        <span class="data-lbl">Wallet Balance</span>
+                        <span
+                            class="data-val"
+                            id="user-vbarkx-balance"
+                            style="
+                                font-family:
+                                    &quot;JetBrains Mono&quot;, monospace;
+                                font-size: 16px;
+                                font-weight: 600;
+                                color: var(--text-primary);
+                            "
+                            >250,000 vBARKX</span
+                        >
+                    </div>
+
+                    <button
+                        id="btn-sell-submit"
+                        class="btn-submit"
+                        onclick="handleWorkflow('sell-place')"
+                    >
+                        Approve vBARKX
+                    </button>
+                </div>
+
+                <div class="card" style="margin-bottom: 0">
+                    <div
+                        class="card-title"
+                        style="
+                            color: var(--amber);
+                            border-bottom-color: rgba(255, 255, 255, 0.05);
+                            padding-bottom: 8px;
+                            margin-bottom: 16px;
+                        "
+                    >
+                        Your Active Orders
+                    </div>
+                    <div class="info-box amber" style="margin-bottom: 16px">
+                        Select a price tier, then check orders from the list to
+                        revoke them. No fee for revoking orders.
+                    </div>
+
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            margin-bottom: 8px;
+                            text-transform: uppercase;
+                        "
+                    >
+                        Price Tier (BARKX per vBARKX)
+                    </div>
+                    <div class="sub-tab-container" id="sell-price-tabs">
+                        <button
+                            class="sub-tab-btn active"
+                            onclick="switchPriceTier('sell', '0.5')"
+                        >
+                            0.5
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            onclick="switchPriceTier('sell', '0.6')"
+                        >
+                            0.6
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            onclick="switchPriceTier('sell', '0.7')"
+                        >
+                            0.7
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            onclick="switchPriceTier('sell', '0.8')"
+                        >
+                            0.8
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            onclick="switchPriceTier('sell', '0.9')"
+                        >
+                            0.9
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            onclick="switchPriceTier('sell', '1.0')"
+                        >
+                            1.0
+                        </button>
+                    </div>
+
+                    <div
+                        class="data-row"
+                        style="
+                            background: rgba(0, 0, 0, 0.2);
+                            padding: 12px 16px;
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            margin-bottom: 12px;
+                        "
+                    >
+                        <span class="data-lbl">Your Total Depth</span>
+                        <span
+                            class="data-val"
+                            id="sell-depth-val"
+                            style="color: var(--amber)"
+                            >0 vBARKX</span
+                        >
+                    </div>
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-top: 16px;
+                            margin-bottom: 4px;
+                        "
+                    >
+                        <label
+                            style="
+                                display: flex;
+                                align-items: center;
+                                cursor: pointer;
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                font-weight: 500;
+                            "
+                        >
+                            <input
+                                type="checkbox"
+                                id="sell-select-all"
+                                style="
+                                    margin-right: 8px;
+                                    accent-color: var(--amber);
+                                    transform: scale(1.2);
+                                "
+                                onchange="toggleSelectAll('sell', this.checked)"
+                            />
+                            Select All on Current Page
+                        </label>
+                    </div>
+
+                    <div id="sell-order-list" class="order-list"></div>
+
+                    <div class="pagination">
+                        <button
+                            id="sell-prev-page"
+                            class="page-btn amber-btn"
+                            onclick="changePage('sell', -1)"
+                        >
+                            &#10094;
+                        </button>
+                        <span
+                            id="sell-page-info"
+                            style="
+                                font-size: 13px;
+                                color: var(--text-primary);
+                                font-weight: 600;
+                                letter-spacing: 1px;
+                            "
+                            >1 / 2</span
+                        >
+                        <button
+                            id="sell-next-page"
+                            class="page-btn amber-btn"
+                            onclick="changePage('sell', 1)"
+                        >
+                            &#10095;
+                        </button>
+                    </div>
+
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.4);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                            margin-top: 20px;
+                        "
+                    >
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                text-transform: uppercase;
+                                margin-bottom: 12px;
+                                letter-spacing: 0.5px;
+                            "
+                        >
+                            Selected to Revoke (Aggregated)
+                        </div>
+                        <div
+                            class="data-row"
+                            style="padding: 4px 0; border: none"
+                        >
+                            <span class="data-lbl">Total Revoke</span>
+                            <span
+                                class="data-val"
+                                id="cart-sell-revoke"
+                                style="color: var(--amber); font-size: 16px"
+                                >0 vBARKX</span
+                            >
+                        </div>
+                    </div>
+
+                    <button
+                        id="btn-revoke-submit"
+                        class="btn-submit amber"
+                        style="margin-top: 16px"
+                        onclick="handleWorkflow('sell-revoke')"
+                    >
+                        Revoke Selected
+                    </button>
+                </div>
+            </div>
+
+            <div class="collapsible-card">
+                <div
+                    class="collapsible-header"
+                    onclick="toggleCollapsible('deals-content', this)"
+                >
+                    <span style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            ></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Recent Deals
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div id="deals-content" class="collapsible-content">
+                    <div class="sub-tab-container" style="margin-bottom: 16px">
+                        <button
+                            class="sub-tab-btn active"
+                            id="btn-sub-deal-purchase"
+                            onclick="switchDealsTab('purchase')"
+                        >
+                            Purchase
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            id="btn-sub-deal-sale"
+                            onclick="switchDealsTab('sale')"
+                        >
+                            Sale
+                        </button>
+                    </div>
+
+                    <div
+                        id="deals-list-container"
+                        style="
+                            max-height: 320px;
+                            overflow-y: auto;
+                            padding-right: 4px;
+                        "
+                    ></div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // 基础框架与二级导航切换逻辑
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                    renderRecentDeals(); // 展开时渲染
+                }
+            }
+
+            // 全局模拟状态 definition
+            let currentMainTab = "buy";
+            let buyPriceTier = "0.5";
+            let buyPage = 1;
+            let sellPriceTier = "0.5";
+            let sellPage = 1;
+            let activeDealsTab = "purchase";
+
+            // 发起挂单暂存区状态
+            let placeOrderPrice = 0.5;
+            let placeOrderAmount = 100;
+
+            // 授权状态流模拟
+            let buyApproved = false;
+            let sellPlaceApproved = false;
+
+            // 提现与购买购物车映射 (ID => Checked)
+            let buyCart = new Map();
+            let sellCart = new Map();
+
+            // 生成静态全网开放订单模拟数据池 (按照档位区分，单页20条，共5页)
+            const mockMarketOrders = {};
+            const tiers = ["0.5", "0.6", "0.7", "0.8", "0.9", "1.0"];
+            tiers.forEach((tier) => {
+                const pFloat = parseFloat(tier);
+                mockMarketOrders[tier] = Array.from({ length: 92 }, (_, i) => {
+                    const amount = Math.floor((1000 + i * 123) / 100) * 100; // 确保整数截断
+                    return {
+                        id: `0x${Math.random().toString(16).substring(2, 6)}...${Math.random().toString(16).substring(2, 6)}`,
+                        keyId: `B-${tier}-${i}`,
+                        amount: amount,
+                        value: Math.floor(amount * pFloat),
+                    };
+                });
+            });
+
+            // 生成本用户的挂单模拟数据池 (2页共25条)
+            const mockUserOrders = {};
+            tiers.forEach((tier) => {
+                const pFloat = parseFloat(tier);
+                mockUserOrders[tier] = Array.from({ length: 25 }, (_, i) => {
+                    const amount = Math.floor((500 + i * 250) / 100) * 100;
+                    return {
+                        keyId: `S-${tier}-${i}`,
+                        time: `2026/06/${String(19 - (i % 3)).padStart(2, "0")} ${String(10 + (i % 5)).padStart(2, "0")}:${String(15 + ((i * 7) % 45)).padStart(2, "0")}`,
+                        amount: amount,
+                        value: Math.floor(amount * pFloat),
+                    };
+                });
+            });
+
+            // 切换主选项卡面板
+            function switchMainTab(type) {
+                currentMainTab = type;
+                document
+                    .getElementById("main-tab-buy")
+                    .classList.remove("active");
+                document
+                    .getElementById("main-tab-sell")
+                    .classList.remove("active");
+                document.getElementById("panel-buy").classList.remove("active");
+                document
+                    .getElementById("panel-sell")
+                    .classList.remove("active");
+
+                if (type === "buy") {
+                    document
+                        .getElementById("main-tab-buy")
+                        .classList.add("active");
+                    document
+                        .getElementById("panel-buy")
+                        .classList.add("active");
+                    renderMarketView();
+                } else {
+                    document
+                        .getElementById("main-tab-sell")
+                        .classList.add("active");
+                    document
+                        .getElementById("panel-sell")
+                        .classList.add("active");
+                    renderUserView();
+                }
+            }
+
+            // 切换特定面板之下的价格子选项卡
+            function switchPriceTier(panelType, tier) {
+                const containerId =
+                    panelType === "buy" ? "buy-price-tabs" : "sell-price-tabs";
+                const container = document.getElementById(containerId);
+                container
+                    .querySelectorAll(".sub-tab-btn")
+                    .forEach((b) => b.classList.remove("active"));
+
+                // 激活对应按钮
+                const index = tiers.indexOf(tier);
+                container
+                    .querySelectorAll(".sub-tab-btn")
+                    [index].classList.add("active");
+
+                if (panelType === "buy") {
+                    buyPriceTier = tier;
+                    buyPage = 1;
+                    renderMarketView();
+                } else {
+                    sellPriceTier = tier;
+                    sellPage = 1;
+                    renderUserView();
+                }
+            }
+
+            // 渲染全网开放购买清单
+            function renderMarketView() {
+                const records = mockMarketOrders[buyPriceTier];
+                const totalDepth = records.reduce(
+                    (acc, cur) => acc + cur.amount,
+                    0,
+                );
+                document.getElementById("buy-depth-val").innerText =
+                    `${totalDepth.toLocaleString("en-US")} vBARKX`;
+
+                const ITEMS_PER_PAGE = 20;
+                const totalPages =
+                    Math.ceil(records.length / ITEMS_PER_PAGE) || 1;
+                const start = (buyPage - 1) * ITEMS_PER_PAGE;
+                const pageData = records.slice(start, start + ITEMS_PER_PAGE);
+
+                let html = "";
+                let allChecked = true;
+
+                pageData.forEach((item) => {
+                    const isChecked = buyCart.has(item.keyId);
+                    if (!isChecked) allChecked = false;
+
+                    html += `
+                        <label class="order-item">
+                            <input type="checkbox" class="order-checkbox" value="${item.keyId}"
+                                   onchange="toggleItemSelection('buy', '${item.keyId}', ${item.amount}, ${item.value}, this.checked)" ${isChecked ? "checked" : ""}>
+                            <div class="order-details-left">
+                                <div class="order-id">${item.id}</div>
+                                <div class="order-status"></div>
+                            </div>
+                            <div class="order-assets-right">
+                                <div class="asset-line-primary">${item.amount.toLocaleString("en-US")} vBARKX</div>
+                                <div class="asset-line">${item.value.toLocaleString("en-US")} BARKX</div>
+                            </div>
+                        </label>
+                    `;
+                });
+
+                document.getElementById("buy-order-list").innerHTML = html;
+                document.getElementById("buy-select-all").checked =
+                    pageData.length > 0 && allChecked;
+                document.getElementById("buy-page-info").innerText =
+                    `${buyPage} / ${totalPages}`;
+                document.getElementById("buy-prev-page").disabled =
+                    buyPage === 1;
+                document.getElementById("buy-next-page").disabled =
+                    buyPage === totalPages;
+
+                updateCartTotals("buy");
+            }
+
+            // 渲染本用户已上链挂单清单
+            function renderUserView() {
+                const records = mockUserOrders[sellPriceTier];
+                const totalDepth = records.reduce(
+                    (acc, cur) => acc + cur.amount,
+                    0,
+                );
+                document.getElementById("sell-depth-val").innerText =
+                    `${totalDepth.toLocaleString("en-US")} vBARKX`;
+
+                const ITEMS_PER_PAGE = 20;
+                const totalPages =
+                    Math.ceil(records.length / ITEMS_PER_PAGE) || 1;
+                const start = (sellPage - 1) * ITEMS_PER_PAGE;
+                const pageData = records.slice(start, start + ITEMS_PER_PAGE);
+
+                let html = "";
+                let allChecked = true;
+
+                pageData.forEach((item) => {
+                    const isChecked = sellCart.has(item.keyId);
+                    if (!isChecked) allChecked = false;
+
+                    html += `
+                        <label class="order-item user-owned">
+                            <input type="checkbox" class="order-checkbox amber-check" value="${item.keyId}"
+                                   onchange="toggleItemSelection('sell', '${item.keyId}', ${item.amount}, ${item.value}, this.checked)" ${isChecked ? "checked" : ""}>
+                            <div class="order-details-left">
+                                <div class="order-id" style="color: var(--amber); font-size:12px;">${item.time}</div>
+                                <div class="order-status"></div>
+                            </div>
+                            <div class="order-assets-right">
+                                <div class="asset-line-primary">${item.amount.toLocaleString("en-US")} vBARKX</div>
+                                <div class="asset-line">${item.value.toLocaleString("en-US")} BARKX</div>
+                            </div>
+                        </label>
+                    `;
+                });
+
+                if (pageData.length === 0) {
+                    html = `<div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:13px;">No active orders on this price tier.</div>`;
+                }
+
+                document.getElementById("sell-order-list").innerHTML = html;
+                document.getElementById("sell-select-all").checked =
+                    pageData.length > 0 && allChecked;
+                document.getElementById("sell-page-info").innerText =
+                    `${sellPage} / ${totalPages}`;
+                document.getElementById("sell-prev-page").disabled =
+                    sellPage === 1;
+                document.getElementById("sell-next-page").disabled =
+                    sellPage === totalPages;
+
+                updateCartTotals("sell");
+            }
+
+            // 处理单选订单钩子
+            function toggleItemSelection(
+                type,
+                keyId,
+                amount,
+                value,
+                isChecked,
+            ) {
+                const cart = type === "buy" ? buyCart : sellCart;
+                if (isChecked) {
+                    cart.set(keyId, { amount, value });
+                } else {
+                    cart.delete(keyId);
+                }
+
+                // 动态拉正全选标志位
+                if (type === "buy") {
+                    checkPageAllSelected("buy", mockMarketOrders[buyPriceTier]);
+                    updateCartTotals("buy");
+                } else {
+                    checkPageAllSelected("sell", mockUserOrders[sellPriceTier]);
+                    updateCartTotals("sell");
+                }
+            }
+
+            // 检查当前页是否已被全部选中
+            function checkPageAllSelected(type, pool) {
+                const page = type === "buy" ? buyPage : sellPage;
+                const checkboxId =
+                    type === "buy" ? "buy-select-all" : "sell-select-all";
+                const cart = type === "buy" ? buyCart : sellCart;
+
+                const ITEMS_PER_PAGE = 20;
+                const start = (page - 1) * ITEMS_PER_PAGE;
+                const pageData = pool.slice(start, start + ITEMS_PER_PAGE);
+
+                let allChecked = true;
+                pageData.forEach((item) => {
+                    if (!cart.has(item.keyId)) allChecked = false;
+                });
+                document.getElementById(checkboxId).checked =
+                    pageData.length > 0 && allChecked;
+            }
+
+            // 全选与反选操控器
+            function toggleSelectAll(type, isChecked) {
+                const page = type === "buy" ? buyPage : sellPage;
+                const pool =
+                    type === "buy"
+                        ? mockMarketOrders[buyPriceTier]
+                        : mockUserOrders[sellPriceTier];
+                const cart = type === "buy" ? buyCart : sellCart;
+
+                const ITEMS_PER_PAGE = 20;
+                const start = (page - 1) * ITEMS_PER_PAGE;
+                const pageData = pool.slice(start, start + ITEMS_PER_PAGE);
+
+                pageData.forEach((item) => {
+                    if (isChecked) {
+                        cart.set(item.keyId, {
+                            amount: item.amount,
+                            value: item.value,
+                        });
+                    } else {
+                        cart.delete(item.keyId);
+                    }
+                });
+
+                if (type === "buy") {
+                    renderMarketView();
+                } else {
+                    renderUserView();
+                }
+            }
+
+            // 页面变更导航切换
+            function changePage(type, delta) {
+                if (type === "buy") {
+                    buyPage += delta;
+                    renderMarketView();
+                } else {
+                    sellPage += delta;
+                    renderUserView();
+                }
+            }
+
+            // 动态拉火两套购物车数据聚合与渲染显示
+            function updateCartTotals(type) {
+                if (type === "buy") {
+                    let totalDemand = 0;
+                    let totalPayment = 0;
+                    buyCart.forEach((v) => {
+                        totalDemand += v.amount;
+                        totalPayment += v.value;
+                    });
+
+                    // 扣除 0.5% 手续费规则
+                    let fee = Math.floor(totalDemand * 0.005);
+
+                    document.getElementById("cart-buy-demand").innerText =
+                        `${totalDemand.toLocaleString("en-US")} vBARKX`;
+                    document.getElementById("cart-buy-payment").innerText =
+                        `${totalPayment.toLocaleString("en-US")} BARKX`;
+                    document.getElementById("cart-buy-fee").innerText =
+                        `${fee.toLocaleString("en-US")} vBARKX`;
+                } else {
+                    let totalRevoke = 0;
+                    sellCart.forEach((v) => {
+                        totalRevoke += v.amount;
+                    });
+                    document.getElementById("cart-sell-revoke").innerText =
+                        `${totalRevoke.toLocaleString("en-US")} vBARKX`;
+                }
+            }
+
+            // 发起新订单联动状态逻辑
+            function setPlaceOrderPrice(priceStr, btnElement) {
+                placeOrderPrice = parseFloat(priceStr);
+                const parent = btnElement.parentElement;
+                parent
+                    .querySelectorAll(".p-btn")
+                    .forEach((b) => b.classList.remove("active"));
+                btnElement.classList.add("active");
+                calculatePlaceEstimate();
+            }
+
+            function setPlaceOrderAmount(amountInt, btnElement) {
+                placeOrderAmount = parseInt(amountInt);
+                const parent = btnElement.parentElement;
+                parent
+                    .querySelectorAll(".p-btn")
+                    .forEach((b) => b.classList.remove("active"));
+                btnElement.classList.add("active");
+                calculatePlaceEstimate();
+            }
+
+            function calculatePlaceEstimate() {
+                const est = Math.floor(placeOrderAmount * placeOrderPrice);
+                document.getElementById("place-order-estimate").innerText =
+                    `${est.toLocaleString("en-US")} BARKX`;
+            }
+
+            // 精简工作流授权流程点击处理逻辑
+            function handleWorkflow(actionType) {
+                if (actionType === "buy") {
+                    const btn = document.getElementById("btn-buy-submit");
+                    if (!buyApproved) {
+                        buyApproved = true;
+                        btn.innerText = "Purchase Selected";
+                        btn.style.background =
+                            "linear-gradient(135deg, var(--green) 0%, #16a34a 100%)";
+                        btn.style.boxShadow = "0 0 20px var(--green-glow)";
+                    } else {
+                        // 还原
+                        buyApproved = false;
+                        buyCart.clear();
+                        btn.innerText = "Approve BARKX";
+                        btn.style.background =
+                            "linear-gradient(135deg, var(--cyan) 0%, #0ea5e9 100%)";
+                        btn.style.boxShadow = "0 0 20px var(--cyan-glow)";
+                        renderMarketView();
+                    }
+                } else if (actionType === "sell-place") {
+                    const btn = document.getElementById("btn-sell-submit");
+                    if (!sellPlaceApproved) {
+                        sellPlaceApproved = true;
+                        btn.innerText = "Submit Order";
+                        btn.style.background =
+                            "linear-gradient(135deg, var(--green) 0%, #16a34a 100%)";
+                        btn.style.boxShadow = "0 0 20px var(--green-glow)";
+                    } else {
+                        sellPlaceApproved = false;
+                        btn.innerText = "Approve vBARKX";
+                        btn.style.background =
+                            "linear-gradient(135deg, var(--cyan) 0%, #0ea5e9 100%)";
+                        btn.style.boxShadow = "0 0 20px var(--cyan-glow)";
+                        alert(
+                            "Prototype Simulation: New active order successfully listed on-chain.",
+                        );
+                        renderUserView();
+                    }
+                } else if (actionType === "sell-revoke") {
+                    if (sellCart.size === 0) {
+                        alert("Please select at least one order to revoke.");
+                        return;
+                    }
+                    alert(
+                        `Prototype Simulation: ${sellCart.size} orders successfully revoked from smart contract. No fee incurred.`,
+                    );
+                    sellCart.clear();
+                    renderUserView();
+                }
+            }
+
+            // 切换近期成交小标签
+            function switchDealsTab(tab) {
+                activeDealsTab = tab;
+                document
+                    .getElementById("btn-sub-deal-purchase")
+                    .classList.remove("active");
+                document
+                    .getElementById("btn-sub-deal-sale")
+                    .classList.remove("active");
+
+                if (tab === "purchase") {
+                    document
+                        .getElementById("btn-sub-deal-purchase")
+                        .classList.add("active");
+                } else {
+                    document
+                        .getElementById("btn-sub-deal-sale")
+                        .classList.add("active");
+                }
+                renderRecentDeals();
+            }
+
+            // 渲染历史记录成交小看板 (精准20条整数截断展示)
+            function renderRecentDeals() {
+                const container = document.getElementById(
+                    "deals-list-container",
+                );
+                if (!container) return;
+
+                let html = "";
+                for (let i = 0; i < 20; i++) {
+                    const day = String(18 - Math.floor(i / 5)).padStart(2, "0");
+                    const hour = String(11 + (i % 4)).padStart(2, "0");
+                    const min = String(10 + ((i * 3) % 48)).padStart(2, "0");
+                    const timestamp = `2026/06/${day} ${hour}:${min}`;
+
+                    const volume = Math.floor((2000 + i * 750) / 100) * 100;
+                    const price = 0.5 + (i % 6) * 0.1;
+                    const value = Math.floor(volume * price);
+
+                    if (activeDealsTab === "purchase") {
+                        html += `
+                            <div class="data-row" style="padding: 10px 0;">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: var(--green);">Bought</div>
+                                    <div style="font-size: 11px; color: var(--text-muted); margin-top:2px;">${timestamp}</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="data-val" style="font-size:14px;">${volume.toLocaleString("en-US")} vBARKX</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary); margin-top:2px; font-family:'JetBrains Mono';">Paid: ${value.toLocaleString("en-US")} BARKX</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="data-row" style="padding: 10px 0;">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: var(--purple);">Sold</div>
+                                    <div style="font-size: 11px; color: var(--text-muted); margin-top:2px;">${timestamp}</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="data-val" style="font-size:14px;">${volume.toLocaleString("en-US")} vBARKX</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary); margin-top:2px; font-family:'JetBrains Mono';">Earned: ${value.toLocaleString("en-US")} BARKX</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                container.innerHTML = html;
+            }
+
+            // 初始化入口
+            window.addEventListener("DOMContentLoaded", () => {
+                renderMarketView();
+            });
+        </script>
+    </body>
+</html>
