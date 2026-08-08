@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Vector Nexus - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 隐藏数字输入框箭头，确保整数输入体验 */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            /* 覆盖 style.css，将输入框顶部的文字颜色从灰色改为白色 */
+            .input-header {
+                color: #ffffff !important;
+            }
+
+            /* 专属子选项卡样式 */
+            .sub-tab-container {
+                display: flex;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 4px;
+                margin-bottom: 20px;
+            }
+            .sub-tab-btn {
+                flex: 1;
+                padding: 10px;
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .sub-tab-btn.active {
+                background: rgba(56, 189, 248, 0.15);
+                color: var(--cyan);
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+            }
+            .sub-panel {
+                animation: fadeIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* 地址输入框专属微调 */
+            .address-input {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
+                letter-spacing: 0.5px;
+            }
+
+            /* 弹窗系统样式 */
+            .custom-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .custom-modal {
+                width: 88%;
+                max-width: 360px;
+                background: rgba(18, 14, 10, 0.95);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            }
+            .custom-modal.amber-theme {
+                border-color: var(--amber);
+            }
+            .custom-modal.show {
+                transform: translateY(0);
+            }
+            .custom-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .custom-modal-close:hover {
+                color: var(--amber);
+            }
+            .custom-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                padding-right: 24px;
+            }
+            .custom-modal-text {
+                font-size: 13px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+            .custom-modal-text strong {
+                color: var(--text-primary);
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="transfer-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeTransferModal(event)"
+        >
+            <div
+                class="custom-modal amber-theme"
+                id="transfer-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeTransferModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title" id="transfer-modal-title">
+                    Confirm Transfer
+                </div>
+                <div class="custom-modal-text" id="transfer-modal-text"></div>
+                <button
+                    class="btn-submit amber"
+                    style="margin-top: 20px"
+                    onclick="closeTransferModal()"
+                >
+                    Sign & Proceed
+                </button>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link active">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div style="text-align: center; margin-bottom: 30px">
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Vector Nexus
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    Transfer Service
+                </p>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('new-vn')">
+                    New VN
+                    <span style="font-size: 11px; opacity: 0.7">(ERC1155)</span>
+                </div>
+                <div class="tab" onclick="switchTab('used-vn')">
+                    Used VN
+                    <span style="font-size: 11px; opacity: 0.7">(ERC721)</span>
+                </div>
+            </div>
+
+            <div id="new-vn" class="panel active">
+                <div class="info-box">
+                    Transfer your New Vector Nexus (VN) to another wallet
+                    address. Operations are irreversible on the blockchain.
+                </div>
+
+                <div class="card" style="margin-top: 16px">
+                    <div class="input-group" style="margin-bottom: 24px">
+                        <div class="input-header">
+                            <span>Recipient Address</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="text"
+                                id="new-vn-address"
+                                class="input-field address-input"
+                                placeholder="0x..."
+                                autocomplete="off"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-header">
+                            <span>Transfer Amount</span>
+                            <span>Balance: 12</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                id="new-vn-amount"
+                                class="input-field"
+                                placeholder="0"
+                                step="1"
+                                min="1"
+                            />
+                            <div class="asset-badge">VN</div>
+                        </div>
+                        <div class="percent-btns">
+                            <button
+                                class="p-btn"
+                                onclick="
+                                    document.getElementById(
+                                        'new-vn-amount',
+                                    ).value = 12
+                                "
+                            >
+                                MAX
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="btn-submit"
+                        style="margin-top: 24px"
+                        onclick="initiateTransfer('VN')"
+                    >
+                        Transfer VN
+                    </button>
+                </div>
+            </div>
+
+            <div id="used-vn" class="panel">
+                <div class="info-box amber">
+                    Transfer your Used Vector Nexus (wVN/wVN2). Note that ERC721
+                    transfers involve slightly higher gas fees.
+                </div>
+
+                <div class="card" style="margin-top: 16px">
+                    <div class="sub-tab-container">
+                        <button
+                            class="sub-tab-btn active"
+                            onclick="switchUsedAsset('wVN', this)"
+                        >
+                            wVN
+                        </button>
+                        <button
+                            class="sub-tab-btn"
+                            onclick="switchUsedAsset('wVN2', this)"
+                        >
+                            wVN2
+                        </button>
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 24px">
+                        <div class="input-header">
+                            <span>Recipient Address</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="text"
+                                id="used-vn-address"
+                                class="input-field address-input"
+                                placeholder="0x..."
+                                autocomplete="off"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-header">
+                            <span>Transfer Amount</span>
+                            <span id="used-vn-balance">Balance: 2</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                id="used-vn-amount"
+                                class="input-field"
+                                placeholder="0"
+                                step="1"
+                                min="1"
+                            />
+                            <div
+                                class="asset-badge"
+                                style="
+                                    background: var(--bg-card-solid);
+                                    border-color: var(--amber);
+                                "
+                            >
+                                <span
+                                    id="used-vn-badge"
+                                    style="color: var(--amber)"
+                                    >wVN</span
+                                >
+                            </div>
+                        </div>
+                        <div class="percent-btns">
+                            <button class="p-btn" onclick="setMaxUsedVn()">
+                                MAX
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        id="btn-transfer-used"
+                        class="btn-submit amber"
+                        style="margin-top: 24px"
+                        onclick="initiateTransfer(selectedUsedAsset)"
+                    >
+                        Transfer wVN
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // 侧边栏导航控制
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // 主选项卡切换
+            function switchTab(tabId) {
+                document
+                    .querySelectorAll(".tabs > .tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll(".panel")
+                    .forEach((p) => p.classList.remove("active"));
+
+                const targetTabBtn = document.querySelector(
+                    `.tabs .tab[onclick="switchTab('${tabId}')"]`,
+                );
+                if (targetTabBtn) targetTabBtn.classList.add("active");
+
+                const targetPanel = document.getElementById(tabId);
+                if (targetPanel) targetPanel.classList.add("active");
+            }
+
+            // Used VN 面板内部的资产切换逻辑
+            let selectedUsedAsset = "wVN";
+            const mockBalances = {
+                wVN: 2,
+                wVN2: 0,
+            };
+
+            function switchUsedAsset(assetType, btnElement) {
+                // 更新按钮状态
+                document
+                    .querySelectorAll(".sub-tab-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                btnElement.classList.add("active");
+
+                selectedUsedAsset = assetType;
+
+                // 更新UI展示
+                document.getElementById("used-vn-badge").innerText = assetType;
+                document.getElementById("btn-transfer-used").innerText =
+                    `Transfer ${assetType}`;
+                document.getElementById("used-vn-balance").innerText =
+                    `Balance: ${mockBalances[assetType]}`;
+
+                // 清空输入框
+                document.getElementById("used-vn-amount").value = "";
+            }
+
+            function setMaxUsedVn() {
+                document.getElementById("used-vn-amount").value =
+                    mockBalances[selectedUsedAsset];
+            }
+
+            // 转账弹窗确认逻辑
+            function initiateTransfer(assetType) {
+                let addressInput, amountInput;
+
+                if (assetType === "VN") {
+                    addressInput =
+                        document.getElementById("new-vn-address").value;
+                    amountInput =
+                        document.getElementById("new-vn-amount").value;
+                } else {
+                    addressInput =
+                        document.getElementById("used-vn-address").value;
+                    amountInput =
+                        document.getElementById("used-vn-amount").value;
+                }
+
+                // 简单的防呆校验
+                if (!addressInput || addressInput.trim() === "") {
+                    alert("Please enter a valid recipient address.");
+                    return;
+                }
+                if (!amountInput || parseInt(amountInput) <= 0) {
+                    alert("Please enter a valid transfer amount.");
+                    return;
+                }
+
+                // 渲染弹窗内容
+                const textEl = document.getElementById("transfer-modal-text");
+                textEl.innerHTML = `
+                    <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                        You are about to transfer
+                        <strong style="color: var(--amber); font-size: 16px;">${amountInput} ${assetType}</strong>
+                        to the following address:
+                    </div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-primary); word-break: break-all; margin-bottom: 12px; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px;">
+                        ${addressInput}
+                    </div>
+                    <div style="font-size: 12px; color: var(--red);">
+                        ⚠️ Please verify the recipient address carefully. Blockchain transfers cannot be reversed.
+                    </div>
+                `;
+
+                // 显示弹窗
+                const overlay = document.getElementById(
+                    "transfer-modal-overlay",
+                );
+                const card = document.getElementById("transfer-modal-card");
+
+                document.body.style.overflow = "hidden";
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // 触发重绘
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeTransferModal(e) {
+                const overlay = document.getElementById(
+                    "transfer-modal-overlay",
+                );
+                const card = document.getElementById("transfer-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            }
+        </script>
+    </body>
+</html>

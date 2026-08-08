@@ -1,0 +1,1593 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Incubator - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* =========================================
+               EarnX / Incubator 深海蓝 (Deep Sky Blue) 视觉主题覆盖
+               ========================================= */
+            :root {
+                --cyan: #0284c7;
+                --cyan-glow: rgba(2, 132, 199, 0.4);
+                --cyan-bright: #38bdf8;
+
+                --bg-dark: #020617;
+                --bg-card: rgba(15, 23, 42, 0.95);
+                --bg-card-solid: #0f172a;
+                --border-dark: rgba(2, 132, 199, 0.2);
+                --border-glow: rgba(2, 132, 199, 0.4);
+            }
+
+            body {
+                background: var(--bg-dark) !important;
+            }
+
+            .header {
+                background: rgba(2, 6, 23, 0.85) !important;
+            }
+
+            .grid-bg {
+                background-image:
+                    linear-gradient(
+                        rgba(2, 132, 199, 0.05) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(2, 132, 199, 0.05) 1px,
+                        transparent 1px
+                    ) !important;
+            }
+
+            .glow-bg {
+                background:
+                    radial-gradient(
+                        ellipse at 20% 0%,
+                        rgba(2, 132, 199, 0.15) 0%,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 100%,
+                        rgba(56, 189, 248, 0.08) 0%,
+                        transparent 50%
+                    ) !important;
+            }
+
+            .tab.active {
+                background: rgba(2, 132, 199, 0.15) !important;
+            }
+            .info-box {
+                background: rgba(2, 132, 199, 0.05) !important;
+                border-left-color: var(--cyan) !important;
+            }
+            .info-box.amber {
+                border-left-color: var(--amber) !important;
+                background: rgba(245, 158, 11, 0.05) !important;
+            }
+            .p-btn {
+                background: rgba(2, 132, 199, 0.1) !important;
+                border-color: rgba(2, 132, 199, 0.3) !important;
+                color: var(--cyan-bright) !important;
+            }
+            .p-btn:hover {
+                background: rgba(2, 132, 199, 0.2) !important;
+            }
+            .nav-link:hover,
+            .nav-link.active {
+                background: rgba(2, 132, 199, 0.1) !important;
+                color: var(--cyan-bright) !important;
+            }
+
+            .btn-submit {
+                background: linear-gradient(
+                    135deg,
+                    #0284c7 0%,
+                    #0369a1 100%
+                ) !important;
+                color: #fff !important;
+                box-shadow: 0 0 20px rgba(2, 132, 199, 0.3) !important;
+            }
+
+            .btn-submit.amber {
+                background: linear-gradient(
+                    135deg,
+                    #f59e0b 0%,
+                    #d97706 100%
+                ) !important;
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
+            }
+
+            .brand-logo {
+                box-shadow: 0 0 10px rgba(2, 132, 199, 0.15) !important;
+            }
+            .brand-logo:hover {
+                box-shadow: 0 0 15px rgba(2, 132, 199, 0.4) !important;
+            }
+
+            /* 隐藏数字输入框箭头 */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            .input-header {
+                color: #ffffff !important;
+            }
+
+            /* 统计数据卡片网格 */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .stat-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+            }
+            .stat-card-title {
+                font-size: 11px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+            .stat-card-value {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 20px;
+                font-weight: 600;
+            }
+
+            /* 迷你调试 Toggle 按钮样式 */
+            .sim-toggle-mini {
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid var(--green);
+                color: var(--green);
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+            }
+            .sim-toggle-mini.danger-state {
+                background: rgba(239, 68, 68, 0.1);
+                border-color: var(--red);
+                color: var(--red);
+            }
+
+            /* 外部链接样式 */
+            .ext-link-inline {
+                color: var(--cyan-bright);
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            .ext-link-inline:hover {
+                text-decoration: underline;
+                color: #fff;
+            }
+
+            /* 专属子选项卡样式 (Leaderboard 使用) */
+            .sub-tab-container {
+                display: flex;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 4px;
+                margin-bottom: 16px;
+            }
+            .sub-tab-btn {
+                flex: 1;
+                padding: 10px;
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .sub-tab-btn.active {
+                background: rgba(2, 132, 199, 0.15);
+                color: var(--cyan-bright);
+                box-shadow: 0 0 10px rgba(2, 132, 199, 0.2);
+            }
+            .sub-panel {
+                animation: fadeIn 0.3s ease;
+            }
+
+            /* 可折叠面板样式 (Leaderboard 使用) */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 24px;
+                margin-bottom: 24px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan-bright);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 20px 20px 20px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 排行榜列表项 */
+            .lb-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .lb-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                font-size: 14px;
+            }
+            .lb-rank {
+                font-family: "JetBrains Mono", monospace;
+                color: var(--text-muted);
+                width: 24px;
+                font-weight: 600;
+            }
+            .lb-address {
+                font-family: "JetBrains Mono", monospace;
+                color: var(--text-primary);
+                flex: 1;
+            }
+            .lb-value {
+                font-family: "JetBrains Mono", monospace;
+                color: var(--cyan-bright);
+                font-weight: 600;
+            }
+            /* 冠亚季军荣誉色 */
+            .lb-item.top-1 .lb-rank {
+                color: #fbbf24;
+            }
+            .lb-item.top-2 .lb-rank {
+                color: #94a3b8;
+            }
+            .lb-item.top-3 .lb-rank {
+                color: #b45309;
+            }
+
+            /* 弹窗系统样式 */
+            .custom-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .custom-modal {
+                width: 88%;
+                max-width: 360px;
+                background: rgba(15, 23, 42, 0.95);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            }
+            .custom-modal.cyan-theme {
+                border-color: var(--cyan);
+            }
+            .custom-modal.show {
+                transform: translateY(0);
+            }
+            .custom-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .custom-modal-close:hover {
+                color: var(--cyan-bright);
+            }
+            .custom-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                padding-right: 24px;
+            }
+            .custom-modal-text {
+                font-size: 13px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+
+            /* 可点击卡片交互样式 (Personal Status) */
+            .clickable-card {
+                cursor: pointer;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+                position: relative;
+            }
+            .clickable-card.cyan:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(2, 132, 199, 0.15);
+            }
+
+            /* 右上角 info 图标系统 */
+            .info-icon {
+                color: var(--text-muted);
+                transition: color 0.3s ease;
+                display: flex;
+                align-items: center;
+            }
+            .clickable-card.cyan:hover .info-icon {
+                color: var(--cyan-bright);
+                opacity: 1;
+            }
+
+            /* 已完成转换面板样式 */
+            .done-state-panel {
+                text-align: center;
+                padding: 40px 20px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 10px;
+            }
+            .done-icon {
+                font-size: 40px;
+                color: var(--green);
+                margin-bottom: 16px;
+                filter: drop-shadow(0 0 10px var(--green-glow));
+            }
+            .done-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 12px;
+            }
+            .done-desc {
+                font-size: 14px;
+                color: var(--text-muted);
+                line-height: 1.6;
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="weight-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeWeightModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="weight-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeWeightModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Node Weight</div>
+                <div class="custom-modal-text">
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                        "
+                    >
+                        <div
+                            style="
+                                margin-bottom: 12px;
+                                padding-bottom: 12px;
+                                border-bottom: 1px dashed
+                                    rgba(255, 255, 255, 0.15);
+                            "
+                        >
+                            Yesterday's Weight:
+                            <span
+                                style="
+                                    color: var(--cyan-bright);
+                                    font-family:
+                                        &quot;JetBrains Mono&quot;, monospace;
+                                    font-size: 18px;
+                                    font-weight: 700;
+                                    margin-left: 8px;
+                                "
+                                >1.00</span
+                            >
+                        </div>
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                line-height: 1.6;
+                            "
+                        >
+                            This value is securely fetched from the
+                            <strong style="color: var(--text-primary)"
+                                >OpenDAO API</strong
+                            >.<br /><br />
+                            It acts as a multiplier applied directly to your
+                            <strong>30-Day Average Balance</strong>. A higher
+                            weight factor significantly amplifies your
+                            competitive proportion in the daily snapshot,
+                            securing a larger share of the BARKX conversion
+                            quota.<br /><br />
+                            To learn how to increase your Node Weight, please
+                            visit
+                            <a
+                                href="https://opendao.cc/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="ext-link-inline"
+                                >OpenDAO</a
+                            >
+                            for detailed requirements.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="incubate-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeIncubateModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="incubate-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeIncubateModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Confirm Incubation</div>
+                <div class="custom-modal-text" id="incubate-modal-text"></div>
+                <button
+                    class="btn-submit"
+                    style="margin-top: 20px"
+                    id="confirm-incubate-btn"
+                    onclick="executeIncubation(this)"
+                >
+                    Confirm
+                </button>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent active"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link active"
+                        >Incubator</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 20px;
+                    position: relative;
+                "
+            >
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Incubator
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    VBARKX-BARKX Gateway
+                </p>
+
+                <div
+                    style="
+                        position: absolute;
+                        right: 0;
+                        top: -10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        align-items: flex-end;
+                    "
+                >
+                    <button
+                        id="sim-toggle-btn"
+                        class="sim-toggle-mini"
+                        onclick="toggleMembership()"
+                    >
+                        DAO: Yes
+                    </button>
+                    <button
+                        id="sim-done-btn"
+                        class="sim-toggle-mini"
+                        onclick="toggleIncubateState()"
+                        style="
+                            color: var(--text-secondary);
+                            border-color: var(--border-dark);
+                            background: rgba(255, 255, 255, 0.05);
+                        "
+                    >
+                        Status: Active
+                    </button>
+                </div>
+            </div>
+
+            <div
+                id="restricted-view"
+                class="card"
+                style="
+                    display: none;
+                    text-align: center;
+                    border-style: dashed;
+                    border-color: var(--red);
+                    padding: 40px 20px;
+                    margin-top: 20px;
+                "
+            >
+                <span
+                    style="
+                        font-size: 48px;
+                        display: block;
+                        margin-bottom: 20px;
+                        filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.5));
+                    "
+                    >🔒</span
+                >
+                <h2
+                    style="
+                        color: var(--text-primary);
+                        font-size: 22px;
+                        margin-bottom: 12px;
+                    "
+                >
+                    Access Denied
+                </h2>
+                <p
+                    style="
+                        color: var(--text-muted);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    "
+                >
+                    Incubator services are exclusively available to registered
+                    OpenDAO members.<br />
+                    Please register your wallet with
+                    <a
+                        href="https://opendao.cc/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ext-link-inline"
+                        >OpenDAO</a
+                    >
+                    immediately to unlock access.
+                </p>
+            </div>
+
+            <div id="incubator-content">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('deposit')">
+                        Deposit
+                    </div>
+                    <div class="tab" onclick="switchTab('withdraw')">
+                        Withdraw
+                    </div>
+                    <div class="tab" onclick="switchTab('incubate')">
+                        Incubate
+                    </div>
+                </div>
+
+                <div id="deposit-panel" class="panel active">
+                    <div class="info-box">
+                        Deposit your vBARKX to build your 30-day average
+                        balance. Daily snapshots taken at
+                        <strong style="color: var(--cyan-bright)"
+                            >UTC 0:00</strong
+                        >
+                        determine your weight for the BARKX conversion quota in
+                        the next day.
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-header">
+                            <span>Amount to Deposit</span>
+                            <span id="wallet-vbarkx-balance"
+                                >Balance: 12,000.00 vBARKX</span
+                            >
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                id="deposit-input"
+                                class="input-field"
+                                placeholder="0.00"
+                            />
+                            <div class="asset-badge">vBARKX</div>
+                        </div>
+                        <div class="percent-btns">
+                            <button
+                                class="p-btn"
+                                onclick="
+                                    document.getElementById(
+                                        'deposit-input',
+                                    ).value = 12000.0
+                                "
+                            >
+                                MAX
+                            </button>
+                        </div>
+                    </div>
+                    <button
+                        id="deposit-action-btn"
+                        class="btn-submit"
+                        onclick="handleButtonAction(this, 'Deposit vBARKX')"
+                    >
+                        Approve vBARKX
+                    </button>
+                </div>
+
+                <div id="withdraw-panel" class="panel">
+                    <div class="info-box amber">
+                        Withdraw your vBARKX at any time with no lock-up period.
+                        This will affect your average balance calculations in
+                        the next snapshot.
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-header">
+                            <span>Amount to Withdraw</span>
+                            <span id="pool-vbarkx-balance"
+                                >Pool: 25,000.00 vBARKX</span
+                            >
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                id="withdraw-input"
+                                class="input-field"
+                                placeholder="0.00"
+                            />
+                            <div class="asset-badge">vBARKX</div>
+                        </div>
+                        <div class="percent-btns">
+                            <button
+                                class="p-btn"
+                                onclick="
+                                    document.getElementById(
+                                        'withdraw-input',
+                                    ).value = 25000.0
+                                "
+                            >
+                                MAX
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="btn-submit amber"
+                        style="margin-top: 16px"
+                        onclick="handleButtonAction(this, 'Withdraw vBARKX')"
+                    >
+                        Withdraw vBARKX
+                    </button>
+                </div>
+
+                <div id="incubate-panel" class="panel">
+                    <div id="incubate-active-view">
+                        <div class="info-box">
+                            Convert your deposited vBARKX to BARKX at
+                            <strong
+                                style="
+                                    color: var(--cyan-bright);
+                                    text-shadow: 0 0 10px var(--cyan-glow);
+                                "
+                                >1:1</strong
+                            >
+                            based on your allocated quota. Any unused conversion
+                            quota for the day will be forfeited and does not
+                            roll over to the next day.
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-card-title">
+                                    Global Quota Today
+                                </div>
+                                <div
+                                    class="stat-card-value"
+                                    style="color: var(--text-primary)"
+                                >
+                                    500,000
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-title">
+                                    Your Quota Today
+                                </div>
+                                <div class="stat-card-value green">
+                                    1,250.00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="input-group"
+                            style="border-color: var(--cyan)"
+                        >
+                            <div class="input-header">
+                                <span
+                                    style="
+                                        color: var(--cyan-bright);
+                                        font-weight: 600;
+                                    "
+                                    >Amount to Incubate</span
+                                >
+                                <span>Pool: 25,000.00 vBARKX</span>
+                            </div>
+                            <div class="input-row">
+                                <input
+                                    type="number"
+                                    id="incubate-input"
+                                    class="input-field"
+                                    placeholder="0.00"
+                                    style="color: var(--cyan-bright)"
+                                />
+                                <div class="asset-badge">vBARKX</div>
+                            </div>
+                            <div class="percent-btns">
+                                <button
+                                    class="p-btn"
+                                    onclick="
+                                        document.getElementById(
+                                            'incubate-input',
+                                        ).value = 1250.0;
+                                        document.getElementById(
+                                            'incubate-output',
+                                        ).value = 1250.0;
+                                    "
+                                >
+                                    MAX
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                text-align: center;
+                                color: var(--text-muted);
+                                font-size: 24px;
+                                margin: 8px 0;
+                            "
+                        >
+                            ↓
+                        </div>
+
+                        <div class="input-group" style="margin-top: 8px">
+                            <div class="input-header">
+                                <span>Converted Amount</span>
+                            </div>
+                            <div class="input-row">
+                                <input
+                                    type="number"
+                                    id="incubate-output"
+                                    class="input-field"
+                                    placeholder="0.00"
+                                    readonly
+                                />
+                                <div class="asset-badge">BARKX</div>
+                            </div>
+                        </div>
+
+                        <button
+                            class="btn-submit"
+                            style="margin-top: 16px"
+                            onclick="openIncubateModal()"
+                        >
+                            Incubate to BARKX
+                        </button>
+                    </div>
+
+                    <div
+                        id="incubate-done-view"
+                        class="done-state-panel"
+                        style="display: none"
+                    >
+                        <div class="done-icon">
+                            <svg
+                                width="40"
+                                height="40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                ></path>
+                                <polyline
+                                    points="22 4 12 14.01 9 11.01"
+                                ></polyline>
+                            </svg>
+                        </div>
+                        <div class="done-title">Incubation Completed</div>
+                        <div class="done-desc">
+                            You have already executed your conversion for
+                            today.<br />
+                            Please come back tomorrow at
+                            <strong>UTC 0:00</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="card clickable-card cyan"
+                    style="margin-top: 24px; border-color: var(--border-glow)"
+                    onclick="openWeightModal()"
+                >
+                    <div
+                        class="info-icon"
+                        style="position: absolute; top: 16px; right: 16px"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+
+                    <div
+                        class="card-title"
+                        style="
+                            color: var(--cyan-bright);
+                            border-bottom-color: var(--border-glow);
+                        "
+                    >
+                        Personal Status
+                    </div>
+
+                    <div class="data-row">
+                        <span class="data-lbl">My Deposit</span>
+                        <div style="text-align: right">
+                            <div
+                                class="data-val"
+                                style="color: var(--cyan-bright)"
+                            >
+                                25,000.00 vBARKX
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-row">
+                        <span class="data-lbl">30-Day Average</span>
+                        <div style="text-align: right">
+                            <div
+                                class="data-val"
+                                style="color: var(--text-primary)"
+                            >
+                                18,450.00 vBARKX
+                            </div>
+                            <div
+                                style="
+                                    font-size: 12px;
+                                    color: var(--text-muted);
+                                    margin-top: 4px;
+                                "
+                            >
+                                Yesterday Snapshot
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-row" style="border-bottom: none">
+                        <span class="data-lbl">Current Quota Share</span>
+                        <div style="text-align: right">
+                            <div class="data-val green">0.25%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible-card">
+                    <div
+                        class="collapsible-header"
+                        onclick="toggleCollapsible('leaderboard-content', this)"
+                    >
+                        <span
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            Leaderboard
+                        </span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div id="leaderboard-content" class="collapsible-content">
+                        <div class="sub-tab-container">
+                            <button
+                                class="sub-tab-btn active"
+                                onclick="
+                                    switchSubTab(
+                                        this,
+                                        'lb-quota',
+                                        'leaderboard-content',
+                                    )
+                                "
+                            >
+                                Top Quota
+                            </button>
+                            <button
+                                class="sub-tab-btn"
+                                onclick="
+                                    switchSubTab(
+                                        this,
+                                        'lb-incubation',
+                                        'leaderboard-content',
+                                    )
+                                "
+                            >
+                                Top Incubation
+                            </button>
+                        </div>
+
+                        <div
+                            id="lb-quota"
+                            class="sub-panel"
+                            style="display: block"
+                        >
+                            <div class="lb-list">
+                                <div class="lb-item top-1">
+                                    <span class="lb-rank">1</span
+                                    ><span class="lb-address">0x8a...4f2</span
+                                    ><span class="lb-value">12.45%</span>
+                                </div>
+                                <div class="lb-item top-2">
+                                    <span class="lb-rank">2</span
+                                    ><span class="lb-address">0x1b...e8c</span
+                                    ><span class="lb-value">10.20%</span>
+                                </div>
+                                <div class="lb-item top-3">
+                                    <span class="lb-rank">3</span
+                                    ><span class="lb-address">0x5c...11a</span
+                                    ><span class="lb-value">8.95%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">4</span
+                                    ><span class="lb-address">0x3d...99b</span
+                                    ><span class="lb-value">7.30%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">5</span
+                                    ><span class="lb-address">0x9f...22c</span
+                                    ><span class="lb-value">6.15%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">6</span
+                                    ><span class="lb-address">0x2a...bb1</span
+                                    ><span class="lb-value">5.40%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">7</span
+                                    ><span class="lb-address">0x4e...78d</span
+                                    ><span class="lb-value">4.85%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">8</span
+                                    ><span class="lb-address">0x6b...44e</span
+                                    ><span class="lb-value">4.20%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">9</span
+                                    ><span class="lb-address">0x1c...a3f</span
+                                    ><span class="lb-value">3.90%</span>
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">10</span
+                                    ><span class="lb-address">0x7d...f2a</span
+                                    ><span class="lb-value">3.50%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            id="lb-incubation"
+                            class="sub-panel"
+                            style="display: none"
+                        >
+                            <div class="lb-list">
+                                <div class="lb-item top-1">
+                                    <span class="lb-rank">1</span
+                                    ><span class="lb-address">0x8a...4f2</span
+                                    ><span class="lb-value"
+                                        >452,100.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item top-2">
+                                    <span class="lb-rank">2</span
+                                    ><span class="lb-address">0x3d...99b</span
+                                    ><span class="lb-value"
+                                        >385,450.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item top-3">
+                                    <span class="lb-rank">3</span
+                                    ><span class="lb-address">0x1b...e8c</span
+                                    ><span class="lb-value"
+                                        >340,200.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">4</span
+                                    ><span class="lb-address">0x9f...22c</span
+                                    ><span class="lb-value"
+                                        >295,800.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">5</span
+                                    ><span class="lb-address">0x5c...11a</span
+                                    ><span class="lb-value"
+                                        >275,000.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">6</span
+                                    ><span class="lb-address">0x2a...bb1</span
+                                    ><span class="lb-value"
+                                        >240,500.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">7</span
+                                    ><span class="lb-address">0x4e...78d</span
+                                    ><span class="lb-value"
+                                        >210,300.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">8</span
+                                    ><span class="lb-address">0x7d...f2a</span
+                                    ><span class="lb-value"
+                                        >185,600.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">9</span
+                                    ><span class="lb-address">0x6b...44e</span
+                                    ><span class="lb-value"
+                                        >165,900.00 BARKX</span
+                                    >
+                                </div>
+                                <div class="lb-item">
+                                    <span class="lb-rank">10</span
+                                    ><span class="lb-address">0x1c...a3f</span
+                                    ><span class="lb-value"
+                                        >150,200.00 BARKX</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer style="text-align: center; margin-top: 24px">
+                <div
+                    style="
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        opacity: 0.6;
+                        letter-spacing: 0.5px;
+                    "
+                >
+                    Powered by OpenDAO
+                </div>
+            </footer>
+        </main>
+
+        <script>
+            // 侧边导航逻辑
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // 选项卡切换逻辑
+            function switchTab(tabId) {
+                document
+                    .querySelectorAll(".tabs > .tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll(".panel")
+                    .forEach((p) => p.classList.remove("active"));
+
+                const targetTabBtn = document.querySelector(
+                    `.tabs .tab[onclick="switchTab('${tabId}')"]`,
+                );
+                if (targetTabBtn) targetTabBtn.classList.add("active");
+
+                const targetPanel = document.getElementById(tabId + "-panel");
+                if (targetPanel) targetPanel.classList.add("active");
+            }
+
+            // 子选项卡切换逻辑 (用于 Leaderboard)
+            function switchSubTab(btnElement, targetPanelId, parentPanelId) {
+                const parentPanel = document.getElementById(parentPanelId);
+                parentPanel
+                    .querySelectorAll(".sub-tab-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                btnElement.classList.add("active");
+                parentPanel.querySelectorAll(".sub-panel").forEach((panel) => {
+                    panel.style.display = "none";
+                });
+                document.getElementById(targetPanelId).style.display = "block";
+            }
+
+            // 折叠面板切换逻辑
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                }
+            }
+
+            // DAO Membership Simulation Logic
+            let isMember = true;
+            function toggleMembership() {
+                isMember = !isMember;
+                const btn = document.getElementById("sim-toggle-btn");
+                const content = document.getElementById("incubator-content");
+                const restrictedView =
+                    document.getElementById("restricted-view");
+
+                if (isMember) {
+                    btn.innerText = "DAO: Yes";
+                    btn.classList.remove("danger-state");
+                    content.style.display = "block";
+                    restrictedView.style.display = "none";
+                } else {
+                    btn.innerText = "DAO: No";
+                    btn.classList.add("danger-state");
+                    content.style.display = "none";
+                    restrictedView.style.display = "block";
+                }
+            }
+
+            // Incubation Already Done Simulation Logic
+            let isIncubationDone = false;
+            function toggleIncubateState() {
+                isIncubationDone = !isIncubationDone;
+                const btn = document.getElementById("sim-done-btn");
+                const activeView = document.getElementById(
+                    "incubate-active-view",
+                );
+                const doneView = document.getElementById("incubate-done-view");
+
+                if (isIncubationDone) {
+                    btn.innerText = "Status: Done";
+                    btn.style.color = "var(--green)";
+                    btn.style.borderColor = "var(--green)";
+                    btn.style.background = "rgba(34, 197, 94, 0.1)";
+                    activeView.style.display = "none";
+                    doneView.style.display = "block";
+                } else {
+                    btn.innerText = "Status: Active";
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255,255,255,0.05)";
+                    activeView.style.display = "block";
+                    doneView.style.display = "none";
+                }
+            }
+
+            // Incubate 1:1 联动
+            document
+                .getElementById("incubate-input")
+                .addEventListener("input", function () {
+                    const val = parseFloat(this.value) || 0;
+                    document.getElementById("incubate-output").value =
+                        val > 0 ? val.toFixed(2) : "";
+                });
+
+            // 统一的按钮提交防抖/交互模拟逻辑 (用于 Deposit 和 Withdraw)
+            function handleButtonAction(btn, resetText) {
+                if (btn.innerText === "Approve vBARKX") {
+                    btn.innerText = "Approving...";
+                    btn.style.opacity = "0.7";
+                    btn.style.pointerEvents = "none";
+                    setTimeout(() => {
+                        btn.innerText = "Deposit vBARKX";
+                        btn.style.opacity = "1";
+                        btn.style.pointerEvents = "auto";
+                    }, 1500);
+                    return;
+                }
+
+                btn.innerText = "Confirming...";
+                btn.style.opacity = "0.7";
+                btn.style.pointerEvents = "none";
+
+                setTimeout(() => {
+                    btn.innerText = "Success";
+                    btn.style.background =
+                        "linear-gradient(135deg, var(--green) 0%, #059669 100%)";
+                    btn.style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.3)";
+
+                    setTimeout(() => {
+                        btn.innerText = resetText;
+                        btn.style.background = ""; // 回退到 CSS 默认
+                        btn.style.boxShadow = "";
+                        btn.style.opacity = "1";
+                        btn.style.pointerEvents = "auto";
+                    }, 2000);
+                }, 1500);
+            }
+
+            // Incubate 二次确认弹窗逻辑
+            function openIncubateModal() {
+                const inputVal =
+                    parseFloat(
+                        document.getElementById("incubate-input").value,
+                    ) || 0;
+                if (inputVal <= 0) {
+                    alert("Please enter a valid amount.");
+                    return;
+                }
+
+                const overlay = document.getElementById(
+                    "incubate-modal-overlay",
+                );
+                const card = document.getElementById("incubate-modal-card");
+                const textEl = document.getElementById("incubate-modal-text");
+
+                document.body.style.overflow = "hidden";
+
+                textEl.innerHTML = `
+                    <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                        You are about to incubate
+                        <strong style="color: var(--cyan-bright); font-size: 16px;">${inputVal.toFixed(2)} vBARKX</strong>
+                        into BARKX at a 1:1 ratio.
+                    </div>
+                    <div style="font-size: 12px; color: var(--amber);">
+                        ⚠️ Please note: You can only execute <strong>ONE</strong> conversion per day. Proceed with caution.
+                    </div>
+                `;
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // trigger reflow
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeIncubateModal(e) {
+                const overlay = document.getElementById(
+                    "incubate-modal-overlay",
+                );
+                const card = document.getElementById("incubate-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                    // Reset button inside modal if it was in loading state
+                    const btn = document.getElementById("confirm-incubate-btn");
+                    btn.innerText = "Confirm";
+                    btn.style.background = "";
+                    btn.style.boxShadow = "";
+                    btn.style.opacity = "1";
+                    btn.style.pointerEvents = "auto";
+                }, 300);
+            }
+
+            function executeIncubation(btn) {
+                btn.innerText = "Confirming...";
+                btn.style.opacity = "0.7";
+                btn.style.pointerEvents = "none";
+
+                setTimeout(() => {
+                    btn.innerText = "Success";
+                    btn.style.background =
+                        "linear-gradient(135deg, var(--green) 0%, #059669 100%)";
+                    btn.style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.3)";
+
+                    setTimeout(() => {
+                        closeIncubateModal();
+
+                        // 触发切换到 Done 状态 (真实环境根据区块反馈刷新)
+                        if (!isIncubationDone) {
+                            toggleIncubateState();
+                        }
+                    }, 2000);
+                }, 1500);
+            }
+
+            // ==========================================
+            // Node Weight 详情弹窗逻辑
+            // ==========================================
+            function openWeightModal() {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                document.body.style.overflow = "hidden";
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // trigger reflow
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeWeightModal(e) {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                if (overlay && card) {
+                    document.body.style.overflow = "";
+                    overlay.style.opacity = "0";
+                    card.classList.remove("show");
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 300);
+                }
+            }
+        </script>
+    </body>
+</html>

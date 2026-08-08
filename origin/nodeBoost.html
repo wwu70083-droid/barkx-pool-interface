@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Node Boost - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 顶部总加成卡片 */
+            .total-boost-card {
+                text-align: center;
+                /* 进一步增加 bottom padding，使其与 top padding 绝对平衡，彻底消除下坠感 */
+                padding: 48px 20px 48px 20px;
+                background: radial-gradient(
+                    circle at center top,
+                    rgba(245, 158, 11, 0.15) 0%,
+                    rgba(0, 0, 0, 0.4) 80%
+                );
+                border: 1px solid rgba(245, 158, 11, 0.3);
+                border-radius: 20px;
+                margin-bottom: 24px;
+                box-shadow: 0 10px 40px rgba(245, 158, 11, 0.1);
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+            .total-boost-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(245, 158, 11, 0.15);
+            }
+            .total-boost-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--amber),
+                    transparent
+                );
+                opacity: 0.5;
+            }
+            .total-title {
+                font-size: 13px;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 12px;
+                font-weight: 600;
+            }
+            .total-val {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 56px;
+                font-weight: 700;
+                color: var(--amber);
+                text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+                line-height: 1;
+                margin-bottom: 0;
+                transition:
+                    color 0.3s ease,
+                    text-shadow 0.3s ease;
+            }
+            /* 空状态下的总数值样式 */
+            .total-val.empty {
+                color: var(--text-secondary);
+                text-shadow: none;
+            }
+
+            /* 右上角 info 图标 */
+            .info-icon {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                transition: color 0.3s ease;
+            }
+            .total-boost-card:hover .info-icon {
+                color: var(--amber);
+            }
+
+            /* 风控参数声明框 */
+            .protocol-limit-box {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 14px 16px;
+                text-align: left;
+                font-size: 12px;
+                line-height: 1.6;
+                color: var(--text-secondary);
+            }
+            .protocol-limit-box strong.highlight {
+                color: var(--amber);
+            }
+            .protocol-limit-box strong {
+                color: var(--text-primary);
+            }
+
+            /* 加成明细列表 */
+            .boost-breakdown-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                padding: 24px;
+            }
+            .breakdown-header {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--cyan);
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .boost-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px 20px;
+                margin-bottom: 12px;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            .boost-row:hover {
+                border-color: rgba(56, 189, 248, 0.4);
+                background: rgba(56, 189, 248, 0.05);
+                transform: translateY(-2px);
+            }
+            .boost-row:last-child {
+                margin-bottom: 0;
+            }
+
+            .boost-info {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .boost-name {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text-primary);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .boost-meta {
+                font-size: 12px;
+                color: var(--text-muted);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .boost-rate {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--green);
+                text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+            }
+
+            /* 空状态 */
+            .empty-state {
+                text-align: center;
+                padding: 40px 20px;
+                color: var(--text-muted);
+                font-size: 14px;
+                font-style: italic;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                border: 1px dashed var(--border-dark);
+            }
+
+            /* 可折叠面板样式 (待解锁加成) */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 24px;
+                margin-bottom: 24px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 24px 24px 24px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 待解锁行样式 - 已移除交互 */
+            .avail-boost-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 0;
+                border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            }
+            .avail-boost-row:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            .avail-name {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 4px;
+            }
+            .avail-meta {
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+            .avail-rate {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--text-secondary);
+            }
+
+            /* Boost 详情弹窗样式 */
+            .boost-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .boost-modal {
+                width: 88%;
+                max-width: 360px;
+                background: rgba(18, 14, 10, 0.95);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            }
+            .boost-modal.show {
+                transform: translateY(0);
+            }
+            .boost-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .boost-modal-close:hover {
+                color: var(--amber);
+            }
+            .boost-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 12px;
+                padding-right: 24px; /* 防止标题与关闭按钮重叠 */
+            }
+            .boost-modal-text {
+                font-size: 14px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+            .boost-modal-text strong {
+                color: var(--cyan);
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="boost-modal-overlay"
+            class="boost-modal-overlay"
+            onclick="closeBoostModal(event)"
+        >
+            <div
+                class="boost-modal"
+                id="boost-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="boost-modal-close" onclick="closeBoostModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="boost-modal-title" id="boost-modal-title">
+                    Title
+                </div>
+                <div class="boost-modal-text" id="boost-modal-text">
+                    Text content goes here.
+                </div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link active"
+                        >Node Boost</a
+                    >
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 30px;
+                    position: relative;
+                "
+            >
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Node Boost
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    Personal Boosts Management
+                </p>
+
+                <div
+                    style="
+                        position: absolute;
+                        right: 0;
+                        top: -10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        align-items: flex-end;
+                    "
+                >
+                    <button
+                        id="btn-toggle-empty"
+                        onclick="toggleEmptyState()"
+                        style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid var(--border-dark);
+                            color: var(--text-secondary);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        "
+                    >
+                        Toggle Empty State
+                    </button>
+                </div>
+            </div>
+
+            <div class="total-boost-card" onclick="openBoostModal('protocol')">
+                <div class="info-icon">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <div class="total-title">BarkX Pool Base APR Multiplier</div>
+                <div class="total-val" id="total-multiplier-val">x1.00</div>
+            </div>
+
+            <div class="boost-breakdown-card">
+                <div class="breakdown-header">
+                    <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <polygon
+                            points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+                        ></polygon>
+                    </svg>
+                    Active Boost Breakdown
+                </div>
+                <div id="boost-list-container"></div>
+            </div>
+
+            <div class="collapsible-card">
+                <div
+                    class="collapsible-header"
+                    onclick="
+                        toggleCollapsible('available-boosts-content', this)
+                    "
+                >
+                    <span style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                            ></path>
+                        </svg>
+                        Available Boosts to Unlock
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div id="available-boosts-content" class="collapsible-content">
+                    <div id="available-list-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // ==========================================
+            // 数据模型与业务逻辑
+            // ==========================================
+
+            // 备份初始的丰厚数据
+            const originalBoostData = {
+                permanentRate: 0.08, // 8%
+                leaderMedalRate: 0.2, // 20%
+                leaderDaysLeft: 360, // 倒计时天数
+                compoundMedalRate: 0.1, // 10%
+                compoundRatio: 55, // 55%
+                compoundDaysToEval: 2, // 当前拥有时的倒计时
+                deviceRate: 0, // 暂缓开发, 设为 0
+                userPenaltyRate: 0, // 暂缓开发, 设为 0
+            };
+
+            // 当前使用的数据集
+            let userBoostData = { ...originalBoostData };
+            let isBoostEmpty = false;
+
+            // 全局评估常量配置 (给未获得奖章的人看)
+            const CONFIG = {
+                potentialLeaderRate: 0.2,
+                potentialCompoundRate: 0.1,
+                globalEvalDays: 7,
+            };
+
+            // 弹窗文案数据
+            const modalContents = {
+                permanent: {
+                    title: "Permanent Boost",
+                    text: "Thank you for your immense contribution to the BarkAI ecosystem. This is your lifetime honor.",
+                },
+                leadership: {
+                    title: "Leadership Medal Boost",
+                    text: "Your recent leadership in building the BarkX node network has earned you this medal.",
+                },
+                compound: {
+                    title: "Compound Medal Boost",
+                    text: 'If your lifetime compound ratio in the BarkX Pool remains above <strong>50%</strong>, you will continue to earn this medal on the next evaluation date. Your compound ratio at the last evaluation was <strong style="color: var(--amber);">{ratio}%</strong>.',
+                },
+                protocol: {
+                    title: "Protocol Security Parameter",
+                    text: 'The aggregate yield multiplier is hard-capped at <strong style="color: var(--amber);">x2.00</strong>. Cumulative bonuses exceeding +100% are truncated to ensure network sustainability and adhere to the acceleration engine\'s strict risk management protocols.',
+                },
+            };
+
+            // 折叠面板控制逻辑
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                }
+            }
+
+            // 弹窗控制逻辑
+            function openBoostModal(type) {
+                const overlay = document.getElementById("boost-modal-overlay");
+                const card = document.getElementById("boost-modal-card");
+                const title = document.getElementById("boost-modal-title");
+                const text = document.getElementById("boost-modal-text");
+
+                if (modalContents[type]) {
+                    document.body.style.overflow = "hidden";
+
+                    title.innerText = modalContents[type].title;
+
+                    // 动态注入复投比例 (如果没有获得，默认显示 0 或系统传入的值)
+                    let currentRatio =
+                        userBoostData.compoundRatio > 0
+                            ? userBoostData.compoundRatio
+                            : 0;
+                    let contentText = modalContents[type].text;
+
+                    if (type === "compound") {
+                        contentText = contentText.replace(
+                            "{ratio}",
+                            currentRatio,
+                        );
+                    }
+                    text.innerHTML = contentText;
+
+                    overlay.style.display = "flex";
+                    void overlay.offsetWidth; // 触发重绘以应用过渡动画
+                    overlay.style.opacity = "1";
+                    card.classList.add("show");
+                }
+            }
+
+            function closeBoostModal(e) {
+                const overlay = document.getElementById("boost-modal-overlay");
+                const card = document.getElementById("boost-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            }
+
+            // 切换空状态的调试函数
+            function toggleEmptyState() {
+                isBoostEmpty = !isBoostEmpty;
+                const btn = document.getElementById("btn-toggle-empty");
+
+                if (isBoostEmpty) {
+                    btn.innerText = "View: Mock Data";
+                    btn.style.color = "var(--cyan)";
+                    btn.style.borderColor = "rgba(56, 189, 248, 0.3)";
+                    btn.style.background = "rgba(56, 189, 248, 0.1)";
+
+                    // 模拟三项数值全为 0
+                    userBoostData.permanentRate = 0;
+                    userBoostData.leaderMedalRate = 0;
+                    userBoostData.compoundMedalRate = 0;
+                    userBoostData.compoundRatio = 0; // 同步清零展示用的比例
+                } else {
+                    btn.innerText = "Toggle Empty State";
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255, 255, 255, 0.05)";
+
+                    // 恢复原始数据
+                    userBoostData.permanentRate =
+                        originalBoostData.permanentRate;
+                    userBoostData.leaderMedalRate =
+                        originalBoostData.leaderMedalRate;
+                    userBoostData.compoundMedalRate =
+                        originalBoostData.compoundMedalRate;
+                    userBoostData.compoundRatio =
+                        originalBoostData.compoundRatio;
+                }
+
+                renderNodeBoost();
+            }
+
+            function renderNodeBoost() {
+                const container = document.getElementById(
+                    "boost-list-container",
+                );
+                const availContainer = document.getElementById(
+                    "available-list-container",
+                );
+
+                let activeBoosts = [];
+                let availHtml = "";
+
+                // 1. 计算 userBonusRate 和收集已激活加成
+                let userBonusRate = 0;
+
+                // Permanent Boost
+                if (userBoostData.permanentRate > 0) {
+                    userBonusRate += userBoostData.permanentRate;
+                    activeBoosts.push({
+                        rate: userBoostData.permanentRate,
+                        html: `
+                        <div class="boost-row" onclick="openBoostModal('permanent')">
+                            <div class="boost-info">
+                                <div class="boost-name">Permanent Boost</div>
+                                <div class="boost-meta">Lifetime account privilege</div>
+                            </div>
+                            <div class="boost-rate">+${(userBoostData.permanentRate * 100).toFixed(0)}%</div>
+                        </div>`,
+                    });
+                }
+                // 注意：Permanent Boost 是隐藏荣誉，不放入待解锁列表
+
+                // Leadership Medal Boost
+                if (userBoostData.leaderMedalRate > 0) {
+                    userBonusRate += userBoostData.leaderMedalRate;
+                    const daysLeftStyle =
+                        userBoostData.leaderDaysLeft <= 3
+                            ? "color: #ec4899;"
+                            : "";
+
+                    activeBoosts.push({
+                        rate: userBoostData.leaderMedalRate,
+                        html: `
+                        <div class="boost-row" onclick="openBoostModal('leadership')">
+                            <div class="boost-info">
+                                <div class="boost-name">Leadership Medal Boost</div>
+                                <div class="boost-meta">
+                                    <span>Expires in: <strong style="${daysLeftStyle}">${userBoostData.leaderDaysLeft} Days</strong></span>
+                                </div>
+                            </div>
+                            <div class="boost-rate">+${(userBoostData.leaderMedalRate * 100).toFixed(0)}%</div>
+                        </div>`,
+                    });
+                } else {
+                    // 如果没有获得，则渲染到待解锁列表 (无交互, 且使用 Up to xx% 标签)
+                    availHtml += `
+                    <div class="avail-boost-row">
+                        <div class="boost-info">
+                            <div class="avail-name">Leadership Medal Boost</div>
+                            <div class="avail-meta">Build your BarkX Node Network</div>
+                        </div>
+                        <div class="avail-rate">Up to ${(CONFIG.potentialLeaderRate * 100).toFixed(0)}%</div>
+                    </div>`;
+                }
+
+                // Compound Medal Boost
+                if (userBoostData.compoundMedalRate > 0) {
+                    userBonusRate += userBoostData.compoundMedalRate;
+                    const evalDaysStyle =
+                        userBoostData.compoundDaysToEval <= 3
+                            ? "color: #ec4899;"
+                            : "";
+
+                    activeBoosts.push({
+                        rate: userBoostData.compoundMedalRate,
+                        html: `
+                        <div class="boost-row" onclick="openBoostModal('compound')">
+                            <div class="boost-info">
+                                <div class="boost-name">Compound Medal Boost</div>
+                                <div class="boost-meta">
+                                    <span>Next Evaluation in: <strong style="${evalDaysStyle}">${userBoostData.compoundDaysToEval} Days</strong></span>
+                                </div>
+                            </div>
+                            <div class="boost-rate">+${(userBoostData.compoundMedalRate * 100).toFixed(0)}%</div>
+                        </div>`,
+                    });
+                } else {
+                    // 如果没有获得，则渲染到待解锁列表 (带有全局评估倒计时, 无交互)
+                    availHtml += `
+                    <div class="avail-boost-row">
+                        <div class="boost-info">
+                            <div class="avail-name">Compound Medal Boost</div>
+                            <div class="avail-meta">
+                                <span>Global evaluation in: <strong>${CONFIG.globalEvalDays} Days</strong></span>
+                            </div>
+                        </div>
+                        <div class="avail-rate">Up to ${(CONFIG.potentialCompoundRate * 100).toFixed(0)}%</div>
+                    </div>`;
+                }
+
+                // 按加成数值从大到小排序已激活的项
+                activeBoosts.sort((a, b) => b.rate - a.rate);
+
+                // 将排序后的项拼接为 HTML
+                let html = activeBoosts.map((b) => b.html).join("");
+
+                // 空状态处理 (已获得的面板)
+                if (html === "") {
+                    html = `<div class="empty-state">No active boosts found for this account.</div>`;
+                }
+
+                // 空状态处理 (待解锁的面板)
+                if (availHtml === "") {
+                    availHtml = `
+                        <div class="empty-state" style="padding: 20px; border: none; background: transparent;">
+                            You currently possess all available boosts!
+                        </div>`;
+                }
+
+                container.innerHTML = html;
+                availContainer.innerHTML = availHtml;
+
+                // 2. 计算最终 Node Boost
+                const rawBoost =
+                    (1 + userBonusRate) * (1 + userBoostData.userPenaltyRate);
+
+                // [CRITICAL] 应用协议风控上限：最高不能超过 x2.00
+                const nodeBoost = Math.min(rawBoost, 2.0);
+
+                // 3. 渲染总结果并调整空状态下的 UI 样式
+                const totalValElement = document.getElementById(
+                    "total-multiplier-val",
+                );
+                totalValElement.innerText = `x${nodeBoost.toFixed(2)}`;
+
+                if (nodeBoost <= 1.0) {
+                    totalValElement.classList.add("empty");
+                } else {
+                    totalValElement.classList.remove("empty");
+                }
+            }
+
+            // 页面加载完成后执行渲染
+            window.addEventListener("DOMContentLoaded", renderNodeBoost);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,2705 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>BarkX Pool - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 隐藏数字输入框箭头 */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            /* 覆盖 style.css，将输入框顶部的文字颜色从灰色改为白色 */
+            .input-header {
+                color: #ffffff !important;
+            }
+
+            /* 专属子选项卡样式 - 独立且无冲突 */
+            .sub-tab-container {
+                display: flex;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 4px;
+                margin-bottom: 20px;
+            }
+            .sub-tab-btn {
+                flex: 1;
+                padding: 10px;
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .sub-tab-btn.active {
+                background: rgba(56, 189, 248, 0.15);
+                color: var(--cyan);
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+            }
+            .sub-panel {
+                animation: fadeIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* 统计数据卡片网格 */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            /* 三列紧凑布局 (用于 APY 面板) */
+            .stats-grid.three-cols {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .stat-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+            }
+            .stats-grid.three-cols .stat-card {
+                padding: 12px 6px;
+            }
+
+            .stat-card-title {
+                font-size: 11px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+            .stats-grid.three-cols .stat-card-title {
+                font-size: 10px;
+                letter-spacing: 0;
+                margin-bottom: 6px;
+            }
+
+            .stat-card-value {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 20px;
+                font-weight: 600;
+            }
+            .stats-grid.three-cols .stat-card-value {
+                font-size: 16px;
+            }
+
+            /* 交互式节点增益卡片样式 */
+            .stat-card.interactive {
+                background: rgba(245, 158, 11, 0.05);
+                border: 1px dashed rgba(245, 158, 11, 0.3);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .stat-card.interactive:hover {
+                background: rgba(245, 158, 11, 0.12);
+                border-style: solid;
+                border-color: var(--amber);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+            }
+            .stat-card.interactive .stat-card-title {
+                color: var(--amber);
+            }
+
+            /* 可折叠面板样式 (用于 Options) */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 16px 16px 16px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 切换开关样式 (Toggle Switch) */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 44px;
+                height: 24px;
+            }
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                transition: 0.4s;
+                border-radius: 24px;
+                border: 1px solid var(--border-dark);
+            }
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 3px;
+                bottom: 3px;
+                background-color: var(--text-secondary);
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+            input:checked + .slider {
+                background-color: rgba(56, 189, 248, 0.2);
+                border-color: var(--cyan);
+            }
+            input:checked + .slider:before {
+                transform: translateX(20px);
+                background-color: var(--cyan);
+            }
+
+            /* 凭证选择列表 UI */
+            .order-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 12px;
+                min-height: 200px;
+                padding-right: 4px;
+            }
+            .order-item {
+                display: flex;
+                align-items: center;
+                padding: 14px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .order-item:hover {
+                border-color: var(--amber);
+                background: rgba(245, 158, 11, 0.05);
+            }
+            .order-checkbox {
+                margin-right: 14px;
+                accent-color: var(--amber);
+                transform: scale(1.3);
+                cursor: pointer;
+            }
+
+            /* 左右两列布局 */
+            .order-details-left {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .order-id {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
+                color: var(--text-primary);
+                font-weight: 600;
+            }
+            .order-status {
+                font-size: 11px;
+                color: var(--green);
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+
+            .order-assets-right {
+                text-align: right;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .asset-line {
+                font-size: 14px;
+                color: var(--text-secondary);
+                font-weight: 500;
+            }
+
+            /* 分页按钮 UI */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 16px;
+                margin-top: 16px;
+                margin-bottom: 8px;
+            }
+            .page-btn {
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 8px;
+                color: var(--text-primary);
+                padding: 6px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            .page-btn:hover:not(:disabled) {
+                border-color: var(--amber);
+                color: var(--amber);
+                background: rgba(245, 158, 11, 0.1);
+            }
+            .page-btn:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+
+            /* 可点击卡片交互样式 */
+            .clickable-card {
+                cursor: pointer;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+                position: relative;
+            }
+            .clickable-card.cyan:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(56, 189, 248, 0.15);
+            }
+
+            /* 右上角标签与 info 图标系统 */
+            .card-corner-badge {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                transition: color 0.3s ease;
+            }
+            .info-icon {
+                color: var(--text-muted);
+                transition: color 0.3s ease;
+                display: flex;
+                align-items: center;
+            }
+            .status-active {
+                color: var(--green);
+            }
+            .status-inactive {
+                color: var(--text-muted);
+            }
+            .clickable-card.cyan:hover .card-corner-badge,
+            .clickable-card.cyan:hover .info-icon {
+                color: var(--cyan);
+                opacity: 1;
+            }
+
+            /* 弹窗系统样式 */
+            .custom-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .custom-modal {
+                width: 88%;
+                max-width: 360px;
+                background: rgba(18, 14, 10, 0.95);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            }
+            .custom-modal.cyan-theme {
+                border-color: var(--cyan);
+            }
+            .custom-modal.show {
+                transform: translateY(0);
+            }
+            .custom-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .custom-modal-close:hover {
+                color: var(--cyan);
+            }
+            .custom-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                padding-right: 24px;
+            }
+            .custom-modal-text {
+                font-size: 13px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+            .custom-modal-text strong {
+                color: var(--text-primary);
+            }
+
+            /* 提交按钮禁用状态样式 */
+            .btn-submit:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+                box-shadow: none !important;
+                background: rgba(255, 255, 255, 0.05) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                color: var(--text-muted) !important;
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+
+            /* 弹窗内的子信息卡片统一样式 */
+            .modal-inner-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            .modal-inner-card:last-child {
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="custom-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="custom-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title" id="custom-modal-title">
+                    Title
+                </div>
+                <div class="custom-modal-text" id="custom-modal-text">
+                    Content
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="weight-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeWeightModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="weight-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeWeightModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Node Weight</div>
+                <div class="custom-modal-text">
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                        "
+                    >
+                        <div
+                            style="
+                                margin-bottom: 12px;
+                                padding-bottom: 12px;
+                                border-bottom: 1px dashed
+                                    rgba(255, 255, 255, 0.15);
+                            "
+                        >
+                            Yesterday's Weight:
+                            <span
+                                style="
+                                    color: var(--cyan);
+                                    font-family:
+                                        &quot;JetBrains Mono&quot;, monospace;
+                                    font-size: 18px;
+                                    font-weight: 700;
+                                    margin-left: 8px;
+                                "
+                                >1.00</span
+                            >
+                        </div>
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                line-height: 1.6;
+                            "
+                        >
+                            This value is securely fetched from the
+                            <strong style="color: var(--text-primary)"
+                                >OpenDAO API</strong
+                            >.<br /><br />
+                            It acts as a multiplier applied directly to your
+                            <strong>30-Day Average Balance</strong>. A higher
+                            weight factor significantly amplifies your
+                            competitive proportion in the daily snapshot,
+                            securing a larger share of the BARKX conversion
+                            quota.<br /><br />
+                            To learn how to increase your Node Weight, please
+                            visit
+                            <a
+                                href="https://opendao.cc/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="ext-link-inline"
+                                >OpenDAO</a
+                            >
+                            for detailed requirements.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link active">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 30px;
+                    position: relative;
+                "
+            >
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    BarkX Pool
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    BARKX-USDT Liquidity Mining
+                </p>
+
+                <div
+                    style="
+                        position: absolute;
+                        right: 0;
+                        top: -10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        align-items: flex-end;
+                    "
+                >
+                    <button
+                        id="btn-toggle-scenario"
+                        onclick="toggleScenario()"
+                        style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid var(--border-dark);
+                            color: var(--text-secondary);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        "
+                    >
+                        Scenario: Default
+                    </button>
+                    <button
+                        id="btn-toggle-rewards"
+                        onclick="toggleRewardsStatus()"
+                        style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid var(--border-dark);
+                            color: var(--text-secondary);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        "
+                    >
+                        Toggle Rewards
+                    </button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('dep-vn')">
+                    Deposit VN
+                </div>
+                <div class="tab" onclick="switchTab('dep-more')">
+                    Deposit More
+                </div>
+                <div class="tab" onclick="switchTab('withdraw')">Withdraw</div>
+                <div class="tab" onclick="switchTab('rewards')">Rewards</div>
+            </div>
+
+            <div id="dep-vn" class="panel active">
+                <div class="info-box">
+                    Deposit your new VN with USDT to auto-mint LP. Get
+                    <strong
+                        style="
+                            color: var(--cyan);
+                            text-shadow: 0 0 10px var(--cyan-glow);
+                        "
+                        >100 BARKX</strong
+                    >
+                    bonus per VN!
+                </div>
+
+                <div class="stats-grid three-cols">
+                    <div class="stat-card">
+                        <div class="stat-card-title">APR</div>
+                        <div class="stat-card-value green">142.50%</div>
+                    </div>
+                    <div
+                        class="stat-card interactive"
+                        onclick="window.location.href = 'nodeBoost.html'"
+                        title="View Node Boost Breakdown"
+                    >
+                        <div class="stat-card-title">Node Boost</div>
+                        <div
+                            class="stat-card-value amber"
+                            style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 6px;
+                            "
+                        >
+                            x1.00
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                style="opacity: 0.8; margin-top: 1px"
+                            >
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-title">Lock Period</div>
+                        <div
+                            class="stat-card-value"
+                            style="color: var(--text-primary)"
+                        >
+                            360 Days
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="stat-card"
+                    style="
+                        margin-top: -4px;
+                        margin-bottom: 16px;
+                        padding: 14px;
+                        background: rgba(56, 189, 248, 0.05);
+                        border-color: rgba(56, 189, 248, 0.2);
+                    "
+                >
+                    <div
+                        style="
+                            font-size: 11px;
+                            color: var(--text-secondary);
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Your Personal Boosted APY
+                    </div>
+                    <div
+                        class="stat-card-value boosted-apy-display"
+                        style="
+                            color: var(--cyan);
+                            font-size: 22px;
+                            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+                        "
+                    >
+                        0.00%
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 16px">
+                    <div class="input-header">
+                        <span>Deposit New VN</span><span>Balance: 3</span>
+                    </div>
+                    <div class="input-row">
+                        <input
+                            type="number"
+                            id="deposit-vn-input"
+                            class="input-field"
+                            placeholder="0"
+                            step="1"
+                            oninput="calculateDepositVN()"
+                        />
+                        <div class="asset-badge">VN</div>
+                    </div>
+                    <div class="percent-btns">
+                        <button class="p-btn" onclick="setMaxVN()">MAX</button>
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        font-size: 24px;
+                        margin: 8px 0;
+                    "
+                >
+                    ↓
+                </div>
+
+                <div
+                    class="input-group"
+                    style="margin-top: 8px; border-color: var(--cyan)"
+                >
+                    <div class="input-header">
+                        <span style="color: var(--cyan); font-weight: 600"
+                            >Bonus to Deposit</span
+                        >
+                        <span>BARKX Price: 1.134 USDT</span>
+                    </div>
+                    <div class="input-row">
+                        <input
+                            type="number"
+                            id="deposit-vn-bonus"
+                            class="input-field"
+                            placeholder="0.00"
+                            readonly
+                            style="color: var(--cyan)"
+                        />
+                        <div class="asset-badge">BARKX</div>
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        font-size: 24px;
+                        margin: 8px 0;
+                    "
+                >
+                    +
+                </div>
+
+                <div class="input-group" style="margin-top: 8px">
+                    <div class="input-header">
+                        <span>Pairing with</span>
+                        <span>Balance: 5,000.00 USDT</span>
+                    </div>
+                    <div class="input-row">
+                        <input
+                            type="number"
+                            id="deposit-vn-pairing"
+                            class="input-field"
+                            placeholder="0.00"
+                            readonly
+                        />
+                        <div class="asset-badge">USDT</div>
+                    </div>
+                </div>
+
+                <div class="data-row" style="margin-top: 16px">
+                    <span class="data-lbl">Predicted LP Amount</span
+                    ><span
+                        class="data-val highlight"
+                        id="deposit-vn-predicted-lp"
+                        >~0.000000 LP</span
+                    >
+                </div>
+
+                <button class="btn-submit">Deposit VN + LP</button>
+                <div
+                    style="
+                        text-align: center;
+                        margin-top: 12px;
+                        font-size: 12px;
+                        color: var(--text-muted);
+                    "
+                >
+                    Unlock Date: 2027-03-22
+                </div>
+            </div>
+
+            <div id="dep-more" class="panel">
+                <div class="sub-tab-container">
+                    <button
+                        class="sub-tab-btn active"
+                        onclick="switchSubTab(this, 'dep-more-lp', 'dep-more')"
+                    >
+                        LP
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchSubTab(this, 'dep-more-wvn', 'dep-more')"
+                    >
+                        wVN
+                    </button>
+                </div>
+
+                <div id="dep-more-lp" class="sub-panel" style="display: block">
+                    <div class="info-box">
+                        Deposit your LP to increase mining power.
+                    </div>
+
+                    <div class="stats-grid three-cols">
+                        <div class="stat-card">
+                            <div class="stat-card-title">APR</div>
+                            <div class="stat-card-value green">142.50%</div>
+                        </div>
+                        <div
+                            class="stat-card interactive"
+                            onclick="window.location.href = 'nodeBoost.html'"
+                            title="View Node Boost Breakdown"
+                        >
+                            <div class="stat-card-title">Node Boost</div>
+                            <div
+                                class="stat-card-value amber"
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 6px;
+                                "
+                            >
+                                x1.00
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    style="opacity: 0.8; margin-top: 1px"
+                                >
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line
+                                        x1="12"
+                                        y1="16"
+                                        x2="12"
+                                        y2="12"
+                                    ></line>
+                                    <line
+                                        x1="12"
+                                        y1="8"
+                                        x2="12.01"
+                                        y2="8"
+                                    ></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">Lock Period</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                24 Hours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="stat-card"
+                        style="
+                            margin-top: -4px;
+                            margin-bottom: 16px;
+                            padding: 14px;
+                            background: rgba(56, 189, 248, 0.05);
+                            border-color: rgba(56, 189, 248, 0.2);
+                        "
+                    >
+                        <div
+                            style="
+                                font-size: 11px;
+                                color: var(--text-secondary);
+                                text-transform: uppercase;
+                                letter-spacing: 0.5px;
+                                margin-bottom: 6px;
+                            "
+                        >
+                            Your Personal Boosted APY
+                        </div>
+                        <div
+                            class="stat-card-value boosted-apy-display"
+                            style="
+                                color: var(--cyan);
+                                font-size: 22px;
+                                text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+                            "
+                        >
+                            0.00%
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 16px">
+                        <div class="input-header">
+                            <span>Deposit LP</span
+                            ><span>Balance: 156.230000</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                class="input-field"
+                                placeholder="0.000000"
+                            />
+                            <div class="asset-badge">LP</div>
+                        </div>
+                        <div class="percent-btns">
+                            <button class="p-btn">25%</button
+                            ><button class="p-btn">50%</button>
+                            <button class="p-btn">75%</button
+                            ><button class="p-btn">100%</button>
+                        </div>
+                    </div>
+                    <button class="btn-submit">Deposit LP</button>
+                    <div
+                        style="
+                            text-align: center;
+                            margin-top: 12px;
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        "
+                    >
+                        Unlock 24 hours later.
+                    </div>
+                </div>
+
+                <div id="dep-more-wvn" class="sub-panel" style="display: none">
+                    <div class="info-box">
+                        Deposit your used VN to expand LP Effective Cap.
+                    </div>
+
+                    <div class="stats-grid three-cols">
+                        <div class="stat-card">
+                            <div class="stat-card-title">APR</div>
+                            <div class="stat-card-value green">142.50%</div>
+                        </div>
+                        <div
+                            class="stat-card interactive"
+                            onclick="window.location.href = 'nodeBoost.html'"
+                            title="View Node Boost Breakdown"
+                        >
+                            <div class="stat-card-title">Node Boost</div>
+                            <div
+                                class="stat-card-value amber"
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 6px;
+                                "
+                            >
+                                x1.00
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    style="opacity: 0.8; margin-top: 1px"
+                                >
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line
+                                        x1="12"
+                                        y1="16"
+                                        x2="12"
+                                        y2="12"
+                                    ></line>
+                                    <line
+                                        x1="12"
+                                        y1="8"
+                                        x2="12.01"
+                                        y2="8"
+                                    ></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">Lock Period</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                24 Hours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="stat-card"
+                        style="
+                            margin-top: -4px;
+                            margin-bottom: 16px;
+                            padding: 14px;
+                            background: rgba(56, 189, 248, 0.05);
+                            border-color: rgba(56, 189, 248, 0.2);
+                        "
+                    >
+                        <div
+                            style="
+                                font-size: 11px;
+                                color: var(--text-secondary);
+                                text-transform: uppercase;
+                                letter-spacing: 0.5px;
+                                margin-bottom: 6px;
+                            "
+                        >
+                            Your Personal Boosted APY
+                        </div>
+                        <div
+                            class="stat-card-value boosted-apy-display"
+                            style="
+                                color: var(--cyan);
+                                font-size: 22px;
+                                text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+                            "
+                        >
+                            0.00%
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 16px">
+                        <div class="input-header">
+                            <span>Deposit Used VN</span><span>Balance: 2</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                class="input-field"
+                                placeholder="0"
+                                step="1"
+                            />
+                            <div
+                                class="asset-badge"
+                                style="background: var(--bg-card-solid)"
+                            >
+                                wVN
+                            </div>
+                        </div>
+                        <div class="percent-btns">
+                            <button class="p-btn">MAX</button>
+                        </div>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">LP Effective Cap Increase</span
+                        ><span class="data-val highlight">+0.000000 LP</span>
+                    </div>
+                    <button class="btn-submit">Deposit wVN</button>
+                    <div
+                        style="
+                            text-align: center;
+                            margin-top: 12px;
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        "
+                    >
+                        Unlock 24 hours later.
+                    </div>
+                </div>
+            </div>
+
+            <div id="withdraw" class="panel">
+                <div class="info-box amber">
+                    Select unlocked deposit records to withdraw your assets.
+                    Your LP Effective Cap and mining power will decrease
+                    accordingly.
+                </div>
+
+                <div class="sub-tab-container" style="margin-bottom: 12px">
+                    <button
+                        id="btn-wd-wvn-lp"
+                        class="sub-tab-btn active"
+                        onclick="switchWithdrawMode('wvn-lp')"
+                    >
+                        360 Days
+                    </button>
+                    <button
+                        id="btn-wd-wvn-or-lp"
+                        class="sub-tab-btn"
+                        onclick="switchWithdrawMode('wvn-or-lp')"
+                    >
+                        24 Hours
+                    </button>
+                    <button
+                        id="btn-wd-lp-only"
+                        class="sub-tab-btn"
+                        onclick="switchWithdrawMode('lp-only')"
+                    >
+                        90 Days
+                    </button>
+                </div>
+
+                <div
+                    id="locked-stat-row"
+                    class="data-row"
+                    style="
+                        display: flex;
+                        background: rgba(0, 0, 0, 0.3);
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 12px 16px;
+                        margin-bottom: 12px;
+                    "
+                >
+                    <span class="data-lbl">Mining Power</span>
+                    <span class="data-val highlight">0.000000000 LP</span>
+                </div>
+
+                <div
+                    id="deposited-stat-row"
+                    class="data-row"
+                    style="
+                        display: none;
+                        background: rgba(0, 0, 0, 0.3);
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 12px 16px;
+                        margin-bottom: 12px;
+                    "
+                >
+                    <span class="data-lbl">Mining Power</span>
+                    <span class="data-val highlight">0.000000000 LP</span>
+                </div>
+
+                <div
+                    id="compounding-stat-row"
+                    class="data-row"
+                    style="
+                        display: none;
+                        background: rgba(0, 0, 0, 0.3);
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 12px 16px;
+                        margin-bottom: 12px;
+                    "
+                >
+                    <span class="data-lbl">Mining Power</span>
+                    <span class="data-val highlight">0.000000000 LP</span>
+                </div>
+
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 16px;
+                    "
+                >
+                    <label
+                        style="
+                            display: flex;
+                            align-items: center;
+                            cursor: pointer;
+                            font-size: 13px;
+                            color: var(--text-secondary);
+                            font-weight: 500;
+                        "
+                    >
+                        <input
+                            type="checkbox"
+                            id="select-all-page"
+                            style="
+                                margin-right: 8px;
+                                accent-color: var(--amber);
+                                transform: scale(1.2);
+                            "
+                            onchange="toggleSelectAllPage(this.checked)"
+                        />
+                        Select All on Current Page
+                    </label>
+                </div>
+
+                <div id="order-list-container" class="order-list"></div>
+
+                <div class="pagination">
+                    <button
+                        id="prev-page"
+                        class="page-btn"
+                        onclick="changePage(-1)"
+                    >
+                        &#10094;
+                    </button>
+                    <span
+                        id="page-info"
+                        style="
+                            font-size: 13px;
+                            color: var(--text-primary);
+                            font-weight: 600;
+                            letter-spacing: 1px;
+                        "
+                        >1 / 1</span
+                    >
+                    <button
+                        id="next-page"
+                        class="page-btn"
+                        onclick="changePage(1)"
+                    >
+                        &#10095;
+                    </button>
+                </div>
+
+                <div
+                    style="
+                        background: rgba(0, 0, 0, 0.4);
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 16px;
+                        margin-top: 16px;
+                    "
+                >
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                            margin-bottom: 8px;
+                            letter-spacing: 0.5px;
+                        "
+                    >
+                        Selected to Withdraw (Aggregated)
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Total wVN</span>
+                        <span
+                            class="data-val highlight"
+                            id="sel-wvn-val"
+                            style="color: var(--amber); font-size: 16px"
+                            >0 wVN</span
+                        >
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Total LP</span>
+                        <span
+                            class="data-val highlight"
+                            id="sel-lp-val"
+                            style="color: var(--amber); font-size: 16px"
+                            >0.000000 LP</span
+                        >
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">LP Cap Decrease</span>
+                        <span
+                            class="data-val"
+                            id="sel-lp-cap-val"
+                            style="color: var(--amber); font-size: 16px"
+                            >-0.000000 LP</span
+                        >
+                    </div>
+                </div>
+
+                <button class="btn-submit amber" style="margin-top: 16px">
+                    Withdraw Selected
+                </button>
+            </div>
+
+            <div id="rewards" class="panel">
+                <div class="info-box">
+                    Claim rewards to your wallet or compound it into new LP to
+                    save
+                    <strong
+                        style="
+                            color: var(--green);
+                            text-shadow: 0 0 10px var(--green-glow);
+                        "
+                        >67%</strong
+                    >
+                    on fees!
+                </div>
+
+                <div style="text-align: center; padding: 20px 0">
+                    <div
+                        style="
+                            font-size: 13px;
+                            color: var(--text-secondary);
+                            margin-bottom: 12px;
+                        "
+                    >
+                        Rewards are auto-accumulated every 24 hours.
+                    </div>
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                        "
+                    >
+                        Pending Rewards
+                    </div>
+                    <div
+                        id="pending-rewards-val"
+                        style="
+                            font-size: 36px;
+                            font-weight: 700;
+                            color: var(--cyan);
+                            font-family: &quot;JetBrains Mono&quot;, monospace;
+                        "
+                    >
+                        847.32 <span style="font-size: 20px">BARKX</span>
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 16px;
+                        margin-bottom: 16px;
+                    "
+                >
+                    <div style="font-weight: 600; margin-bottom: 10px">
+                        Direct Claim
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Fee Rate</span>
+                        <span class="data-val" style="color: var(--red)"
+                            >30.00%</span
+                        >
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Receiving Amount</span>
+                        <span id="direct-claim-val" class="data-val"
+                            >593.12 BARKX</span
+                        >
+                    </div>
+                    <button
+                        id="btn-claim-wallet"
+                        class="btn-submit"
+                        style="margin-top: 10px"
+                    >
+                        Claim to Wallet
+                    </button>
+                </div>
+
+                <div
+                    style="
+                        border: 1px solid rgba(168, 85, 247, 0.3);
+                        border-radius: 12px;
+                        padding: 16px;
+                        background: rgba(168, 85, 247, 0.05);
+                    "
+                >
+                    <div
+                        style="
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: var(--purple);
+                        "
+                    >
+                        Compound to LP
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Fee Rate</span>
+                        <span class="data-val" style="color: var(--red)"
+                            >10.00%</span
+                        >
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Lock Period</span>
+                        <span class="data-val">90 Days</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Utilized Amount</span>
+                        <span id="compound-utilized-val" class="data-val"
+                            >762.59 BARKX</span
+                        >
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Predicted LP Amount</span>
+                        <span id="compound-lp-val" class="data-val"
+                            >~105.420000 LP</span
+                        >
+                    </div>
+                    <button
+                        id="btn-compound"
+                        class="btn-submit purple"
+                        style="margin-top: 10px"
+                    >
+                        Compound
+                    </button>
+                    <div
+                        style="
+                            text-align: center;
+                            margin-top: 12px;
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        "
+                    >
+                        LP Locked until: 2026-06-24
+                    </div>
+                </div>
+
+                <div class="collapsible-card" style="margin-bottom: 0">
+                    <div
+                        class="collapsible-header"
+                        onclick="toggleCollapsible('options-content', this)"
+                    >
+                        <span
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                                ></path>
+                            </svg>
+                            Swap Options
+                        </span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div id="options-content" class="collapsible-content">
+                        <div style="margin-bottom: 16px">
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: var(--text-muted);
+                                    margin-bottom: 10px;
+                                "
+                            >
+                                Slippage Tolerance
+                            </div>
+                            <div
+                                class="percent-btns"
+                                style="justify-content: flex-start; margin: 0"
+                            >
+                                <button
+                                    class="p-btn"
+                                    onclick="selectSlippage(this)"
+                                >
+                                    0.1%
+                                </button>
+                                <button
+                                    class="p-btn active"
+                                    style="
+                                        background: rgba(56, 189, 248, 0.2);
+                                        color: var(--text-primary);
+                                        border-color: var(--cyan);
+                                    "
+                                    onclick="selectSlippage(this)"
+                                >
+                                    0.5%
+                                </button>
+                                <button
+                                    class="p-btn"
+                                    onclick="selectSlippage(this)"
+                                >
+                                    1.0%
+                                </button>
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        background: rgba(0, 0, 0, 0.4);
+                                        border: 1px solid var(--border-dark);
+                                        border-radius: 6px;
+                                        padding: 0 8px;
+                                    "
+                                >
+                                    <input
+                                        type="number"
+                                        placeholder="Custom"
+                                        style="
+                                            width: 50px;
+                                            background: transparent;
+                                            border: none;
+                                            color: var(--text-primary);
+                                            padding: 6px 0;
+                                            font-size: 13px;
+                                            outline: none;
+                                            text-align: right;
+                                        "
+                                    />
+                                    <span
+                                        style="
+                                            font-size: 12px;
+                                            color: var(--text-muted);
+                                            margin-left: 4px;
+                                        "
+                                        >%</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                margin-bottom: 16px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: var(--text-muted);
+                                "
+                            >
+                                Transaction Deadline
+                            </div>
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <input
+                                    type="number"
+                                    value="20"
+                                    style="
+                                        width: 50px;
+                                        background: rgba(0, 0, 0, 0.4);
+                                        border: 1px solid var(--border-dark);
+                                        border-radius: 6px;
+                                        color: var(--text-primary);
+                                        padding: 6px 8px;
+                                        font-size: 13px;
+                                        outline: none;
+                                        text-align: right;
+                                    "
+                                />
+                                <span
+                                    style="
+                                        font-size: 13px;
+                                        color: var(--text-muted);
+                                    "
+                                    >minutes</span
+                                >
+                            </div>
+                        </div>
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: var(--text-muted);
+                                "
+                            >
+                                Expert Mode
+                                <span
+                                    style="
+                                        font-size: 11px;
+                                        color: var(--amber);
+                                        display: block;
+                                        margin-top: 4px;
+                                    "
+                                    >Allow high slippage trades</span
+                                >
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="card clickable-card cyan"
+                style="margin-top: 24px; border-color: var(--border-glow)"
+                onclick="openCombinedInfoModal()"
+            >
+                <div
+                    style="
+                        position: absolute;
+                        top: 16px;
+                        right: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    "
+                >
+                    <div
+                        class="card-corner-badge status-active"
+                        id="node-status-badge"
+                        style="position: static"
+                    >
+                        <span id="node-status-text">Active Node</span>
+                    </div>
+                    <div class="info-icon" style="position: static">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="card-title">Personal Status</div>
+
+                <div class="data-row" style="align-items: flex-start">
+                    <span class="data-lbl">Vector Nexus (VN)</span>
+                    <div style="text-align: right">
+                        <div class="data-val" id="ps-vn-val">12 VN</div>
+                    </div>
+                </div>
+
+                <div class="data-row" style="align-items: flex-start">
+                    <span class="data-lbl">LP Token</span>
+                    <div style="text-align: right">
+                        <div class="data-val" id="ps-lp-val">0.009000 LP</div>
+                        <div
+                            id="ps-usd-val"
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 4px;
+                            "
+                        >
+                            ≈ $19,165.46
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="data-row"
+                    style="align-items: flex-start; border-bottom: none"
+                >
+                    <span class="data-lbl">LP Effective Cap</span>
+                    <div style="text-align: right">
+                        <div class="data-val" id="ps-cap-val">0.012000 LP</div>
+                        <div
+                            id="unused-cap-text"
+                            style="
+                                font-size: 12px;
+                                color: var(--amber);
+                                margin-top: 4px;
+                                font-weight: 500;
+                            "
+                        >
+                            0.003000 LP Cap Unused
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    id="capacity-hint-box"
+                    style="
+                        background: rgba(245, 158, 11, 0.1);
+                        border: 1px dashed var(--amber);
+                        border-radius: 8px;
+                        padding: 12px;
+                        margin-top: 12px;
+                        font-size: 13px;
+                        color: var(--amber);
+                        text-align: center;
+                        position: relative;
+                        z-index: 2;
+                    "
+                    onclick="event.stopPropagation()"
+                >
+                    💡 You have used over 70% of your LP capacity. Remember to
+                    always leave some space for compounding.
+                </div>
+
+                <button
+                    class="btn-submit"
+                    style="margin-top: 16px"
+                    onclick="
+                        event.stopPropagation();
+                        openEstimateModal();
+                    "
+                >
+                    Estimate
+                </button>
+            </div>
+        </main>
+
+        <div
+            id="estimate-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeEstimateModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="estimate-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeEstimateModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title" id="estimate-modal-title">
+                    LP Estimation
+                </div>
+                <div class="custom-modal-text" id="estimate-modal-text"></div>
+            </div>
+        </div>
+
+        <script>
+            // 侧边导航逻辑
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // 计算并渲染 Boosted APY
+            function calculateBoostedAPY() {
+                const apr = 1.425; // 142.50% APR
+                const nodeBoost = 1.0; // x1.00 Node Boost
+                const finalApy = Math.pow(1 + (apr * nodeBoost) / 365, 365) - 1;
+                const formattedApy = (finalApy * 100).toFixed(2) + "%";
+
+                document
+                    .querySelectorAll(".boosted-apy-display")
+                    .forEach((el) => {
+                        el.innerText = formattedApy;
+                    });
+            }
+
+            // 切换主选项卡
+            function switchTab(tabId) {
+                document
+                    .querySelectorAll(".tabs > .tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll(".panel")
+                    .forEach((p) => p.classList.remove("active"));
+
+                const targetTabBtn = document.querySelector(
+                    `.tabs .tab[onclick="switchTab('${tabId}')"]`,
+                );
+                if (targetTabBtn) targetTabBtn.classList.add("active");
+
+                const targetPanel = document.getElementById(tabId);
+                if (targetPanel) targetPanel.classList.add("active");
+
+                // 当切换到 Withdraw 面板时，初始化渲染凭证列表
+                if (tabId === "withdraw" && !hasRenderedRecords) {
+                    renderRecords();
+                    hasRenderedRecords = true;
+                }
+            }
+
+            function switchSubTab(btnElement, targetPanelId, parentPanelId) {
+                const parentPanel = document.getElementById(parentPanelId);
+                parentPanel
+                    .querySelectorAll(".sub-tab-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                btnElement.classList.add("active");
+                parentPanel.querySelectorAll(".sub-panel").forEach((panel) => {
+                    panel.style.display = "none";
+                });
+                document.getElementById(targetPanelId).style.display = "block";
+            }
+
+            // ==========================================
+            // 全局状态变量用于控制情景切换
+            // ==========================================
+            let currentVnMock = 12;
+            let currentLpMock = 0.009;
+            let currentScenarioIdx = 0;
+
+            function getLpUsdValue(lpAmount) {
+                const poolBarkx = 56235.6671;
+                const poolUsdt = 63781.5105;
+                const totalPoolLp = Math.sqrt(poolBarkx * poolUsdt) * 0.000001;
+                const totalPoolUsd = poolUsdt * 2;
+                const pricePerLp = totalPoolUsd / totalPoolLp;
+                return lpAmount * pricePerLp;
+            }
+
+            function toggleScenario() {
+                currentScenarioIdx = (currentScenarioIdx + 1) % 3;
+                const btn = document.getElementById("btn-toggle-scenario");
+                const psVnVal = document.getElementById("ps-vn-val");
+                const psLpVal = document.getElementById("ps-lp-val");
+                const psUsdVal = document.getElementById("ps-usd-val");
+                const psCapVal = document.getElementById("ps-cap-val");
+                const unusedCapText =
+                    document.getElementById("unused-cap-text");
+                const nodeStatusBadge =
+                    document.getElementById("node-status-badge");
+                const nodeStatusText =
+                    document.getElementById("node-status-text");
+
+                if (currentScenarioIdx === 0) {
+                    // Default
+                    btn.innerText = "Scenario: Default";
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255, 255, 255, 0.05)";
+
+                    currentVnMock = 12;
+                    currentLpMock = 0.009;
+
+                    psVnVal.innerText = "12 VN";
+                    psLpVal.innerText = "0.009000 LP";
+                    psCapVal.innerText = "0.012000 LP";
+                    if (unusedCapText) {
+                        unusedCapText.innerText = "0.003000 LP Cap Unused";
+                        unusedCapText.style.color = "var(--amber)";
+                    }
+                    if (nodeStatusBadge) {
+                        nodeStatusBadge.classList.remove("status-inactive");
+                        nodeStatusBadge.classList.add("status-active");
+                    }
+                    if (nodeStatusText)
+                        nodeStatusText.innerText = "Active Node";
+                } else if (currentScenarioIdx === 1) {
+                    // Empty
+                    btn.innerText = "Scenario: Empty";
+                    btn.style.color = "var(--cyan)";
+                    btn.style.borderColor = "rgba(56, 189, 248, 0.3)";
+                    btn.style.background = "rgba(56, 189, 248, 0.1)";
+
+                    currentVnMock = 0;
+                    currentLpMock = 0;
+
+                    psVnVal.innerText = "0 VN";
+                    psLpVal.innerText = "0.000000 LP";
+                    psCapVal.innerText = "0.000000 LP";
+                    if (unusedCapText) {
+                        unusedCapText.innerText = "0.000000 LP Cap Unused";
+                        unusedCapText.style.color = "var(--text-muted)";
+                    }
+                    if (nodeStatusBadge) {
+                        nodeStatusBadge.classList.remove("status-active");
+                        nodeStatusBadge.classList.add("status-inactive");
+                    }
+                    if (nodeStatusText)
+                        nodeStatusText.innerText = "Inactive Node";
+                } else if (currentScenarioIdx === 2) {
+                    // Cap Full
+                    btn.innerText = "Scenario: Cap Full";
+                    btn.style.color = "var(--amber)";
+                    btn.style.borderColor = "rgba(245, 158, 11, 0.3)";
+                    btn.style.background = "rgba(245, 158, 11, 0.1)";
+
+                    currentVnMock = 12;
+                    currentLpMock = 0.01195;
+
+                    psVnVal.innerText = "12 VN";
+                    psLpVal.innerText = "0.011950 LP";
+                    psCapVal.innerText = "0.012000 LP";
+                    if (unusedCapText) {
+                        unusedCapText.innerText = "0.000050 LP Cap Unused";
+                        unusedCapText.style.color = "var(--amber)";
+                    }
+                    if (nodeStatusBadge) {
+                        nodeStatusBadge.classList.remove("status-inactive");
+                        nodeStatusBadge.classList.add("status-active");
+                    }
+                    if (nodeStatusText)
+                        nodeStatusText.innerText = "Active Node";
+                }
+
+                // 动态更新 USD 价值估算
+                const usdVal = getLpUsdValue(currentLpMock);
+                psUsdVal.innerText = `≈ $${usdVal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                // 更新提示框显隐
+                checkCapacityDisplay(currentVnMock);
+            }
+
+            // ==========================================
+            // 奖励状态切换调试逻辑 (Toggle Rewards)
+            // ==========================================
+            let hasHighRewards = true;
+            function toggleRewardsStatus() {
+                hasHighRewards = !hasHighRewards;
+                const btnToggle = document.getElementById("btn-toggle-rewards");
+
+                const pendingValEl = document.getElementById(
+                    "pending-rewards-val",
+                );
+                const claimValEl = document.getElementById("direct-claim-val");
+                const utilValEl = document.getElementById(
+                    "compound-utilized-val",
+                );
+                const lpValEl = document.getElementById("compound-lp-val");
+
+                const btnClaim = document.getElementById("btn-claim-wallet");
+                const btnCompound = document.getElementById("btn-compound");
+
+                if (hasHighRewards) {
+                    btnToggle.style.color = "var(--text-secondary)";
+                    btnToggle.style.borderColor = "var(--border-dark)";
+                    btnToggle.style.background = "rgba(255, 255, 255, 0.05)";
+
+                    pendingValEl.innerHTML =
+                        '847.32 <span style="font-size: 20px">BARKX</span>';
+                    claimValEl.innerText = "593.12 BARKX";
+                    utilValEl.innerText = "762.59 BARKX";
+                    lpValEl.innerText = "~105.420000 LP";
+
+                    btnClaim.disabled = false;
+                    btnClaim.innerText = "Claim to Wallet";
+                    btnCompound.disabled = false;
+                    btnCompound.innerText = "Compound";
+                } else {
+                    btnToggle.style.color = "var(--cyan)";
+                    btnToggle.style.borderColor = "rgba(56, 189, 248, 0.3)";
+                    btnToggle.style.background = "rgba(56, 189, 248, 0.1)";
+
+                    pendingValEl.innerHTML =
+                        '0.52 <span style="font-size: 20px">BARKX</span>';
+                    claimValEl.innerText = "0.36 BARKX";
+                    utilValEl.innerText = "0.46 BARKX";
+                    lpValEl.innerText = "~0.060000 LP";
+
+                    btnClaim.disabled = true;
+                    btnClaim.innerText = "Less than 1 BARKX";
+                    btnCompound.disabled = true;
+                    btnCompound.innerText = "Less than 1 BARKX";
+                }
+            }
+
+            // Deposit VN 自动计算逻辑 (使用精确 AMM 算法)
+            function calculateDepositVN() {
+                const vnInput =
+                    document.getElementById("deposit-vn-input").value;
+                const vnAmount = parseInt(vnInput) || 0;
+
+                // 真实验例的储备量
+                const poolBarkx = 56235.6671;
+                const poolUsdt = 63781.5105;
+                const totalPoolLp = Math.sqrt(poolBarkx * poolUsdt) * 0.000001;
+
+                const bonusBarkx = vnAmount * 100;
+                const pairingUsdt = bonusBarkx * (poolUsdt / poolBarkx);
+
+                const predictedLp =
+                    bonusBarkx > 0 ? (bonusBarkx / poolBarkx) * totalPoolLp : 0;
+
+                document.getElementById("deposit-vn-bonus").value =
+                    bonusBarkx > 0 ? bonusBarkx.toFixed(2) : "";
+                document.getElementById("deposit-vn-pairing").value =
+                    pairingUsdt > 0 ? pairingUsdt.toFixed(2) : "";
+                document.getElementById("deposit-vn-predicted-lp").innerText =
+                    `~${predictedLp.toFixed(6)} LP`;
+            }
+
+            function setMaxVN() {
+                document.getElementById("deposit-vn-input").value = 3;
+                calculateDepositVN();
+            }
+
+            // vBARKX Deposit 自动计算逻辑 (使用精确 AMM 算法)
+            function calculateVBarkx() {
+                let inputEl = document.getElementById("dep-vbarkx-input");
+                let valStr = inputEl.value;
+
+                // 强制保留最多 2 位小数
+                if (valStr.includes(".")) {
+                    const parts = valStr.split(".");
+                    if (parts[1].length > 2) {
+                        parts[1] = parts[1].substring(0, 2);
+                        valStr = parts.join(".");
+                        inputEl.value = valStr;
+                    }
+                }
+
+                let val = parseFloat(valStr);
+                const btn = document.getElementById("btn-dep-vbarkx");
+
+                if (isNaN(val)) {
+                    document.getElementById("dep-vbarkx-converted").value = "";
+                    document.getElementById("dep-vbarkx-usdt").value = "";
+                    document.getElementById(
+                        "deposit-vbarkx-predicted-lp",
+                    ).innerText = "~0.000000 LP";
+                    btn.disabled = true;
+                    btn.innerText = "Minimum 100 vBARKX";
+                    return;
+                }
+
+                // 限制：最少 100 vBARKX
+                if (val < 100) {
+                    btn.disabled = true;
+                    btn.innerText = "Minimum 100 vBARKX";
+                } else {
+                    btn.disabled = false;
+                    btn.innerText = "Deposit vBARKX + USDT";
+                }
+
+                // vBARKX to BARKX conversion (1:1)
+                document.getElementById("dep-vbarkx-converted").value =
+                    val.toFixed(2);
+
+                // 根据 Uniswap V2 真实池比例计算
+                const poolBarkx = 56235.6671;
+                const poolUsdt = 63781.5105;
+                const totalPoolLp = Math.sqrt(poolBarkx * poolUsdt) * 0.000001;
+
+                let usdtNeeded = val * (poolUsdt / poolBarkx);
+                document.getElementById("dep-vbarkx-usdt").value =
+                    usdtNeeded.toFixed(2);
+
+                let predictedLp =
+                    usdtNeeded > 0 ? (val / poolBarkx) * totalPoolLp : 0;
+                document.getElementById(
+                    "deposit-vbarkx-predicted-lp",
+                ).innerText = `~${predictedLp.toFixed(6)} LP`;
+            }
+
+            /* =========================================
+               凭证中心购物车提现逻辑 (Withdraw Cart Logic)
+               ========================================= */
+
+            // 1. 模拟后端返回的海量解锁凭证数据 (以 tx_hash 的格式)
+            let hasRenderedRecords = false;
+            const mockRecords = {
+                "wvn-lp": Array.from({ length: 45 }, (_, i) => ({
+                    id: `0x1A${i.toString().padStart(2, "0")}...F${i.toString().padStart(2, "0")}B`,
+                    wvn: 1,
+                    lp: 120.5,
+                })),
+                "wvn-or-lp": Array.from({ length: 30 }, (_, i) => ({
+                    id: `0x2B${i.toString().padStart(2, "0")}...E${i.toString().padStart(2, "0")}C`,
+                    wvn: i % 2 === 0 ? 2 : 0,
+                    lp: i % 2 === 0 ? 0 : 50,
+                })),
+                "lp-only": Array.from({ length: 12 }, (_, i) => ({
+                    id: `0x3C${i.toString().padStart(2, "0")}...D${i.toString().padStart(2, "0")}A`,
+                    wvn: 0,
+                    lp: 15.23,
+                })),
+            };
+
+            let currentWithdrawMode = "wvn-lp";
+            let currentWithdrawPage = 1;
+            const ITEMS_PER_PAGE = 20;
+
+            // 全局提现购物车：记录所有被勾选的凭证
+            let selectedRecords = new Map(); // recordId -> {wvn, lp}
+
+            // 切换提现模式的 Sub-Tab
+            function switchWithdrawMode(mode) {
+                document
+                    .getElementById("btn-wd-wvn-lp")
+                    .classList.remove("active");
+                document
+                    .getElementById("btn-wd-wvn-or-lp")
+                    .classList.remove("active");
+                document
+                    .getElementById("btn-wd-lp-only")
+                    .classList.remove("active");
+                document
+                    .getElementById(`btn-wd-${mode}`)
+                    .classList.add("active");
+
+                currentWithdrawMode = mode;
+                currentWithdrawPage = 1; // 切换模式时重置页码
+                renderRecords();
+
+                const lockRow = document.getElementById("locked-stat-row");
+                const depRow = document.getElementById("deposited-stat-row");
+                const compRow = document.getElementById("compounding-stat-row");
+
+                if (lockRow)
+                    lockRow.style.display = mode === "wvn-lp" ? "flex" : "none";
+                if (depRow)
+                    depRow.style.display =
+                        mode === "wvn-or-lp" ? "flex" : "none";
+                if (compRow)
+                    compRow.style.display =
+                        mode === "lp-only" ? "flex" : "none";
+            }
+
+            // 渲染分页凭证列表
+            function renderRecords() {
+                const container = document.getElementById(
+                    "order-list-container",
+                );
+                const records = mockRecords[currentWithdrawMode];
+                const totalPages =
+                    Math.ceil(records.length / ITEMS_PER_PAGE) || 1;
+
+                // 边界检查
+                if (currentWithdrawPage > totalPages)
+                    currentWithdrawPage = totalPages;
+                if (currentWithdrawPage < 1) currentWithdrawPage = 1;
+
+                const startIdx = (currentWithdrawPage - 1) * ITEMS_PER_PAGE;
+                const pageRecords = records.slice(
+                    startIdx,
+                    startIdx + ITEMS_PER_PAGE,
+                );
+
+                let html = "";
+                let allCheckedOnPage = true;
+                let hasRecords = pageRecords.length > 0;
+
+                if (!hasRecords) {
+                    html = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No unlocked records found.</div>`;
+                    allCheckedOnPage = false;
+                } else {
+                    pageRecords.forEach((r) => {
+                        const isChecked = selectedRecords.has(r.id);
+                        if (!isChecked) allCheckedOnPage = false;
+
+                        // 动态拼装右侧多行对齐的资产显示
+                        let assetsHtml = "";
+                        if (r.wvn > 0) {
+                            assetsHtml += `<div class="asset-line">${r.wvn} wVN</div>`;
+                        }
+                        if (r.lp > 0) {
+                            assetsHtml += `<div class="asset-line">${r.lp.toFixed(6)} LP</div>`;
+                        }
+
+                        html += `
+                            <label class="order-item">
+                            <input type="checkbox" class="order-checkbox" value="${r.id}"
+                                    onchange="toggleRecordSelection('${r.id}', ${r.wvn}, ${r.lp}, this.checked)" ${isChecked ? "checked" : ""}>
+                            <div class="order-details-left">
+                                <div class="order-id">${r.id}</div>
+                                <div class="order-status">Unlocked</div>
+                            </div>
+                            <div class="order-assets-right">
+                                ${assetsHtml}
+                            </div>
+                            </label>
+                        `;
+                    });
+                }
+                container.innerHTML = html;
+
+                // 更新全选框的状态
+                document.getElementById("select-all-page").checked =
+                    allCheckedOnPage;
+                document.getElementById("select-all-page").disabled =
+                    !hasRecords;
+
+                // 更新分页 UI (简化为 X / Y 格式)
+                document.getElementById("page-info").innerText =
+                    `${currentWithdrawPage} / ${totalPages}`;
+                document.getElementById("prev-page").disabled =
+                    currentWithdrawPage === 1;
+                document.getElementById("next-page").disabled =
+                    currentWithdrawPage === totalPages;
+            }
+
+            // 处理页面切换
+            function changePage(delta) {
+                currentWithdrawPage += delta;
+                renderRecords();
+            }
+
+            // 当页全选/全不选逻辑
+            function toggleSelectAllPage(isChecked) {
+                const records = mockRecords[currentWithdrawMode];
+                const startIdx = (currentWithdrawPage - 1) * ITEMS_PER_PAGE;
+                const pageRecords = records.slice(
+                    startIdx,
+                    startIdx + ITEMS_PER_PAGE,
+                );
+
+                pageRecords.forEach((r) => {
+                    if (isChecked) {
+                        selectedRecords.set(r.id, { wvn: r.wvn, lp: r.lp });
+                    } else {
+                        selectedRecords.delete(r.id);
+                    }
+                });
+
+                renderRecords(); // 重新渲染列表以更新单选框的勾选状态
+                calculateCartTotal(); // 更新购物车汇总
+            }
+
+            // 处理单个凭证的勾选/取消勾选
+            function toggleRecordSelection(id, wvn, lp, isChecked) {
+                if (isChecked) {
+                    selectedRecords.set(id, { wvn, lp });
+                } else {
+                    selectedRecords.delete(id);
+                }
+
+                // 单独操作时，需要动态检查是否要取消勾选/勾选全选框
+                updateSelectAllCheckboxState();
+                calculateCartTotal();
+            }
+
+            // 独立检测当前页是否已经全选
+            function updateSelectAllCheckboxState() {
+                const records = mockRecords[currentWithdrawMode];
+                const startIdx = (currentWithdrawPage - 1) * ITEMS_PER_PAGE;
+                const pageRecords = records.slice(
+                    startIdx,
+                    startIdx + ITEMS_PER_PAGE,
+                );
+
+                if (pageRecords.length === 0) return;
+
+                let allCheckedOnPage = true;
+                pageRecords.forEach((r) => {
+                    if (!selectedRecords.has(r.id)) allCheckedOnPage = false;
+                });
+
+                document.getElementById("select-all-page").checked =
+                    allCheckedOnPage;
+            }
+
+            // 计算并更新购物车汇总
+            function calculateCartTotal() {
+                let totalWvn = 0;
+                let totalLp = 0;
+
+                // 遍历整个购物车（不局限于当前页）
+                selectedRecords.forEach((val) => {
+                    totalWvn += val.wvn;
+                    totalLp += val.lp;
+                });
+
+                const capDecrease = totalWvn * 100;
+
+                document.getElementById("sel-wvn-val").innerText =
+                    `${totalWvn} wVN`;
+                document.getElementById("sel-lp-val").innerText =
+                    `${totalLp.toFixed(6)} LP`;
+                document.getElementById("sel-lp-cap-val").innerText =
+                    `-${capDecrease.toFixed(6)} LP`;
+            }
+
+            /* ========================================= */
+
+            // 折叠面板控制
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                }
+            }
+
+            function selectSlippage(btn) {
+                const container = btn.parentElement;
+                container.querySelectorAll(".p-btn").forEach((b) => {
+                    b.classList.remove("active");
+                    b.style.background = "rgba(56,189,248,0.1)";
+                    b.style.color = "var(--cyan)";
+                    b.style.borderColor = "rgba(56,189,248,0.3)";
+                });
+                btn.classList.add("active");
+                btn.style.background = "rgba(56,189,248,0.2)";
+                btn.style.color = "var(--text-primary)";
+                btn.style.borderColor = "var(--cyan)";
+            }
+
+            // ==========================================
+            // [CRITICAL] 存款状态显示逻辑 (Deposit Status Logic)
+            // ==========================================
+            function checkCapacityDisplay(vnAmount) {
+                const unusedCapText =
+                    document.getElementById("unused-cap-text");
+                const capacityHintBox =
+                    document.getElementById("capacity-hint-box");
+
+                if (vnAmount <= 0) {
+                    if (unusedCapText) unusedCapText.style.display = "none";
+                    if (capacityHintBox) capacityHintBox.style.display = "none";
+                } else {
+                    if (unusedCapText) unusedCapText.style.display = "block";
+                    if (capacityHintBox)
+                        capacityHintBox.style.display = "block";
+                }
+            }
+
+            // ==========================================
+            // 节点状态和复投比例弹窗合并逻辑
+            // ==========================================
+            const mockUserCompoundRatio = 55;
+
+            function openCombinedInfoModal() {
+                const overlay = document.getElementById("custom-modal-overlay");
+                const card = document.getElementById("custom-modal-card");
+                const title = document.getElementById("custom-modal-title");
+                const text = document.getElementById("custom-modal-text");
+
+                document.body.style.overflow = "hidden";
+
+                card.className = "custom-modal cyan-theme";
+                title.innerText = "Personal Status Details";
+
+                // 根据当前情景动态判断 Node 状态
+                let statusColor = "var(--green)";
+                let statusText = "Active Node";
+
+                if (currentVnMock === 0 && currentLpMock === 0) {
+                    statusColor = "var(--text-muted)";
+                    statusText = "Inactive Node";
+                }
+
+                text.innerHTML = `
+                    <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-dark); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                        <div style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Node Status</div>
+                        <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            Current Status: <span style="color: ${statusColor}; font-weight: 700; margin-left: 8px; text-transform: uppercase;">${statusText}</span>
+                        </div>
+                        <div style="font-size: 12px;">A node is considered <strong style="color: var(--green);">Active</strong> if it maintains a <strong>360-day position</strong> in the BarkX Pool. This means holding at least <strong>1 VN</strong> and any amount of <strong>LP tokens</strong> configured for the 360-day locking cycle. Unlocked assets within this cycle still count towards the active status.</div>
+                    </div>
+                    <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-dark); border-radius: 12px; padding: 16px;">
+                        <div style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Compound Eligibility</div>
+                        <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            Lifetime Compounding Ratio: <span style="color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-left: 8px;">${mockUserCompoundRatio}%</span>
+                        </div>
+                        <div style="font-size: 12px; margin-bottom: 8px;">This metric represents the percentage of your total claimed BARKX rewards from BarkX Pool that have been reinvested into LP tokens.</div>
+                        <div style="font-size: 12px;"><strong>Compound Medal Rules:</strong> BarkAI evaluates this ratio for each user every 7 days. If your ratio is <strong style="color: var(--text-primary);">≥ 50%</strong> at the next snapshot, you will be awarded the Compound Medal, unlocking a yield multiplier valid for the subsequent 7 days.</div>
+                    </div>
+                `;
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // 触发重绘
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeModal(e) {
+                const overlay = document.getElementById("custom-modal-overlay");
+                const card = document.getElementById("custom-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            }
+
+            function closeWeightModal(e) {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                if (overlay && card) {
+                    document.body.style.overflow = "";
+                    overlay.style.opacity = "0";
+                    card.classList.remove("show");
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 300);
+                }
+            }
+
+            // ==========================================
+            // LP Estimation 辅助计算器弹窗逻辑
+            // ==========================================
+            function openEstimateModal() {
+                const overlay = document.getElementById(
+                    "estimate-modal-overlay",
+                );
+                const card = document.getElementById("estimate-modal-card");
+                const textEl = document.getElementById("estimate-modal-text");
+
+                document.body.style.overflow = "hidden";
+
+                // 模拟已知的合约参数和用户状态
+                const lpPerVn = 0.001; // 合约配置: 每 1 VN 的 LP Cap
+                let userVn = currentVnMock;
+                let usedLp = currentLpMock;
+
+                let totalCap = userVn * lpPerVn;
+                let remainingCap = totalCap - usedLp;
+
+                if (userVn === 0 || remainingCap < 0.0001) {
+                    textEl.innerHTML = `
+                        <div style="text-align: center; padding: 20px 0;">
+                            <div style="font-size: 32px; margin-bottom: 12px;">💡</div>
+                            <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                                Your current available LP Effective Cap is too small to support estimation.<br><br>
+                                Please deposit at least <strong>1 VN</strong> to expand your LP Effective Cap before estimating liquidity requirements.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 已知真实的池子储备量
+                    const poolBarkx = 56235.6671;
+                    const poolUsdt = 63781.5105;
+
+                    // 基于初始 100:100 -> 0.0001 LP，比例常数为 1e-6
+                    const totalPoolLp =
+                        Math.sqrt(poolBarkx * poolUsdt) * 0.000001;
+                    const barkxPrice = poolUsdt / poolBarkx;
+
+                    // 计算补齐剩余 Cap 所需的代币量
+                    const neededBarkx =
+                        remainingCap * (poolBarkx / totalPoolLp);
+                    const neededUsdt = remainingCap * (poolUsdt / totalPoolLp);
+
+                    const formatNumber = (num) =>
+                        num.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        });
+
+                    textEl.innerHTML = `
+                        <div class="modal-inner-card">
+                            <div class="data-row" style="padding: 4px 0; border: none;">
+                                <span class="data-lbl">BARKX Price</span>
+                                <span class="data-val" style="color: var(--text-primary);">${barkxPrice.toFixed(3)} USDT</span>
+                            </div>
+                            <div class="data-row" style="padding: 4px 0; border: none;">
+                                <span class="data-lbl">Planned LP</span>
+                                <span class="data-val" style="color: var(--cyan);">${remainingCap.toFixed(6)} LP</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; color: var(--text-muted); font-size: 20px; margin: 8px 0;">↓</div>
+                        <div class="modal-inner-card">
+                            <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; text-align: center;">Estimated Assets Required</div>
+                            <div style="text-align: center; padding: 8px 0;">
+                                <span style="color: var(--green); font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatNumber(neededBarkx)} BARKX</span>
+                            </div>
+                            <div style="text-align: center; padding: 8px 0;">
+                                <span style="color: var(--green); font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatNumber(neededUsdt)} USDT</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeEstimateModal(e) {
+                const overlay = document.getElementById(
+                    "estimate-modal-overlay",
+                );
+                const card = document.getElementById("estimate-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            }
+
+            // 监听 URL Hash 并在页面加载时自动切换 Tab
+            window.addEventListener("DOMContentLoaded", () => {
+                calculateBoostedAPY();
+                const hash = window.location.hash.substring(1);
+                if (hash === "dep-more-lp" || hash === "dep-more-wvn") {
+                    switchTab("dep-more");
+                    const btn = document.querySelector(
+                        `button[onclick*="'${hash}'"]`,
+                    );
+                    if (btn) switchSubTab(btn, hash, "dep-more");
+                } else if (
+                    hash === "dep-more" ||
+                    hash === "withdraw" ||
+                    hash === "rewards" ||
+                    hash === "dep-vn"
+                ) {
+                    switchTab(hash);
+                }
+
+                checkCapacityDisplay(currentVnMock);
+            });
+        </script>
+    </body>
+</html>
