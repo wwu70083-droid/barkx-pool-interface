@@ -130,6 +130,65 @@
         "medium": "0.5%",
         "high": "1.0%"
       }
+    },
+    "quickStart": {
+      "title": "BarkX Pool Quick Start",
+      "subtitle": "Everything a new node needs to enter the Main Pool, in order.",
+      "entry": "BarkX Pool Quick Start",
+      "common": {
+        "skip": "Skip",
+        "finish": "Finish"
+      },
+      "approve": {
+        "title": "Approve",
+        "checking": "Checking approvals...",
+        "approved": "Approved",
+        "pendingItem": "Pending",
+        "action": "Approve {token}",
+        "hint": "Approve the highlighted token to start. Your wallet will then prompt for each remaining approval in turn.",
+        "vn": "VN",
+        "usdtPool": "USDT (Main Pool)",
+        "usdtRouter": "USDT (Uniswap)",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "Approval was not completed. Please try again."
+      },
+      "depositVn": {
+        "title": "Deposit Fresh VN",
+        "vnToDeposit": "VN to deposit",
+        "pairingUsdt": "Pairing USDT",
+        "bonus": "BARKX bonus",
+        "lock": "These assets lock for 360 days.",
+        "action": "Deposit VN + USDT",
+        "reasonNoVn": "No VN in your wallet to deposit.",
+        "reasonNoUsdt": "Not enough USDT to pair the bonus for even 1 VN."
+      },
+      "buyBarkx": {
+        "title": "Buy BARKX",
+        "spend": "USDT to spend",
+        "receive": "BARKX received",
+        "hint": "Sized to balance your wallet against the LP quota still to fill.",
+        "action": "Buy BARKX",
+        "skipNoBuy": "No BARKX purchase is needed to fill your LP quota space.",
+        "skipQuotaNearFull": "You have used more than 90% of your LP quota space."
+      },
+      "mintLp": {
+        "title": "Mint LP",
+        "barkxIn": "BARKX to supply",
+        "usdtIn": "USDT to supply",
+        "lpOut": "LP received",
+        "action": "Add Liquidity",
+        "skipReason": "Your wallet already holds enough LP for the quota space left."
+      },
+      "depositLp": {
+        "title": "Deposit More LP",
+        "amount": "LP to deposit",
+        "lock": "This LP locks for 24 hours.",
+        "action": "Deposit LP",
+        "pending": "Depositing LP...",
+        "finishQuotaFull": "Your LP quota space is filled — nothing left to deposit.",
+        "finishNoLp": "No LP in your wallet to deposit."
+      }
     }
   },
   "messages": {

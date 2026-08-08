@@ -1,4 +1,10 @@
 <template>
+  <QuickStartModal
+    :open="quickStartOpen"
+    @close="closeQuickStart"
+    @refresh="loadData"
+  />
+
   <Transition name="custom-modal-fade">
     <div
       v-if="activeModalKey"
@@ -138,6 +144,15 @@
           <div class="metric-lbl">{{ $t("pages.dashboard.metrics.marketCap") }}</div>
         </div>
       </div>
+
+      <button
+        v-if="showQuickStartEntry"
+        class="quick-start-entry"
+        type="button"
+        @click="openQuickStart"
+      >
+        {{ $t("components.quickStart.entry") }}
+      </button>
 
       <div
         class="card clickable-card purple"
@@ -453,12 +468,14 @@ import {
   truncateFixed,
 } from "@/utils/format";
 import { BARKX_MARKET_CAP_BYPASS_ADDRESSES } from "@/contracts/barkxPoolConfig";
+import QuickStartModal from "@/components/mining/QuickStartModal.vue";
+import { isLpQuotaNearFull } from "@/utils/quickStartPlan";
 
 const { t } = useI18n({ useScope: "global" });
 const { walletConnected, walletIsTargetChain, account } = storeToRefs(useMainStore());
 
 const poolData = usePoolData();
-const { barkxPrice, userInfo, modeABuckets } = poolData;
+const { barkxPrice, userInfo, modeABuckets, lpCap } = poolData;
 const balances = useBalances();
 const { vnBalance, wvn1Balance, barkxBalance, lpBalance } = balances;
 const subPoolData = useSubPoolData();
@@ -470,6 +487,13 @@ const barkxBypassSupplyAddresses = computed(() =>
 
 const activeModalKey = ref("");
 const isWeightModalOpen = ref(false);
+const quickStartOpen = ref(false);
+
+// The Quick Start entry is for users who still have quota space to fill; once
+// more than 90% of it is used the button disappears entirely.
+const showQuickStartEntry = computed(
+  () => !isLpQuotaNearFull(userInfo.value.stakedLP, lpCap.value),
+);
 const pendingRewards = ref(0n);
 const historicalIncome = ref(0n);
 const currentApr = ref("");
@@ -925,6 +949,16 @@ function closeModal() {
   activeModalKey.value = "";
 }
 
+function openQuickStart() {
+  document.body.style.overflow = "hidden";
+  quickStartOpen.value = true;
+}
+
+function closeQuickStart() {
+  document.body.style.overflow = "";
+  quickStartOpen.value = false;
+}
+
 function openWeightModal() {
   document.body.style.overflow = "hidden";
   isWeightModalOpen.value = true;
@@ -1057,6 +1091,34 @@ function formatCompactUsd(value) {
 
 .data-lbl {
   color: #ffffff !important;
+}
+
+.quick-start-entry {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--cyan) 0%, #0ea5e9 100%);
+  color: #000;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--cyan-glow);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.quick-start-entry:hover {
+  box-shadow: 0 0 28px var(--cyan-glow);
+}
+
+.quick-start-entry:active {
+  transform: scale(0.99);
 }
 
 .clickable-card {
