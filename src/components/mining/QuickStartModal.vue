@@ -483,9 +483,13 @@ const openGeneration = ref(0);
 
 /**
  * Detection pass that runs every time the modal opens. It always restarts at the
- * approval step; the two auto-advance rules then carry an existing user forward.
- * Nothing auto-advances from Buy BARKX onward — every later step is a deliberate
- * click, because each one spends money.
+ * approval step, then advances to Deposit Fresh VN once approvals are clear.
+ *
+ * It deliberately stops there even for an existing node. Depositing VN is what
+ * raises the LP quota, so it is the step a returning user most likely came for —
+ * skipping past it on the grounds that they already hold a position would hide
+ * the one action that unblocks the rest of the flow. The step sizes itself from
+ * the wallet, so a user with no VN simply sees a disabled button and its reason.
  */
 async function runOpeningDetection() {
   clearAutoAdvance();
@@ -508,16 +512,6 @@ async function runOpeningDetection() {
 
     stepState.value = { ...stepState.value, approve: "done" };
     activeIndex.value = 1;
-
-    // Already has a Main Pool position -> the fresh-VN step is behind them.
-    if (userInfo.value.vnStaked > 0n) {
-      autoAdvanceTimer.value = window.setTimeout(() => {
-        autoAdvanceTimer.value = null;
-        if (isStale()) return;
-        stepState.value = { ...stepState.value, depositVn: "done" };
-        activeIndex.value = 2;
-      }, 1000);
-    }
   }, 1000);
 }
 

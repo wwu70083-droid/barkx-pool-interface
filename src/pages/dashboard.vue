@@ -469,7 +469,6 @@ import {
 } from "@/utils/format";
 import { BARKX_MARKET_CAP_BYPASS_ADDRESSES } from "@/contracts/barkxPoolConfig";
 import QuickStartModal from "@/components/mining/QuickStartModal.vue";
-import { isLpQuotaNearFull } from "@/utils/quickStartPlan";
 
 const { t } = useI18n({ useScope: "global" });
 const { walletConnected, walletIsTargetChain, account } = storeToRefs(useMainStore());
@@ -490,21 +489,20 @@ const isWeightModalOpen = ref(false);
 const quickStartOpen = ref(false);
 
 // The Quick Start entry locks rather than hides, so its reason stays visible.
-// Two things close it off: no fresh VN to enter with, and a quota that is
-// already more than 90% spent. VN is checked first — without it the flow cannot
-// begin at all, whereas a full quota is a good problem to have.
+// Holding fresh VN is the only requirement: depositing VN raises the LP quota,
+// so a user with VN in hand always has something to gain here — including an
+// existing node topping up an already-full quota. A quota-usage gate would wall
+// off exactly the user who came to fix it.
+//
 // Balances start at 0n and fill in asynchronously, so this must not fire while
 // the read is in flight — a VN holder would otherwise be told they have none.
-const quickStartNoVn = computed(() => !balancesLoading.value && vnBalance.value <= 0n);
-const quickStartLocked = computed(
-  () => quickStartNoVn.value || isLpQuotaNearFull(userInfo.value.stakedLP, lpCap.value),
-);
+const quickStartLocked = computed(() => !balancesLoading.value && vnBalance.value <= 0n);
 
-const quickStartEntryLabel = computed(() => {
-  if (quickStartNoVn.value) return t("components.quickStart.entryNoVn");
-  if (quickStartLocked.value) return t("components.quickStart.entryLocked");
-  return t("components.quickStart.entry");
-});
+const quickStartEntryLabel = computed(() =>
+  quickStartLocked.value
+    ? t("components.quickStart.entryNoVn")
+    : t("components.quickStart.entry"),
+);
 const pendingRewards = ref(0n);
 const historicalIncome = ref(0n);
 const currentApr = ref("");
