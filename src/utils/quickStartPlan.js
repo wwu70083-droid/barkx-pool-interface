@@ -17,10 +17,11 @@ export const LP_DUST_WEI = 1000000n;
 export const LP_QUOTA_NEAR_FULL_PCT = 90;
 
 /**
- * 1 USDT, in wei. Below this the buy step is skipped outright — the sizing
- * arithmetic is never run. A dust balance can still produce a nominally
- * positive `s`, and proposing a swap of a few cents wastes gas on an amount
- * that rounds away against the pool's reserves.
+ * 1 USDT, in wei. The minimum swap worth proposing, enforced at both ends of
+ * `planBuyBarkx`: a balance below it skips the step before the arithmetic runs,
+ * and a computed spend below it is discarded afterwards. Either way the swap
+ * would cost more gas than it moves — the amount rounds away against the pool's
+ * reserves.
  */
 export const MIN_BUY_USDT_WEI = 1000000n;
 
@@ -256,8 +257,13 @@ export function planBuyBarkx({
 
   if (!(s > 0)) return { ...none, planCase: "6c", reason: "dust" };
 
+  // The same 1 USDT floor applied to the balance on the way in, now applied to
+  // the answer on the way out. A wallet can clear the entry check and still be
+  // sized down to pennies here — the caps above cut `s` to the quota shortfall,
+  // a tenth of the pool, or the balance, any of which can land under a dollar.
+  // Such a swap is not worth its gas, so it is dropped rather than proposed.
   const usdtToSpend = BigInt(Math.floor(s));
-  if (usdtToSpend <= 0n) return { ...none, planCase: "6c", reason: "dust" };
+  if (usdtToSpend < MIN_BUY_USDT_WEI) return { ...none, planCase: "6c", reason: "dust" };
 
   // The arithmetic says buy — but the modal still skips this step once the quota
   // is more than 90% spent. Secondary to the "do not buy" reasons above.
