@@ -29,6 +29,18 @@ export const LP_DUST_WEI = 1000000000000n;
 export const LP_QUOTA_NEAR_FULL_PCT = 90;
 
 /**
+ * Mint only 95% of the LP the quota could still absorb.
+ *
+ * Filling the cap to the brim leaves the next claim with nowhere to reinvest —
+ * that write reverts, and the only way back is to buy and stake another VN, which
+ * this flow would then fill to the brim again. Holding a twentieth back breaks
+ * that loop. The cost is some leftover BARKX from the buy step, which stays in
+ * the wallet for the user to spend as they see fit.
+ */
+const MINT_FILL_NUM = 95n;
+const MINT_FILL_DEN = 100n;
+
+/**
  * 1 USDT, in wei. The minimum swap worth proposing, enforced at both ends of
  * `planBuyBarkx`: a balance below it skips the step before the arithmetic runs,
  * and a computed spend below it is discarded afterwards. Either way the swap
@@ -150,13 +162,20 @@ export function computePairedBarkx(usdtAmount, { barkxReserve, usdtReserve }) {
 }
 
 /**
- * LP that actually has to be minted: the free quota space, less whatever LP is
- * already idle in the wallet. Both the buy step and the mint step size against
- * this same figure — sizing the purchase against the raw quota instead would buy
- * BARKX for LP the wallet already holds, and strand it.
+ * LP that actually has to be minted: 95% of the free quota space, less whatever
+ * LP is already idle in the wallet. Both the buy step and the mint step size
+ * against this same figure — sizing the purchase against the raw quota instead
+ * would buy BARKX for LP the wallet already holds, and strand it.
+ *
+ * The 95% is the reinvestment headroom (see `MINT_FILL_NUM`). It is applied to
+ * the quota space before the wallet's idle LP is subtracted, so a wallet already
+ * holding that much LP mints nothing rather than being asked to top up a target
+ * it has passed. The *deposit* step is not reduced — LP already in the wallet
+ * should go in; only newly minted LP is held back.
  */
 export function computeMintDemand(lpToFill, lpBalance) {
-  return lpToFill > lpBalance ? lpToFill - lpBalance : 0n;
+  const target = (lpToFill * MINT_FILL_NUM) / MINT_FILL_DEN;
+  return target > lpBalance ? target - lpBalance : 0n;
 }
 
 /**
@@ -290,9 +309,10 @@ export function planBuyBarkx({
 /**
  * Size the manual LP mint.
  *
- * Mint demand is the free quota space less the LP already idle in the wallet —
- * there is no reason to mint LP the wallet could simply deposit. The mint is then
- * bounded by whichever side of the wallet runs out first.
+ * Mint demand is 95% of the free quota space, less the LP already idle in the
+ * wallet — there is no reason to mint LP the wallet could simply deposit, and the
+ * last twentieth is left unfilled so the next claim has room to reinvest. The
+ * mint is then bounded by whichever side of the wallet runs out first.
  *
  * @returns {{ mintDemand: bigint, barkxIn: bigint, usdtIn: bigint, lpOut: bigint, canMint: boolean }}
  */
