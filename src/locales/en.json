@@ -151,6 +151,7 @@
         "lp": "LP",
         "failed": "Approval was not completed. Please try again."
       },
+      "skip": "Skip This Step",
       "depositVn": {
         "title": "Deposit Fresh VN",
         "vnToDeposit": "VN to deposit",

@@ -103,14 +103,32 @@
                   <div class="qs-lock">{{ $t("components.quickStart.depositVn.lock") }}</div>
 
                   <button
+                    v-if="canDepositVn"
                     class="btn-submit qs-action"
                     type="button"
-                    :disabled="busy || !canDepositVn"
+                    :disabled="busy"
                     @click="handleDepositVn"
                   >
                     {{ $t("components.quickStart.depositVn.action") }}
                   </button>
-                  <div v-if="!canDepositVn" class="qs-reason">{{ depositVnReason }}</div>
+                  <!--
+                    Nothing to deposit — out of VN, or not enough USDT to pair the
+                    bonus. Never auto-skipped: this is the step that matters most,
+                    so the reason stays on screen and moving on is the user's call.
+                    A wallet that spent its VN in an earlier visit would otherwise
+                    be stranded here on the next one.
+                  -->
+                  <template v-else>
+                    <div class="qs-reason">{{ depositVnReason }}</div>
+                    <button
+                      class="btn-submit qs-action qs-skip"
+                      type="button"
+                      :disabled="busy"
+                      @click="skipStep('depositVn')"
+                    >
+                      {{ $t("components.quickStart.skip") }}
+                    </button>
+                  </template>
                 </template>
 
                 <!-- ============ 3. Buy BARKX ============ -->
@@ -973,6 +991,14 @@ async function handleDepositLp() {
   margin-top: 14px;
   padding: 13px;
   font-size: 14px;
+}
+
+/* Skip is a way out, not the thing to do — muted so it never reads as primary. */
+.qs-action.qs-skip {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  box-shadow: none;
 }
 
 .qs-action:disabled {
