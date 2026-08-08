@@ -137,7 +137,6 @@
       "entry": "BarkX Pool Quick Start",
       "entryLocked": "Need More LP Effective Cap",
       "common": {
-        "skip": "Skip",
         "finish": "Finish"
       },
       "approve": {
@@ -177,7 +176,7 @@
         "usdtIn": "USDT to supply",
         "lpOut": "LP received",
         "action": "Add Liquidity",
-        "skipReason": "Your wallet already holds enough LP for the quota space left."
+        "checking": "Checking how much LP still needs minting..."
       },
       "depositLp": {
         "title": "Deposit More LP",

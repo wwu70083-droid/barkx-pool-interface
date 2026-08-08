@@ -169,12 +169,14 @@
                       {{ $t("components.quickStart.mintLp.action") }}
                     </button>
                   </template>
-                  <template v-else>
-                    <div class="qs-reason">{{ $t("components.quickStart.mintLp.skipReason") }}</div>
-                    <button class="btn-submit qs-action qs-skip" type="button" @click="skipStep('mintLp')">
-                      {{ $t("components.quickStart.common.skip") }}
-                    </button>
-                  </template>
+                  <!--
+                    No Skip button, same reasoning as Buy BARKX: no mint demand
+                    is not a choice the user makes. Only on screen while the
+                    pair data that sizes the mint is still loading.
+                  -->
+                  <div v-else class="qs-hint">
+                    {{ $t("components.quickStart.mintLp.checking") }}
+                  </div>
                 </template>
 
                 <!-- ============ 5. Deposit More LP ============ -->
@@ -428,14 +430,23 @@ function skipStep(id) {
 }
 
 /**
- * Buy BARKX resolves itself. Every reason not to buy — dust USDT, the wallet
- * already holding the BARKX side, USDT being the short side — is one the user
- * cannot act on from this screen, so a Skip button would only ask them to
- * confirm a decision that was never theirs. The step marks itself skipped and
- * hands off to Mint LP instead.
+ * Buy BARKX and Mint LP both resolve themselves. Every reason to sit either one
+ * out — dust USDT, the wallet already holding the BARKX side, no mint demand
+ * left — follows from balances and the quota, not from anything the user
+ * decides here. A Skip button would only ask them to confirm a decision that
+ * was never theirs, so each step marks itself skipped and hands off.
  *
- * Gated on the pair read having landed: zero reserves make every plan look like
- * "do not buy", and skipping on that would hide a step the user actually needs.
+ * Deposit More LP keeps its terminal button: it is the end of the flow, and
+ * Finish closes the modal rather than advancing.
+ */
+const selfResolvingSteps = [
+  { id: "buyBarkx", hasWork: () => buyPlan.value.shouldBuy },
+  { id: "mintLp", hasWork: () => mintPlan.value.canMint },
+];
+
+/**
+ * Gate for the auto-skip: zero reserves make every plan read as "nothing to
+ * do", and skipping on that would silently hide a step the user needs.
  */
 const pairLoaded = computed(
   () =>
@@ -445,11 +456,19 @@ const pairLoaded = computed(
 );
 
 watch(
-  [() => props.open, activeIndex, () => buyPlan.value.shouldBuy, pairLoaded, busy],
-  ([isOpen, idx, shouldBuy, loaded, isBusy]) => {
-    if (!isOpen || isBusy || !loaded || shouldBuy) return;
-    if (STEPS[idx]?.id !== "buyBarkx") return;
-    skipStep("buyBarkx");
+  [
+    () => props.open,
+    activeIndex,
+    () => buyPlan.value.shouldBuy,
+    () => mintPlan.value.canMint,
+    pairLoaded,
+    busy,
+  ],
+  ([isOpen, idx, , , loaded, isBusy]) => {
+    if (!isOpen || isBusy || !loaded) return;
+    const step = selfResolvingSteps.find((s) => s.id === STEPS[idx]?.id);
+    if (!step || step.hasWork()) return;
+    skipStep(step.id);
   },
   { immediate: true },
 );
@@ -949,12 +968,6 @@ async function handleDepositLp() {
 .qs-action:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  box-shadow: none;
-}
-
-.qs-action.qs-skip {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
   box-shadow: none;
 }
 
