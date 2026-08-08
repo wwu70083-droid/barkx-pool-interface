@@ -13,8 +13,16 @@
 /** 0.000000000001 LP, in wei. Below this a step renders Skip / Finish. */
 export const LP_DUST_WEI = 1000000n;
 
-/** Above this share of the LP quota the modal entry is hidden and Buy BARKX skips. */
+/** Above this share of the LP quota the modal entry locks and Buy BARKX skips. */
 export const LP_QUOTA_NEAR_FULL_PCT = 90;
+
+/**
+ * 1 USDT, in wei. Below this the buy step is skipped outright — the sizing
+ * arithmetic is never run. A dust balance can still produce a nominally
+ * positive `s`, and proposing a swap of a few cents wastes gas on an amount
+ * that rounds away against the pool's reserves.
+ */
+export const MIN_BUY_USDT_WEI = 1000000n;
 
 /** Cap a single swap at a tenth of the pool's USDT — deeper moves the price too far. */
 const SWAP_RESERVE_FRACTION_CAP = 0.1;
@@ -150,7 +158,7 @@ export function computeMintDemand(lpToFill, lpBalance) {
  *   shouldBuy: boolean,
  *   usdtToSpend: bigint,
  *   planCase: "6a"|"6b"|"6c"|"none",
- *   reason: "quota_near_full"|"quota_full"|"sufficient"|"usdt_is_short_side"|"no_assets"|"buy"|"dust",
+ *   reason: "insufficient_usdt"|"quota_near_full"|"quota_full"|"sufficient"|"usdt_is_short_side"|"no_assets"|"buy"|"dust",
  *   cappedBy: "formula"|"needed_barkx"|"reserve_depth"|null,
  * }}
  */
@@ -166,6 +174,12 @@ export function planBuyBarkx({
   totalSupply,
 }) {
   const none = { shouldBuy: false, usdtToSpend: 0n, planCase: "none", cappedBy: null };
+
+  // Highest-precedence skip: a dust USDT balance cannot fund a purchase worth
+  // making, so the plan is not computed at all. This outranks every reason
+  // below, including the quota gate — with under 1 USDT there is nothing to
+  // decide.
+  if (usdtBalance < MIN_BUY_USDT_WEI) return { ...none, reason: "insufficient_usdt" };
 
   // Size against what must actually be MINTED, not the raw quota space — LP the
   // wallet already holds needs no BARKX bought for it.

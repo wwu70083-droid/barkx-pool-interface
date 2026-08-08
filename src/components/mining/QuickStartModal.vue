@@ -342,7 +342,11 @@ const buyQuoteOut = computed(() => {
 });
 
 const buyBarkxSkipReason = computed(() => {
-  // "The script says do not buy" is the primary reason; the >90% quota gate secondary.
+  // Precedence mirrors planBuyBarkx: a dust USDT balance short-circuits before
+  // any plan exists, then the >90% quota gate, then "the script says do not buy".
+  if (buyPlan.value.reason === "insufficient_usdt") {
+    return t("components.quickStart.buyBarkx.skipNoUsdt");
+  }
   if (buyPlan.value.reason === "quota_near_full") {
     return t("components.quickStart.buyBarkx.skipQuotaNearFull");
   }

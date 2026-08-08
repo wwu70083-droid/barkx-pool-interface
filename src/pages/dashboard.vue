@@ -146,12 +146,16 @@
       </div>
 
       <button
-        v-if="showQuickStartEntry"
         class="quick-start-entry"
         type="button"
+        :disabled="quickStartLocked"
         @click="openQuickStart"
       >
-        {{ $t("components.quickStart.entry") }}
+        {{
+          quickStartLocked
+            ? $t("components.quickStart.entryLocked")
+            : $t("components.quickStart.entry")
+        }}
       </button>
 
       <div
@@ -489,10 +493,11 @@ const activeModalKey = ref("");
 const isWeightModalOpen = ref(false);
 const quickStartOpen = ref(false);
 
-// The Quick Start entry is for users who still have quota space to fill; once
-// more than 90% of it is used the button disappears entirely.
-const showQuickStartEntry = computed(
-  () => !isLpQuotaNearFull(userInfo.value.stakedLP, lpCap.value),
+// The Quick Start entry is for users who still have quota space to fill. Once
+// more than 90% of it is used the button stays on screen but locks, so the
+// reason is visible rather than the entry silently vanishing.
+const quickStartLocked = computed(() =>
+  isLpQuotaNearFull(userInfo.value.stakedLP, lpCap.value),
 );
 const pendingRewards = ref(0n);
 const historicalIncome = ref(0n);
@@ -1113,12 +1118,20 @@ function formatCompactUsd(value) {
     box-shadow 0.2s;
 }
 
-.quick-start-entry:hover {
+.quick-start-entry:hover:not(:disabled) {
   box-shadow: 0 0 28px var(--cyan-glow);
 }
 
-.quick-start-entry:active {
+.quick-start-entry:active:not(:disabled) {
   transform: scale(0.99);
+}
+
+/* Locked at >90% quota usage: still readable, but plainly not a target. */
+.quick-start-entry:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
 .clickable-card {
