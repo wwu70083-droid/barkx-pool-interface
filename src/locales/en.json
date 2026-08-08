@@ -136,6 +136,7 @@
       "subtitle": "Everything a new node needs to enter the Main Pool, in order.",
       "entry": "BarkX Pool Quick Start",
       "entryLocked": "Need More LP Effective Cap",
+      "entryNoVn": "Need More VN to Start",
       "common": {
         "finish": "Finish"
       },

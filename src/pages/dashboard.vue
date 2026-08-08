@@ -151,11 +151,7 @@
         :disabled="quickStartLocked"
         @click="openQuickStart"
       >
-        {{
-          quickStartLocked
-            ? $t("components.quickStart.entryLocked")
-            : $t("components.quickStart.entry")
-        }}
+        {{ quickStartEntryLabel }}
       </button>
 
       <div
@@ -481,7 +477,7 @@ const { walletConnected, walletIsTargetChain, account } = storeToRefs(useMainSto
 const poolData = usePoolData();
 const { barkxPrice, userInfo, modeABuckets, lpCap } = poolData;
 const balances = useBalances();
-const { vnBalance, wvn1Balance, barkxBalance, lpBalance } = balances;
+const { vnBalance, wvn1Balance, barkxBalance, lpBalance, loading: balancesLoading } = balances;
 const subPoolData = useSubPoolData();
 const elitePoolData = useElitePoolData();
 
@@ -493,12 +489,22 @@ const activeModalKey = ref("");
 const isWeightModalOpen = ref(false);
 const quickStartOpen = ref(false);
 
-// The Quick Start entry is for users who still have quota space to fill. Once
-// more than 90% of it is used the button stays on screen but locks, so the
-// reason is visible rather than the entry silently vanishing.
-const quickStartLocked = computed(() =>
-  isLpQuotaNearFull(userInfo.value.stakedLP, lpCap.value),
+// The Quick Start entry locks rather than hides, so its reason stays visible.
+// Two things close it off: no fresh VN to enter with, and a quota that is
+// already more than 90% spent. VN is checked first — without it the flow cannot
+// begin at all, whereas a full quota is a good problem to have.
+// Balances start at 0n and fill in asynchronously, so this must not fire while
+// the read is in flight — a VN holder would otherwise be told they have none.
+const quickStartNoVn = computed(() => !balancesLoading.value && vnBalance.value <= 0n);
+const quickStartLocked = computed(
+  () => quickStartNoVn.value || isLpQuotaNearFull(userInfo.value.stakedLP, lpCap.value),
 );
+
+const quickStartEntryLabel = computed(() => {
+  if (quickStartNoVn.value) return t("components.quickStart.entryNoVn");
+  if (quickStartLocked.value) return t("components.quickStart.entryLocked");
+  return t("components.quickStart.entry");
+});
 const pendingRewards = ref(0n);
 const historicalIncome = ref(0n);
 const currentApr = ref("");
