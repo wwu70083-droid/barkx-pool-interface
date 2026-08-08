@@ -60,34 +60,27 @@
                   <div v-if="approvalsLoading" class="qs-hint">
                     {{ $t("components.quickStart.approve.checking") }}
                   </div>
+                  <div v-else-if="allApproved" class="qs-approve-ok">
+                    {{ $t("components.quickStart.approve.approved") }}
+                  </div>
                   <template v-else>
+                    <!--
+                      One full-width button per outstanding approval, in the order
+                      they must be cleared. Only the topmost is clickable; an
+                      approval that is already in place drops out of the list.
+                    -->
                     <div class="qs-approve-list">
-                      <div
-                        v-for="(item, aIdx) in approvalItems"
-                        :key="item.id"
-                        class="qs-approve-row"
-                        :class="{
-                          'is-approved': item.approved,
-                          'is-next': !item.approved && aIdx === firstUnapprovedIndex,
-                        }"
-                      >
-                        <span class="qs-approve-name">{{ $t(item.labelKey) }}</span>
-                        <span v-if="item.approved" class="qs-approve-ok">
-                          {{ $t("components.quickStart.approve.approved") }}
-                        </span>
+                      <template v-for="(item, aIdx) in approvalItems" :key="item.id">
                         <button
-                          v-else-if="aIdx === firstUnapprovedIndex"
-                          class="qs-inline-btn"
+                          v-if="!item.approved"
+                          class="btn-submit qs-action qs-approve-btn"
                           type="button"
-                          :disabled="busy"
+                          :disabled="busy || aIdx !== firstUnapprovedIndex"
                           @click="handleApproveChain"
                         >
                           {{ $t("components.quickStart.approve.action", { token: $t(item.labelKey) }) }}
                         </button>
-                        <span v-else class="qs-approve-wait">
-                          {{ $t("components.quickStart.approve.pendingItem") }}
-                        </span>
-                      </div>
+                      </template>
                     </div>
                     <div class="qs-hint">{{ $t("components.quickStart.approve.hint") }}</div>
                   </template>
@@ -884,54 +877,12 @@ async function handleDepositLp() {
 .qs-approve-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.qs-approve-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid transparent;
-}
-
-.qs-approve-row.is-next {
-  border-color: var(--cyan);
-  background: rgba(56, 189, 248, 0.08);
-}
-
-.qs-approve-name {
-  font-size: 13px;
-  color: var(--text-primary);
 }
 
 .qs-approve-ok {
   font-size: 12px;
   color: var(--green);
-}
-
-.qs-approve-wait {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.qs-inline-btn {
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  background: linear-gradient(135deg, var(--cyan) 0%, #0ea5e9 100%);
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.qs-inline-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .qs-row {
@@ -983,6 +934,11 @@ async function handleDepositLp() {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-primary);
   box-shadow: none;
+}
+
+/* The approval list spaces its own buttons — .qs-action's top margin would double it. */
+.qs-action.qs-approve-btn {
+  margin-top: 0;
 }
 
 .quick-start-fade-enter-active,
