@@ -135,10 +135,18 @@
                     </button>
                   </template>
                   <!--
-                    No Skip button here. Every reason not to buy is one the user
-                    cannot act on, so the step marks itself skipped and hands off
-                    to Mint LP. This branch is only on screen while the pair data
-                    that decides it is still loading.
+                    Terminal: too little LP quota left to absorb a purchase. No
+                    button and no skip — the flow ends here and the user closes
+                    the modal from the header. Staking more VN is what reopens it.
+                  -->
+                  <div v-else-if="buyHalted" class="qs-reason">
+                    {{ $t("components.quickStart.buyBarkx.quotaTooFull") }}
+                  </div>
+                  <!--
+                    No Skip button here. Every remaining reason not to buy is one
+                    the user cannot act on, so the step marks itself skipped and
+                    hands off to Mint LP. This branch is only on screen while the
+                    pair data that decides it is still loading.
                   -->
                   <div v-else class="qs-hint">
                     {{ $t("components.quickStart.buyBarkx.checking") }}
@@ -439,8 +447,16 @@ function skipStep(id) {
  * Deposit More LP keeps its terminal button: it is the end of the flow, and
  * Finish closes the modal rather than advancing.
  */
+/**
+ * True when Buy BARKX has stopped the flow outright: the LP quota is too full to
+ * absorb a purchase. Unlike every other reason not to buy, the user can act on
+ * this one by staking more VN, so the step reports it and goes no further
+ * instead of skipping to Mint LP.
+ */
+const buyHalted = computed(() => buyPlan.value.reason === "quota_near_full");
+
 const selfResolvingSteps = [
-  { id: "buyBarkx", hasWork: () => buyPlan.value.shouldBuy },
+  { id: "buyBarkx", hasWork: () => buyPlan.value.shouldBuy || buyHalted.value },
   { id: "mintLp", hasWork: () => mintPlan.value.canMint },
 ];
 

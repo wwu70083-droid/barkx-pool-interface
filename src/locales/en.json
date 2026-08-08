@@ -135,7 +135,6 @@
       "title": "BarkX Pool Quick Start",
       "subtitle": "Everything a new node needs to enter the Main Pool, in order.",
       "entry": "BarkX Pool Quick Start",
-      "entryNoVn": "Need More VN to Start",
       "common": {
         "finish": "Finish"
       },
@@ -168,7 +167,8 @@
         "receive": "BARKX received",
         "hint": "Sized to balance your wallet against the LP quota still to fill.",
         "action": "Buy BARKX",
-        "checking": "Checking whether a BARKX purchase is needed..."
+        "checking": "Checking whether a BARKX purchase is needed...",
+        "quotaTooFull": "Not enough LP Effective Cap to continue. Deposit more VN to raise your cap, then start over. Close this window with the X above."
       },
       "mintLp": {
         "title": "Mint LP",

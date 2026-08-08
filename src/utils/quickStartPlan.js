@@ -20,7 +20,12 @@
  */
 export const LP_DUST_WEI = 1000000000000n;
 
-/** Above this share of the LP quota the modal entry locks and Buy BARKX skips. */
+/**
+ * Above this share of the LP quota, Buy BARKX halts the flow instead of skipping.
+ * There is too little quota left to absorb a purchase, and unlike every other
+ * reason not to buy, this one the user can act on — by staking more VN to raise
+ * the cap. So it is reported and the flow stops, rather than being passed over.
+ */
 export const LP_QUOTA_NEAR_FULL_PCT = 90;
 
 /**
@@ -166,7 +171,7 @@ export function computeMintDemand(lpToFill, lpBalance) {
  *   shouldBuy: boolean,
  *   usdtToSpend: bigint,
  *   planCase: "6a"|"6b"|"6c"|"none",
- *   reason: "insufficient_usdt"|"quota_near_full"|"quota_full"|"sufficient"|"usdt_is_short_side"|"no_assets"|"buy"|"dust",
+ *   reason: "quota_near_full"|"insufficient_usdt"|"quota_full"|"sufficient"|"usdt_is_short_side"|"no_assets"|"buy"|"dust",
  *   cappedBy: "formula"|"needed_barkx"|"reserve_depth"|null,
  * }}
  */
@@ -183,18 +188,25 @@ export function planBuyBarkx({
 }) {
   const none = { shouldBuy: false, usdtToSpend: 0n, planCase: "none", cappedBy: null };
 
-  // Highest-precedence skip: a dust USDT balance cannot fund a purchase worth
-  // making, so the plan is not computed at all. This outranks every reason
-  // below, including the quota gate — with under 1 USDT there is nothing to
-  // decide.
+  // Two preconditions are checked before any sizing arithmetic runs, in order.
+  //
+  // First the quota. Above 90% used there is too little room left to absorb a
+  // purchase, and this is the one reason not to buy that the user can actually
+  // fix — by staking more VN. So it halts the flow rather than skipping, and it
+  // outranks the USDT floor: being told to raise the cap is more useful than
+  // being silently passed over for holding dust.
+  if (isLpQuotaNearFull(stakedLP, lpCap)) {
+    return { ...none, reason: "quota_near_full" };
+  }
+
+  // Then the USDT floor. Under 1 USDT cannot fund a purchase worth its gas, so
+  // the plan is not computed at all and the step skips.
   if (usdtBalance < MIN_BUY_USDT_WEI) return { ...none, reason: "insufficient_usdt" };
 
   // Size against what must actually be MINTED, not the raw quota space — LP the
   // wallet already holds needs no BARKX bought for it.
   const mintDemand = computeMintDemand(lpToFill, lpBalance);
 
-  // The arithmetic is evaluated first: "the script says do not buy" outranks the
-  // 90%-quota gate as a reason to show, and the gate is applied at the end.
   if (mintDemand < LP_DUST_WEI) return { ...none, reason: "quota_full" };
   if (barkxReserve <= 0n || usdtReserve <= 0n || totalSupply <= 0n) return { ...none, reason: "quota_full" };
 
@@ -271,12 +283,6 @@ export function planBuyBarkx({
   // Such a swap is not worth its gas, so it is dropped rather than proposed.
   const usdtToSpend = BigInt(Math.floor(s));
   if (usdtToSpend < MIN_BUY_USDT_WEI) return { ...none, planCase: "6c", reason: "dust" };
-
-  // The arithmetic says buy — but the modal still skips this step once the quota
-  // is more than 90% spent. Secondary to the "do not buy" reasons above.
-  if (isLpQuotaNearFull(stakedLP, lpCap)) {
-    return { ...none, planCase: "6c", reason: "quota_near_full" };
-  }
 
   return { shouldBuy: true, usdtToSpend, planCase: "6c", reason: "buy", cappedBy };
 }

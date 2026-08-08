@@ -145,13 +145,8 @@
         </div>
       </div>
 
-      <button
-        class="quick-start-entry"
-        type="button"
-        :disabled="quickStartLocked"
-        @click="openQuickStart"
-      >
-        {{ quickStartEntryLabel }}
+      <button class="quick-start-entry" type="button" @click="openQuickStart">
+        {{ $t("components.quickStart.entry") }}
       </button>
 
       <div
@@ -476,7 +471,7 @@ const { walletConnected, walletIsTargetChain, account } = storeToRefs(useMainSto
 const poolData = usePoolData();
 const { barkxPrice, userInfo, modeABuckets, lpCap } = poolData;
 const balances = useBalances();
-const { vnBalance, wvn1Balance, barkxBalance, lpBalance, loading: balancesLoading } = balances;
+const { vnBalance, wvn1Balance, barkxBalance, lpBalance } = balances;
 const subPoolData = useSubPoolData();
 const elitePoolData = useElitePoolData();
 
@@ -488,21 +483,11 @@ const activeModalKey = ref("");
 const isWeightModalOpen = ref(false);
 const quickStartOpen = ref(false);
 
-// The Quick Start entry locks rather than hides, so its reason stays visible.
-// Holding fresh VN is the only requirement: depositing VN raises the LP quota,
-// so a user with VN in hand always has something to gain here — including an
-// existing node topping up an already-full quota. A quota-usage gate would wall
-// off exactly the user who came to fix it.
-//
-// Balances start at 0n and fill in asynchronously, so this must not fire while
-// the read is in flight — a VN holder would otherwise be told they have none.
-const quickStartLocked = computed(() => !balancesLoading.value && vnBalance.value <= 0n);
+// The Quick Start entry is never locked. Every precondition the flow has is
+// checked by the step that depends on it, where there is room to explain it and
+// where a balance that arrives late is simply re-read — a gate out here can only
+// guess, and guessing wrong locks a user out of a flow they qualify for.
 
-const quickStartEntryLabel = computed(() =>
-  quickStartLocked.value
-    ? t("components.quickStart.entryNoVn")
-    : t("components.quickStart.entry"),
-);
 const pendingRewards = ref(0n);
 const historicalIncome = ref(0n);
 const currentApr = ref("");
@@ -1128,14 +1113,6 @@ function formatCompactUsd(value) {
 
 .quick-start-entry:active:not(:disabled) {
   transform: scale(0.99);
-}
-
-/* Locked at >90% quota usage: still readable, but plainly not a target. */
-.quick-start-entry:disabled {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.45);
-  box-shadow: none;
-  cursor: not-allowed;
 }
 
 .clickable-card {
