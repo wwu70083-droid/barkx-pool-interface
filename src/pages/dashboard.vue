@@ -469,7 +469,7 @@ const { t } = useI18n({ useScope: "global" });
 const { walletConnected, walletIsTargetChain, account } = storeToRefs(useMainStore());
 
 const poolData = usePoolData();
-const { barkxPrice, userInfo, modeABuckets, lpCap } = poolData;
+const { barkxPrice, userInfo, modeABuckets } = poolData;
 const balances = useBalances();
 const { vnBalance, wvn1Balance, barkxBalance, lpBalance } = balances;
 const subPoolData = useSubPoolData();
