@@ -10,8 +10,15 @@
  * Decimals: USDT 6, BARKX 18, LP 18. Everything here is wei in / wei out.
  */
 
-/** 0.000000000001 LP, in wei. Below this a step renders Skip / Finish. */
-export const LP_DUST_WEI = 1000000n;
+/**
+ * 0.000001 LP, in wei (LP is 18-decimal). Below this a step renders Skip /
+ * Finish: minting or depositing less than this is not worth its gas, and the
+ * UI rounds LP to 6 places anyway, so a smaller amount would display as zero.
+ *
+ * Raised from 1e-12 LP — that threshold was low enough to be no threshold at
+ * all, letting the modal propose writes for amounts a user could not see.
+ */
+export const LP_DUST_WEI = 1000000000000n;
 
 /** Above this share of the LP quota the modal entry locks and Buy BARKX skips. */
 export const LP_QUOTA_NEAR_FULL_PCT = 90;
