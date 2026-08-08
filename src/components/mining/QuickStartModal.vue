@@ -394,7 +394,11 @@ const depositLpFinishReason = computed(() => {
   if (lpCapUnused.value < LP_DUST_WEI) {
     return t("components.quickStart.depositLp.finishQuotaFull");
   }
-  return t("components.quickStart.depositLp.finishNoLp");
+  // Nothing left in the wallet to deposit, which on the last step is success
+  // rather than a problem — so report the resulting stake instead of the lack.
+  return t("components.quickStart.depositLp.finishNoLp", {
+    lpStake: formatTokenAmount(userInfo.value.stakedLP, 18, 6),
+  });
 });
 
 // --- Data refresh ----------------------------------------------------------
@@ -993,11 +997,17 @@ async function handleDepositLp() {
   font-size: 14px;
 }
 
-/* Skip is a way out, not the thing to do — muted so it never reads as primary. */
+/*
+  Skip is a way out, not the thing to do — outlined rather than filled, so it
+  reads as secondary next to the cyan gradient actions but still reads as a
+  button. The border is spelled with --cyan: there is no --border in
+  origin/style.css (only --border-dark / --border-glow), so the earlier
+  var(--border) resolved to nothing and left the button with no edge at all.
+*/
 .qs-action.qs-skip {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
   box-shadow: none;
 }
 

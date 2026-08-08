@@ -166,7 +166,7 @@
         "title": "Buy BARKX",
         "spend": "USDT to spend",
         "receive": "BARKX received",
-        "hint": "Sized to balance your wallet against the LP quota still to fill.",
+        "hint": "Sized to balance your wallet against the LP Effective Cap still to fill.",
         "action": "Buy BARKX",
         "checking": "Checking whether a BARKX purchase is needed...",
         "quotaTooFull": "Not enough LP Effective Cap to continue. Deposit more VN to raise your cap, then start over. Close this window with the X above."
@@ -185,8 +185,8 @@
         "lock": "This LP locks for 24 hours.",
         "action": "Deposit LP",
         "pending": "Depositing LP...",
-        "finishQuotaFull": "Your LP quota space is filled — nothing left to deposit.",
-        "finishNoLp": "No LP in your wallet to deposit."
+        "finishQuotaFull": "Your LP Effective Cap is filled — nothing left to deposit.",
+        "finishNoLp": "You now have {lpStake} LP in the Main Pool."
       }
     }
   },
