@@ -130,6 +130,64 @@
       "lpMinted": "LP발행됨",
       "barkxReserve": "BARKX예약",
       "usdtReserve": "USDT예약"
+    },
+    "quickStart": {
+      "title": "BarkX Pool 빠른 시작",
+      "subtitle": "새 노드가 BarkX Pool에 참여하는 데 필요한 모든 단계를 순서대로 안내합니다.",
+      "entry": "BarkX Pool 빠른 시작",
+      "common": {
+        "finish": "완료"
+      },
+      "approve": {
+        "title": "승인",
+        "checking": "승인 상태를 확인하는 중...",
+        "approved": "승인됨",
+        "action": "{token} 승인",
+        "hint": "맨 위 버튼부터 시작하세요. 그다음 지갑이 남은 승인을 차례로 요청합니다.",
+        "vn": "VN",
+        "usdtPool": "USDT(BarkX Pool)",
+        "usdtRouter": "USDT(Uniswap)",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "승인이 완료되지 않았습니다. 다시 시도해 주세요."
+      },
+      "skip": "이 단계 건너뛰기",
+      "depositVn": {
+        "title": "새 VN 입금",
+        "vnToDeposit": "입금할 VN",
+        "pairingUsdt": "페어링 USDT",
+        "bonus": "BARKX 보너스",
+        "lock": "이 자산은 360일 동안 잠깁니다.",
+        "action": "VN + USDT 입금",
+        "reasonNoVn": "지갑에 입금할 VN이 없습니다.",
+        "reasonNoUsdt": "USDT가 부족해 VN 1개의 보너스도 페어링할 수 없습니다."
+      },
+      "buyBarkx": {
+        "title": "BARKX 구매",
+        "spend": "사용할 USDT",
+        "receive": "받을 BARKX",
+        "hint": "지갑 잔액과 남은 LP유효 한도의 균형에 맞춰 산정됩니다.",
+        "action": "BARKX 구매",
+        "checking": "BARKX 구매가 필요한지 확인하는 중...",
+        "quotaTooFull": "LP유효 한도가 부족해 계속할 수 없습니다. VN을 더 입금해 한도를 늘린 뒤 다시 시작하세요. 위의 X를 눌러 이 창을 닫으세요."
+      },
+      "mintLp": {
+        "title": "LP 발행",
+        "barkxIn": "공급할 BARKX",
+        "usdtIn": "공급할 USDT",
+        "lpOut": "받을 LP",
+        "action": "유동성 추가",
+        "checking": "발행해야 할 LP가 얼마인지 확인하는 중..."
+      },
+      "depositLp": {
+        "title": "LP 추가 입금",
+        "amount": "입금할 LP",
+        "lock": "이 LP는 24시간 동안 잠깁니다.",
+        "action": "LP 입금",
+        "pending": "LP를 입금하는 중...",
+        "finishQuotaFull": "LP유효 한도가 모두 채워져 추가로 입금할 수 있는 물량이 없습니다.",
+        "finishNoLp": "현재 BarkX Pool에 {lpStake} LP를 보유하고 있습니다."
+      }
     }
   },
   "pages": {

@@ -130,6 +130,64 @@
       "lpMinted": "LPFrappé",
       "barkxReserve": "BARKXRéserve",
       "usdtReserve": "USDTRéserve"
+    },
+    "quickStart": {
+      "title": "Démarrage rapide de BarkX Pool",
+      "subtitle": "Tout ce dont un nouveau nœud a besoin pour entrer dans BarkX Pool, dans l'ordre.",
+      "entry": "Démarrage rapide de BarkX Pool",
+      "common": {
+        "finish": "Terminer"
+      },
+      "approve": {
+        "title": "Approuver",
+        "checking": "Vérification des approbations...",
+        "approved": "Approuvé",
+        "action": "Approuver {token}",
+        "hint": "Commencez par le bouton du haut. Votre portefeuille vous demandera ensuite chaque approbation restante, l'une après l'autre.",
+        "vn": "VN",
+        "usdtPool": "USDT (BarkX Pool)",
+        "usdtRouter": "USDT (Uniswap)",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "L'approbation n'a pas abouti. Veuillez réessayer."
+      },
+      "skip": "Ignorer cette étape",
+      "depositVn": {
+        "title": "Déposer un VN neuf",
+        "vnToDeposit": "VN à déposer",
+        "pairingUsdt": "USDT d'appairage",
+        "bonus": "Bonus BARKX",
+        "lock": "Ces actifs sont verrouillés pendant 360 jours.",
+        "action": "Déposer VN + USDT",
+        "reasonNoVn": "Aucun VN à déposer dans votre portefeuille.",
+        "reasonNoUsdt": "USDT insuffisant pour appairer le bonus, même pour 1 VN."
+      },
+      "buyBarkx": {
+        "title": "Acheter du BARKX",
+        "spend": "USDT à dépenser",
+        "receive": "BARKX reçu",
+        "hint": "Calculé pour équilibrer votre portefeuille avec le Plafond effectif de LP qu'il reste à remplir.",
+        "action": "Acheter du BARKX",
+        "checking": "Vérification de la nécessité d'acheter du BARKX...",
+        "quotaTooFull": "Plafond effectif de LP insuffisant pour continuer. Déposez davantage de VN pour relever votre plafond, puis recommencez. Fermez cette fenêtre avec le X ci-dessus."
+      },
+      "mintLp": {
+        "title": "Frapper des LP",
+        "barkxIn": "BARKX à fournir",
+        "usdtIn": "USDT à fournir",
+        "lpOut": "LP reçu",
+        "action": "Ajouter de la liquidité",
+        "checking": "Vérification du montant de LP restant à frapper..."
+      },
+      "depositLp": {
+        "title": "Déposer plus de LP",
+        "amount": "LP à déposer",
+        "lock": "Ces LP sont verrouillés pendant 24 heures.",
+        "action": "Déposer des LP",
+        "pending": "Dépôt des LP en cours...",
+        "finishQuotaFull": "Votre Plafond effectif de LP est atteint — il ne reste rien à déposer.",
+        "finishNoLp": "Vous détenez désormais {lpStake} LP dans BarkX Pool."
+      }
     }
   },
   "pages": {

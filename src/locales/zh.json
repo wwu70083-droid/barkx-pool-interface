@@ -130,6 +130,64 @@
         "medium": "0.5%",
         "high": "1.0%"
       }
+    },
+    "quickStart": {
+      "title": "BarkX 礦池快速入門",
+      "subtitle": "新節點進入 BarkX 礦池所需的全部步驟，依序排列。",
+      "entry": "BarkX 礦池快速入門",
+      "common": {
+        "finish": "完成"
+      },
+      "approve": {
+        "title": "授權",
+        "checking": "正在檢查授權...",
+        "approved": "已授權",
+        "action": "授權 {token}",
+        "hint": "請從最上方的按鈕開始。您的錢包接下來會依序提示其餘的授權。",
+        "vn": "VN",
+        "usdtPool": "USDT（BarkX 礦池）",
+        "usdtRouter": "USDT（Uniswap）",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "授權未完成，請重試。"
+      },
+      "skip": "跳過此步驟",
+      "depositVn": {
+        "title": "存入新 VN",
+        "vnToDeposit": "待存入 VN",
+        "pairingUsdt": "配對 USDT",
+        "bonus": "BARKX 贈予",
+        "lock": "這些資產將鎖定 360 天。",
+        "action": "存入 VN + USDT",
+        "reasonNoVn": "您的錢包中沒有可存入的 VN。",
+        "reasonNoUsdt": "USDT 不足，無法為 1 個 VN 的贈予配對。"
+      },
+      "buyBarkx": {
+        "title": "購買 BARKX",
+        "spend": "待花費 USDT",
+        "receive": "獲得 BARKX",
+        "hint": "依您的錢包餘額與待填滿的 LP 額度空間計算。",
+        "action": "購買 BARKX",
+        "checking": "正在檢查是否需要購買 BARKX...",
+        "quotaTooFull": "LP 額度空間不足，無法繼續。請存入更多 VN 以提升額度空間，然後重新開始。點擊上方的 X 關閉此視窗。"
+      },
+      "mintLp": {
+        "title": "鑄造 LP",
+        "barkxIn": "投入 BARKX",
+        "usdtIn": "投入 USDT",
+        "lpOut": "獲得 LP",
+        "action": "添加流動性",
+        "checking": "正在檢查還需鑄造多少 LP..."
+      },
+      "depositLp": {
+        "title": "存入更多 LP",
+        "amount": "待存入 LP",
+        "lock": "此 LP 將鎖定 24 小時。",
+        "action": "存入 LP",
+        "pending": "正在存入 LP...",
+        "finishQuotaFull": "您的 LP 額度空間已填滿，沒有可再存入的部分。",
+        "finishNoLp": "您目前在 BarkX 礦池中持有 {lpStake} LP。"
+      }
     }
   },
   "messages": {

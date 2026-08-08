@@ -130,6 +130,64 @@
       "lpMinted": "LPGeprägt",
       "barkxReserve": "BARKXReserve",
       "usdtReserve": "USDTReserve"
+    },
+    "quickStart": {
+      "title": "BarkX Pool Schnellstart",
+      "subtitle": "Alles, was ein neuer Node für den Einstieg in BarkX Pool braucht, der Reihe nach.",
+      "entry": "BarkX Pool Schnellstart",
+      "common": {
+        "finish": "Fertig"
+      },
+      "approve": {
+        "title": "Genehmigen",
+        "checking": "Genehmigungen werden geprüft...",
+        "approved": "Genehmigt",
+        "action": "{token} genehmigen",
+        "hint": "Beginnen Sie mit der obersten Schaltfläche. Ihre Wallet fragt anschließend jede weitere Genehmigung der Reihe nach ab.",
+        "vn": "VN",
+        "usdtPool": "USDT (BarkX Pool)",
+        "usdtRouter": "USDT (Uniswap)",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "Die Genehmigung wurde nicht abgeschlossen. Bitte versuchen Sie es erneut."
+      },
+      "skip": "Diesen Schritt überspringen",
+      "depositVn": {
+        "title": "Neues VN einzahlen",
+        "vnToDeposit": "Einzuzahlendes VN",
+        "pairingUsdt": "Paarungs-USDT",
+        "bonus": "BARKX-Bonus",
+        "lock": "Diese Assets werden für 360 Tage gesperrt.",
+        "action": "VN + USDT einzahlen",
+        "reasonNoVn": "In Ihrer Wallet ist kein VN zum Einzahlen vorhanden.",
+        "reasonNoUsdt": "Nicht genügend USDT, um den Bonus für auch nur 1 VN zu paaren."
+      },
+      "buyBarkx": {
+        "title": "BARKX kaufen",
+        "spend": "Zu verwendendes USDT",
+        "receive": "Erhaltenes BARKX",
+        "hint": "Berechnet, um Ihre Wallet mit der noch zu füllenden effektiven LP-Obergrenze auszugleichen.",
+        "action": "BARKX kaufen",
+        "checking": "Es wird geprüft, ob ein BARKX-Kauf nötig ist...",
+        "quotaTooFull": "Die effektive LP-Obergrenze reicht nicht aus, um fortzufahren. Zahlen Sie mehr VN ein, um Ihre Obergrenze zu erhöhen, und beginnen Sie erneut. Schließen Sie dieses Fenster mit dem X oben."
+      },
+      "mintLp": {
+        "title": "LP prägen",
+        "barkxIn": "Bereitzustellendes BARKX",
+        "usdtIn": "Bereitzustellendes USDT",
+        "lpOut": "Erhaltenes LP",
+        "action": "Liquidität hinzufügen",
+        "checking": "Es wird geprüft, wie viel LP noch geprägt werden muss..."
+      },
+      "depositLp": {
+        "title": "Mehr LP einzahlen",
+        "amount": "Einzuzahlendes LP",
+        "lock": "Dieses LP wird für 24 Stunden gesperrt.",
+        "action": "LP einzahlen",
+        "pending": "LP wird eingezahlt...",
+        "finishQuotaFull": "Ihre effektive LP-Obergrenze ist gefüllt — es bleibt nichts mehr zum Einzahlen.",
+        "finishNoLp": "Sie halten jetzt {lpStake} LP in BarkX Pool."
+      }
     }
   },
   "pages": {

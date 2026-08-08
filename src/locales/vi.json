@@ -130,6 +130,64 @@
       "lpMinted": "LPđúc",
       "barkxReserve": "BARKXDự trữ",
       "usdtReserve": "USDTDự trữ"
+    },
+    "quickStart": {
+      "title": "Bắt đầu nhanh BarkX Pool",
+      "subtitle": "Mọi bước một node mới cần để tham gia BarkX Pool, theo thứ tự.",
+      "entry": "Bắt đầu nhanh BarkX Pool",
+      "common": {
+        "finish": "Hoàn tất"
+      },
+      "approve": {
+        "title": "Phê duyệt",
+        "checking": "Đang kiểm tra các phê duyệt...",
+        "approved": "Đã phê duyệt",
+        "action": "Phê duyệt {token}",
+        "hint": "Hãy bắt đầu với nút trên cùng. Ví của bạn sẽ lần lượt yêu cầu các phê duyệt còn lại.",
+        "vn": "VN",
+        "usdtPool": "USDT (BarkX Pool)",
+        "usdtRouter": "USDT (Uniswap)",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "Phê duyệt chưa hoàn tất. Vui lòng thử lại."
+      },
+      "skip": "Bỏ qua bước này",
+      "depositVn": {
+        "title": "Gửi VN mới",
+        "vnToDeposit": "VN cần gửi",
+        "pairingUsdt": "USDT ghép cặp",
+        "bonus": "Tiền thưởng BARKX",
+        "lock": "Các tài sản này sẽ khóa trong 360 ngày.",
+        "action": "Gửi VN + USDT",
+        "reasonNoVn": "Ví của bạn không có VN nào để gửi.",
+        "reasonNoUsdt": "Không đủ USDT để ghép cặp tiền thưởng cho dù chỉ 1 VN."
+      },
+      "buyBarkx": {
+        "title": "Mua BARKX",
+        "spend": "USDT cần dùng",
+        "receive": "BARKX nhận được",
+        "hint": "Được tính để cân đối ví của bạn với Giới hạn hiệu dụng LP còn phải lấp đầy.",
+        "action": "Mua BARKX",
+        "checking": "Đang kiểm tra xem có cần mua BARKX không...",
+        "quotaTooFull": "Không đủ Giới hạn hiệu dụng LP để tiếp tục. Hãy gửi thêm VN để nâng giới hạn, rồi bắt đầu lại. Đóng cửa sổ này bằng dấu X ở trên."
+      },
+      "mintLp": {
+        "title": "Đúc LP",
+        "barkxIn": "BARKX cung cấp",
+        "usdtIn": "USDT cung cấp",
+        "lpOut": "LP nhận được",
+        "action": "Thêm thanh khoản",
+        "checking": "Đang kiểm tra còn phải đúc bao nhiêu LP..."
+      },
+      "depositLp": {
+        "title": "Gửi thêm LP",
+        "amount": "LP cần gửi",
+        "lock": "Số LP này sẽ khóa trong 24 giờ.",
+        "action": "Gửi LP",
+        "pending": "Đang gửi LP...",
+        "finishQuotaFull": "Giới hạn hiệu dụng LP của bạn đã được lấp đầy — không còn gì để gửi.",
+        "finishNoLp": "Bạn hiện có {lpStake} LP trong BarkX Pool."
+      }
     }
   },
   "pages": {

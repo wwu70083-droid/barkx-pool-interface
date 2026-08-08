@@ -130,6 +130,64 @@
       "lpMinted": "LP鋳造されました",
       "barkxReserve": "BARKX予約",
       "usdtReserve": "USDT予約"
+    },
+    "quickStart": {
+      "title": "BarkX Pool クイックスタート",
+      "subtitle": "新しいノードが BarkX Pool に参加するために必要なすべてを、順番に。",
+      "entry": "BarkX Pool クイックスタート",
+      "common": {
+        "finish": "完了"
+      },
+      "approve": {
+        "title": "承認",
+        "checking": "承認状況を確認しています...",
+        "approved": "承認済み",
+        "action": "{token} を承認する",
+        "hint": "一番上のボタンから始めてください。ウォレットが残りの承認を順番に求めます。",
+        "vn": "VN",
+        "usdtPool": "USDT（BarkX Pool）",
+        "usdtRouter": "USDT（Uniswap）",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "承認が完了しませんでした。もう一度お試しください。"
+      },
+      "skip": "このステップをスキップ",
+      "depositVn": {
+        "title": "新しい VN をデポジット",
+        "vnToDeposit": "デポジットする VN",
+        "pairingUsdt": "ペアリング USDT",
+        "bonus": "BARKX ボーナス",
+        "lock": "これらの資産は 360 日間ロックされます。",
+        "action": "VN + USDT をデポジット",
+        "reasonNoVn": "ウォレットにデポジットできる VN がありません。",
+        "reasonNoUsdt": "USDT が不足しているため、VN 1 個分のボーナスもペアリングできません。"
+      },
+      "buyBarkx": {
+        "title": "BARKX を購入",
+        "spend": "使用する USDT",
+        "receive": "受け取る BARKX",
+        "hint": "ウォレット残高と、残りの LP有効上限のバランスに合わせて算出されます。",
+        "action": "BARKX を購入",
+        "checking": "BARKX の購入が必要か確認しています...",
+        "quotaTooFull": "LP有効上限が足りないため続行できません。VN を追加入金して上限を引き上げ、最初からやり直してください。上の X でこのウィンドウを閉じます。"
+      },
+      "mintLp": {
+        "title": "LP を鋳造",
+        "barkxIn": "供給する BARKX",
+        "usdtIn": "供給する USDT",
+        "lpOut": "受け取る LP",
+        "action": "流動性の追加",
+        "checking": "あと何 LP を鋳造する必要があるか確認しています..."
+      },
+      "depositLp": {
+        "title": "LP を追加デポジット",
+        "amount": "デポジットする LP",
+        "lock": "この LP は 24 時間ロックされます。",
+        "action": "LP をデポジット",
+        "pending": "LP をデポジットしています...",
+        "finishQuotaFull": "LP有効上限は満杯です。追加でデポジットできる分はありません。",
+        "finishNoLp": "現在 BarkX Pool に {lpStake} LP を保有しています。"
+      }
     }
   },
   "pages": {

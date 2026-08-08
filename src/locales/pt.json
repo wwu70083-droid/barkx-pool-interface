@@ -130,6 +130,64 @@
         "medium": "0.5%",
         "high": "1.0%"
       }
+    },
+    "quickStart": {
+      "title": "Início Rápido do BarkX Pool",
+      "subtitle": "Tudo o que um novo nó precisa para entrar no BarkX Pool, em ordem.",
+      "entry": "Início Rápido do BarkX Pool",
+      "common": {
+        "finish": "Concluir"
+      },
+      "approve": {
+        "title": "Aprovar",
+        "checking": "Verificando aprovações...",
+        "approved": "Aprovado",
+        "action": "Aprovar {token}",
+        "hint": "Comece pelo botão do topo. Sua carteira solicitará em seguida cada aprovação restante, uma a uma.",
+        "vn": "VN",
+        "usdtPool": "USDT (BarkX Pool)",
+        "usdtRouter": "USDT (Uniswap)",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "A aprovação não foi concluída. Tente novamente."
+      },
+      "skip": "Pular Esta Etapa",
+      "depositVn": {
+        "title": "Depositar VN Novo",
+        "vnToDeposit": "VN a depositar",
+        "pairingUsdt": "USDT de pareamento",
+        "bonus": "Bônus BARKX",
+        "lock": "Estes ativos ficam bloqueados por 360 dias.",
+        "action": "Depositar VN + USDT",
+        "reasonNoVn": "Não há VN na sua carteira para depositar.",
+        "reasonNoUsdt": "USDT insuficiente para parear o bônus de sequer 1 VN."
+      },
+      "buyBarkx": {
+        "title": "Comprar BARKX",
+        "spend": "USDT a gastar",
+        "receive": "BARKX recebido",
+        "hint": "Calculado para equilibrar sua carteira com o Limite Efetivo de LP que ainda falta preencher.",
+        "action": "Comprar BARKX",
+        "checking": "Verificando se é necessário comprar BARKX...",
+        "quotaTooFull": "Limite Efetivo de LP insuficiente para continuar. Deposite mais VN para elevar seu limite e comece de novo. Feche esta janela com o X acima."
+      },
+      "mintLp": {
+        "title": "Cunhar LP",
+        "barkxIn": "BARKX a fornecer",
+        "usdtIn": "USDT a fornecer",
+        "lpOut": "LP recebido",
+        "action": "Adicionar Liquidez",
+        "checking": "Verificando quanto LP ainda falta cunhar..."
+      },
+      "depositLp": {
+        "title": "Depositar Mais LP",
+        "amount": "LP a depositar",
+        "lock": "Este LP fica bloqueado por 24 horas.",
+        "action": "Depositar LP",
+        "pending": "Depositando LP...",
+        "finishQuotaFull": "Seu Limite Efetivo de LP está preenchido — não resta nada para depositar.",
+        "finishNoLp": "Você agora tem {lpStake} LP no BarkX Pool."
+      }
     }
   },
   "messages": {
