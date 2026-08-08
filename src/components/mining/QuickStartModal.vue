@@ -134,12 +134,15 @@
                       {{ $t("components.quickStart.buyBarkx.action") }}
                     </button>
                   </template>
-                  <template v-else>
-                    <div class="qs-reason">{{ buyBarkxSkipReason }}</div>
-                    <button class="btn-submit qs-action qs-skip" type="button" @click="skipStep('buyBarkx')">
-                      {{ $t("components.quickStart.common.skip") }}
-                    </button>
-                  </template>
+                  <!--
+                    No Skip button here. Every reason not to buy is one the user
+                    cannot act on, so the step marks itself skipped and hands off
+                    to Mint LP. This branch is only on screen while the pair data
+                    that decides it is still loading.
+                  -->
+                  <div v-else class="qs-hint">
+                    {{ $t("components.quickStart.buyBarkx.checking") }}
+                  </div>
                 </template>
 
                 <!-- ============ 4. Mint LP ============ -->
@@ -341,18 +344,6 @@ const buyQuoteOut = computed(() => {
   return quote?.amountOut ?? 0n;
 });
 
-const buyBarkxSkipReason = computed(() => {
-  // Precedence mirrors planBuyBarkx: a dust USDT balance short-circuits before
-  // any plan exists, then the >90% quota gate, then "the script says do not buy".
-  if (buyPlan.value.reason === "insufficient_usdt") {
-    return t("components.quickStart.buyBarkx.skipNoUsdt");
-  }
-  if (buyPlan.value.reason === "quota_near_full") {
-    return t("components.quickStart.buyBarkx.skipQuotaNearFull");
-  }
-  return t("components.quickStart.buyBarkx.skipNoBuy");
-});
-
 const mintPlan = computed(() =>
   computeMintLpPlan({
     lpToFill: lpCapUnused.value,
@@ -435,6 +426,33 @@ function completeStep(id, state = "done") {
 function skipStep(id) {
   completeStep(id, "skipped");
 }
+
+/**
+ * Buy BARKX resolves itself. Every reason not to buy — dust USDT, the wallet
+ * already holding the BARKX side, USDT being the short side — is one the user
+ * cannot act on from this screen, so a Skip button would only ask them to
+ * confirm a decision that was never theirs. The step marks itself skipped and
+ * hands off to Mint LP instead.
+ *
+ * Gated on the pair read having landed: zero reserves make every plan look like
+ * "do not buy", and skipping on that would hide a step the user actually needs.
+ */
+const pairLoaded = computed(
+  () =>
+    reserves.value.barkxReserve > 0n &&
+    reserves.value.usdtReserve > 0n &&
+    reserves.value.totalSupply > 0n,
+);
+
+watch(
+  [() => props.open, activeIndex, () => buyPlan.value.shouldBuy, pairLoaded, busy],
+  ([isOpen, idx, shouldBuy, loaded, isBusy]) => {
+    if (!isOpen || isBusy || !loaded || shouldBuy) return;
+    if (STEPS[idx]?.id !== "buyBarkx") return;
+    skipStep("buyBarkx");
+  },
+  { immediate: true },
+);
 
 /**
  * Bumped on every open and every close. The detection pass awaits network reads

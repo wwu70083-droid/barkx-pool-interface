@@ -169,9 +169,7 @@
         "receive": "BARKX received",
         "hint": "Sized to balance your wallet against the LP quota still to fill.",
         "action": "Buy BARKX",
-        "skipNoBuy": "No BARKX purchase is needed to fill your LP quota space.",
-        "skipNoUsdt": "Less than 1 USDT in your wallet — nothing to buy BARKX with.",
-        "skipQuotaNearFull": "You have used more than 90% of your LP quota space."
+        "checking": "Checking whether a BARKX purchase is needed..."
       },
       "mintLp": {
         "title": "Mint LP",
