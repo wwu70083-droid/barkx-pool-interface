@@ -942,6 +942,8 @@
         {{ $t("pages.pool.depositStatus.estimate") }}
       </button>
     </div>
+
+    <AiBonusModal :open="aiBonusOpen" @close="aiBonusOpen = false" />
   </MiningShell>
 </template>
 
@@ -951,6 +953,7 @@ import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { parseUnits, formatUnits, maxUint256 } from "viem";
+import AiBonusModal from "@/components/mining/AiBonusModal.vue";
 import ApprovalActionGroup from "@/components/mining/ApprovalActionGroup.vue";
 import MiningShell from "@/components/mining/MiningShell.vue";
 import SwapOptionsPanel from "@/components/mining/SwapOptionsPanel.vue";
@@ -1417,6 +1420,17 @@ watch(activeWithdrawTab, (sub) => {
     },
   });
 });
+
+// --- AI Bonus modal: re-opens on every switch to the rewards tab, by design ---
+const aiBonusOpen = ref(false);
+
+watch(
+  activeTab,
+  (tab) => {
+    if (tab === "rewards") aiBonusOpen.value = true;
+  },
+  { immediate: true },
+);
 
 // --- Computed values for Deposit VN ---
 

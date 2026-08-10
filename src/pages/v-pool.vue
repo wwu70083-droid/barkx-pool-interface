@@ -415,6 +415,8 @@
         </div>
       </div>
     </Teleport>
+
+    <AiBonusModal :open="aiBonusOpen" @close="aiBonusOpen = false" />
   </MiningShell>
 </template>
 
@@ -424,6 +426,7 @@ import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 import { maxUint256, formatUnits, parseUnits } from "viem";
+import AiBonusModal from "@/components/mining/AiBonusModal.vue";
 import ApprovalActionGroup from "@/components/mining/ApprovalActionGroup.vue";
 import MiningShell from "@/components/mining/MiningShell.vue";
 import { useMainStore } from "@/store";
@@ -1157,6 +1160,17 @@ watch(activeDepositVnTab, (sub) => {
   if (activeTab.value !== "dep-vn") return;
   if (route.query.sub !== sub) router.replace({ query: { ...route.query, tab: "dep-vn", sub } });
 });
+
+// --- AI Bonus modal: re-opens on every switch to the rewards tab, by design ---
+const aiBonusOpen = ref(false);
+
+watch(
+  activeTab,
+  (tab) => {
+    if (tab === "rewards") aiBonusOpen.value = true;
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>

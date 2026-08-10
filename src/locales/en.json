@@ -131,6 +131,18 @@
         "high": "1.0%"
       }
     },
+    "aiBonus": {
+      "title": "Let AI Handle Your Pool",
+      "line1": "We strongly recommend going to BarkX Chat and letting AI handle your unclaimed rewards and the rest of your pool operations — the new Crypto + AI experience.",
+      "line2": "The community runs a draw every Sunday. Every node that commanded AI through BarkX Chat during the past week is entered automatically.",
+      "line3": "The more pool operations you have AI carry out within the week, the higher your node's chance of winning.",
+      "line4": "The AI Bonus pays up to 100 BARKX per node.",
+      "line5": "Follow the draw on Discord.",
+      "chat": "Go to BarkX Chat",
+      "discord": "Join Discord",
+      "abandon": "Give up on AI",
+      "abandonWait": "Give up on AI ({seconds})"
+    },
     "quickStart": {
       "title": "BarkX Pool Quick Start",
       "subtitle": "Everything a new node needs to enter the Main Pool, in order.",

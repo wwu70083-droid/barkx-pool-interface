@@ -579,6 +579,8 @@
         </div>
       </div>
     </div>
+
+    <AiBonusModal :open="aiBonusOpen" @close="aiBonusOpen = false" />
   </MiningShell>
 </template>
 
@@ -589,6 +591,7 @@ import { formatUnits, maxUint256 } from "viem";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import MiningShell from "@/components/mining/MiningShell.vue";
+import AiBonusModal from "@/components/mining/AiBonusModal.vue";
 import ApprovalActionGroup from "@/components/mining/ApprovalActionGroup.vue";
 import { useMainStore } from "@/store";
 import { useElitePoolData } from "@/composables/useElitePoolData";
@@ -1765,6 +1768,17 @@ watch(activeTab, (tab) => {
   if (route.query.tab === tab) return;
   router.replace({ query: { ...route.query, tab } });
 });
+
+// --- AI Bonus modal: re-opens on every switch to the rewards tab, by design ---
+const aiBonusOpen = ref(false);
+
+watch(
+  activeTab,
+  (tab) => {
+    if (tab === "rewards") aiBonusOpen.value = true;
+  },
+  { immediate: true },
+);
 </script>
 
 <style lang="less">
