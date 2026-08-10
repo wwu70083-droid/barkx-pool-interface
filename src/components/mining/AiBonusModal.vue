@@ -4,9 +4,9 @@
       No ✕ and no outside-click dismissal by design: the only way out is the
       "give up" button, which stays frozen for 3s after the modal opens.
     -->
-    <div v-if="open" class="custom-modal-overlay ai-bonus-overlay">
-      <div class="custom-modal ai-bonus-modal" @click.stop>
-        <div class="custom-modal-title">{{ $t("components.aiBonus.title") }}</div>
+    <div v-if="open" class="ai-bonus-overlay">
+      <div class="ai-bonus-modal" @click.stop>
+        <div class="ai-bonus-title">{{ $t("components.aiBonus.title") }}</div>
 
         <ul class="ai-bonus-list">
           <li v-for="key in LINE_KEYS" :key="key">{{ $t(`components.aiBonus.${key}`) }}</li>
@@ -92,7 +92,14 @@ function openLink(url) {
 </script>
 
 <style scoped>
-.custom-modal-overlay {
+/*
+  Deliberately NOT reusing the shared .custom-modal* class names: e-pool.vue's
+  style block is unscoped, and its `.elite-pool-theme .custom-modal` rule ties
+  this component's scoped selectors on specificity and wins on source order,
+  which pinned the Elite copy to max-width 360px while the other two pools got
+  460px. Own class names keep all three the same width on the same device.
+*/
+.ai-bonus-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
@@ -106,7 +113,7 @@ function openLink(url) {
   padding: 16px;
 }
 
-.custom-modal {
+.ai-bonus-modal {
   width: 100%;
   max-width: 460px;
   max-height: 88vh;
@@ -120,16 +127,16 @@ function openLink(url) {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
 }
 
-.custom-modal::-webkit-scrollbar {
+.ai-bonus-modal::-webkit-scrollbar {
   width: 4px;
 }
 
-.custom-modal::-webkit-scrollbar-thumb {
+.ai-bonus-modal::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
-.custom-modal-title {
+.ai-bonus-title {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
