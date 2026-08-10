@@ -1,159 +1,64 @@
 # Dev Task
 
-本 prod-v2 分支是 barkx-pool-interface 的最新生产代码，仓库的其他分支皆已过时。务必从 prod-v2 作为基线展开迭代。
+运营团队现在遇到问题：我们已经上线了 chatx 网页版，现在用户可以使用 barkx agent 操作矿池，然而，大量用户尚未意识到这一点，使用 chatx 的人很少。
 
----
+解决思路：在三个矿池的 rewards tab 上新增引流 modal，引导用户去 chatx 链接。
 
-本任务需要解决的问题：新用户进入 BarkX Pool 主矿池的学习成本过高，步骤散落在多个界面，亟需一个集成界面，以待办事项的形式一站式引导所有必要操作的执行。
+## 设计
 
-本任务不涉及 Elite Pool、VIP Pool 等其他业务。
+注意 modal 的色彩风格必须遵循所在 pool 的自有 style。
 
-## 业务流程分析
+modal 上应向用户显示的内容：
 
-新用户进场典型流程：
+### 文案
 
-- 1. Deposit Fresh VN
-    - Approve VN
-    - Approve USDT [Main Pool]
-    - Deposit VN + USDT
-- 2. Buy BARKX
-    - Approve USDT [Uniswap]
-    - Swap USDT for BARKX
-- 3. Mint LP
-    - Approve BARKX
-    - Add BARKX + USDT Liquidity
-- 4. Deposit More LP
-    - Approve LP
-    - Deposit LP
+- 强烈建议前往 BarkX Chat 使用 AI 来处理未领奖励，并操作其他矿池事务，享受 Crypto + AI 新体验
+- 社区每周日举行一次抽奖，过去一周使用 BarkX Chat 指挥 AI 的节点，自动参与抽奖
+- 在一周内让 AI 代理完成矿池操作的次数越多，节点获奖概率越高
+- 奖金（AI Bonus）最高可达每节点 100 BARKX
+- 请在 Discord 了解抽奖情况
 
-我们的目标是在 UI 上提供一个大型用户入场 modal，在这个 modal 上，以串行引导用户完成所有操作。
+### 按钮
 
-该 modal 打开时，会逐步检测用户有哪些事需要做。
+- 前往 BarkX Chat
+    - 以新选项卡打开 https://chat.barkx.xyz/
+    - 在 https://barkx-pool.westworld.org/#/pool?tab=rewards 用此页面的蓝
+    - 在 https://barkx-pool.westworld.org/#/e-pool?tab=rewards 用此页面的青
+    - 在 https://barkx-pool.westworld.org/#/v-pool?tab=rewards 用此页面的琥珀
+- 放弃使用 AI
+    - 用于关闭此 modal
+    - modal 展开后，显示过倒计时 3 秒才可用
+    - 可用前为灰色冻结态
+    - 可用后为红色
+- 加入 Discord
+    - i18n 处于繁体中文时，以新选项卡打开 https://discord.gg/barkcn
+    - i18n 处于繁体中文之外的其他语种时，以新选项卡打开 https://discord.gg/barkai
+    - 紫色按钮
 
-## 构造入场面板
+### 启动
 
-### Approve
+只要用户切换到：
 
-首要环节是授权代币，一站式串行解决。
+- https://barkx-pool.westworld.org/#/pool?tab=rewards
+- https://barkx-pool.westworld.org/#/e-pool?tab=rewards
+- https://barkx-pool.westworld.org/#/v-pool?tab=rewards
 
-授权 VN 为 ERC-1155 TokenID = 1，授权 ERC-20 数量全部为 Unlimited，与散落各处的授权按钮一致。
+就会立刻展示相应 modal。
 
-- Approve VN
-- Approve USDT [Main Pool]
-- Approve USDT [Uniswap]
-- Approve BARKX
-- Approve LP
+不支持利用 cookie 等任何方式让此特性休眠。
 
-上述 5 个授权：
+### 关闭
 
-- 依次自动检测，有谁没授权，就高亮。
-- 注意 USDT 要在两个合约分别授权，不可混淆。
-- 用户无需依次点击，总是只能先点击最上面一个没授权的项目，之后钱包连续弹出。
+只能用「放弃」按钮关闭 modal。
 
-toast 复用 Approve 那套。
+不提供右上角 x 按钮。
 
-### Deposit Fresh VN
-
-必须在完成整个 Approve 步骤集合后才能解锁这一步，防止用户没法存 VN。
-
-这一步将钱包中的新鲜 VN 尽可能存入主矿池（ModeA）。
-
-基于合约业务，存入 VN 的同时会赠予 BARKX，而 BARKX 必须按当前兑换率配对 USDT，那么 VN 存入数量受限于 USDT 余额。
-
-能存多少 VN，就显示存多少，渲染一个 Deposit VN + USDT 按钮。
-
-若可存量为 0 VN，按钮不可点，按优先度显示其中一个原因：
-
-- VN 余额为 0 无可存，作为首要原因。
-- USDT 数量不足以支持 1 VN 存入，作为次要原因。
-
-提示锁定时长为 360 天。
-
-toast 复用 Deposit VN 那套。
-
-### Buy BARKX
-
-必须在完成 Deposit Fresh VN 步骤后才能解锁这一步，防止用户没存 VN（LP 额度空间为 0）。
-
-这一步先自动分析用户钱包资产和空闲 LP 额度空间的关系，判断要不要买入更多 BARKX 以筹备 LP 铸造。
-
-此策略直接参考 https://github.com/wwu70083-droid/barkx-harness-backend/blob/mainnet/srv/pack/skill.main_pool_best_plan_for_new_node.md 构造一个脚本。
-
-脚本的分析结果应是：是否需要购买 BARKX，如果需要，那么需花费多少 USDT 购买 BARKX？
-
-如果需要购买，则直接提供购买按钮，所花费的 USDT 数量由脚本预填写，用户不可改。
-
-若满足如下条件之一，则购买按钮渲染为 Skip，按优先度显示其中一个原因：
-
-- 脚本的分析结果是不购买，作为首要原因。
-- 用户已利用超过 90% 的 LP 额度空间，作为次要原因。
-
-toast 复用 Swap 那套。
-
-### Mint LP
-
-必须在完成或跳过 Buy BARKX 步骤后才能解锁这一步。
-
-这一步利用钱包资产尽可能铸造 LP，但目标铸造量不超过铸造需求。
-
-铸造需求 = 空闲 LP 额度空间 - 钱包中的闲置 LP
-
-如果铸造需求大于等于 0.000001 LP，就渲染添加流动性按钮，并显示将提交的 BARKX 和 USDT 数量。
-
-如果铸造需求小于 0.000001 LP（包括负值），就渲染 Skip 按钮。
-
-toast 复用 Add Liquidity 那套。
-
-### Deposit More LP
-
-必须在完成或跳过 Mint LP 步骤后才能解锁这一步。
-
-这一步利用钱包中的 LP 尽可能追加存入主矿池（ModeB）。
-
-存入量受限于空闲 LP 额度空间。
-
-如果可存量大于等于 0.000001 LP，就渲染存入 LP 按钮，并显示将提交的 LP 数量。
-
-如果可存量小于 0.000001 LP，就渲染 Finish 按钮。
-
-提示锁定时长为 24 小时。
-
-toast 复用 Deposit More LP 那套。
-
-## 自动化环节
-
-用户每次打开 modal 都会从第一步（Approve 检测）开始。
-
-- 如果检测到所有 Approve 存在，就在 1 秒后自动进入下一步。
-- 如果检测到主矿池 vnStake > 0，就在 1 秒后自动进入下一步。
-
-从 Buy BARKX 开始不再自动切步骤。
-
-## 防误触
-
-只能通过点击右上角 x 关闭 modal，不能支持点击空白处关闭 modal。
-
-## i18n
-
-先只做英文，等验收后再做其他翻译。
-
-## modal 入口位置
-
-在仪表盘 dashboard 页面上，BARKX Market Cap 和 My BarkX Pool 面板之间，加一个新的矩形长按钮：BarkX Pool Quick Start。
-
-## 此 modal 入口隐藏的情况
-
-用户已利用超过 90% 的 LP 额度空间。
-
----
+不支持点击空白处关闭。
 
 ## 实现
 
-从 prod-v2 开新分支，切到 VPS-2 测试网配置，部署到当前 https://barkx-pool.westworld.org
+在 main 直接干，然后推送并部署 VPS-2。
 
----
+先只做英文版，暂不翻译其他语言，等待验收后再做其他 i18n 工序。
 
-## 经验
-
-建议充分利用我们在开发 BarkX Assistant 时的经验，用好 https://github.com/wwu70083-droid/barkx-harness-backend/blob/mainnet/srv/pack/barkxpool.md 所提供的主矿池知识，完善这个新手 modal。
-
+除了此 modal 的必要增量，别的都不动。
