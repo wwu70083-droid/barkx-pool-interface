@@ -587,7 +587,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { formatUnits, maxUint256 } from "viem";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import MiningShell from "@/components/mining/MiningShell.vue";
 import ApprovalActionGroup from "@/components/mining/ApprovalActionGroup.vue";
 import { useMainStore } from "@/store";
@@ -625,6 +625,7 @@ import {
 } from "@/utils/format";
 
 const { t } = useI18n({ useScope: "global" });
+const route = useRoute();
 const router = useRouter();
 const store = useMainStore();
 const { account, walletConnected, walletIsTargetChain } = storeToRefs(store);
@@ -1748,6 +1749,21 @@ onBeforeUnmount(() => {
   clearPendingRewardsOverride();
   stopPendingRewardsResync();
   document.body.style.overflow = "";
+});
+
+// --- Route sync ---
+watch(
+  () => route.query.tab,
+  (tab) => {
+    const validTabs = ["dep-vn", "dep-vbarkx", "withdraw", "rewards"];
+    activeTab.value = validTabs.includes(tab) ? tab : "dep-vn";
+  },
+  { immediate: true },
+);
+
+watch(activeTab, (tab) => {
+  if (route.query.tab === tab) return;
+  router.replace({ query: { ...route.query, tab } });
 });
 </script>
 
