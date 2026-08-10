@@ -131,6 +131,18 @@
         "high": "1.0%"
       }
     },
+    "aiBonus": {
+      "title": "Deixe a IA cuidar do seu pool",
+      "line1": "Recomendamos fortemente ir ao BarkX Chat e deixar a IA cuidar das suas recompensas não reivindicadas e do restante das suas operações no pool: a nova experiência Crypto + IA.",
+      "line2": "A comunidade realiza um sorteio todo domingo. Todo nó que comandou a IA pelo BarkX Chat na última semana entra automaticamente.",
+      "line3": "Quanto mais operações do pool você deixar a IA executar dentro da semana, maior a chance de o seu nó ganhar.",
+      "line4": "O AI Bonus paga até 100 BARKX por nó.",
+      "line5": "Acompanhe o sorteio no Discord.",
+      "chat": "Ir para o BarkX Chat",
+      "discord": "Entrar no Discord",
+      "abandon": "Desistir da IA",
+      "abandonWait": "Desistir da IA ({seconds})"
+    },
     "quickStart": {
       "title": "Início Rápido do BarkX Pool",
       "subtitle": "Tudo o que um novo nó precisa para entrar no BarkX Pool, em ordem.",

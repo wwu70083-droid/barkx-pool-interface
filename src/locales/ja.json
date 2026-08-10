@@ -131,6 +131,18 @@
       "barkxReserve": "BARKX予約",
       "usdtReserve": "USDT予約"
     },
+    "aiBonus": {
+      "title": "AI にプールを任せる",
+      "line1": "BarkX Chat に移動して、未請求の報酬とその他のプール操作を AI に任せることを強くおすすめします。新しい Crypto + AI の体験です。",
+      "line2": "コミュニティは毎週日曜日に抽選を行います。過去 1 週間に BarkX Chat から AI を操作したノードは、自動的に参加対象となります。",
+      "line3": "その週に AI へ任せたプール操作が多いほど、ノードの当選確率が高くなります。",
+      "line4": "AI Bonus はノードごとに最大 100 BARKX を支払います。",
+      "line5": "抽選は Discord でご確認ください。",
+      "chat": "BarkX Chat へ移動",
+      "discord": "Discord に参加",
+      "abandon": "AI をあきらめる",
+      "abandonWait": "AI をあきらめる（{seconds}）"
+    },
     "quickStart": {
       "title": "BarkX Pool クイックスタート",
       "subtitle": "新しいノードが BarkX Pool に参加するために必要なすべてを、順番に。",

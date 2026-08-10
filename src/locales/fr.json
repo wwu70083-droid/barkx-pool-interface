@@ -131,6 +131,18 @@
       "barkxReserve": "BARKXRéserve",
       "usdtReserve": "USDTRéserve"
     },
+    "aiBonus": {
+      "title": "Laissez l'IA gérer votre pool",
+      "line1": "Nous vous recommandons vivement d'aller sur BarkX Chat et de laisser l'IA s'occuper de vos récompenses non réclamées et du reste de vos opérations de pool : la nouvelle expérience Crypto + IA.",
+      "line2": "La communauté organise un tirage au sort chaque dimanche. Tout nœud ayant piloté l'IA via BarkX Chat au cours de la semaine passée y est inscrit automatiquement.",
+      "line3": "Plus vous confiez d'opérations de pool à l'IA au cours de la semaine, plus votre nœud a de chances de gagner.",
+      "line4": "L'AI Bonus verse jusqu'à 100 BARKX par nœud.",
+      "line5": "Suivez le tirage au sort sur Discord.",
+      "chat": "Aller sur BarkX Chat",
+      "discord": "Rejoindre Discord",
+      "abandon": "Renoncer à l'IA",
+      "abandonWait": "Renoncer à l'IA ({seconds})"
+    },
     "quickStart": {
       "title": "Démarrage rapide de BarkX Pool",
       "subtitle": "Tout ce dont un nouveau nœud a besoin pour entrer dans BarkX Pool, dans l'ordre.",

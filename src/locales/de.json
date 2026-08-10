@@ -131,6 +131,18 @@
       "barkxReserve": "BARKXReserve",
       "usdtReserve": "USDTReserve"
     },
+    "aiBonus": {
+      "title": "Lassen Sie die KI Ihren Pool übernehmen",
+      "line1": "Wir empfehlen dringend, zu BarkX Chat zu gehen und die KI Ihre nicht beanspruchten Belohnungen sowie den Rest Ihrer Pool-Vorgänge übernehmen zu lassen – das neue Crypto-+-KI-Erlebnis.",
+      "line2": "Die Community verlost jeden Sonntag. Jeder Node, der in der vergangenen Woche über BarkX Chat die KI gesteuert hat, nimmt automatisch teil.",
+      "line3": "Je mehr Pool-Vorgänge Sie die KI innerhalb der Woche ausführen lassen, desto höher die Gewinnchance Ihres Nodes.",
+      "line4": "Der AI Bonus zahlt bis zu 100 BARKX pro Node.",
+      "line5": "Verfolgen Sie die Verlosung auf Discord.",
+      "chat": "Zu BarkX Chat",
+      "discord": "Discord beitreten",
+      "abandon": "Auf KI verzichten",
+      "abandonWait": "Auf KI verzichten ({seconds})"
+    },
     "quickStart": {
       "title": "BarkX Pool Schnellstart",
       "subtitle": "Alles, was ein neuer Node für den Einstieg in BarkX Pool braucht, der Reihe nach.",

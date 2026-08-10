@@ -131,6 +131,18 @@
         "high": "1.0%"
       }
     },
+    "aiBonus": {
+      "title": "讓 AI 打理您的礦池",
+      "line1": "我們強烈建議前往 BarkX Chat，讓 AI 為您處理待領取的獎勵以及其餘的礦池操作 —— 全新的 Crypto + AI 體驗。",
+      "line2": "社群每週日進行一次抽獎。過去一週內曾透過 BarkX Chat 指揮 AI 的節點，皆自動獲得參加資格。",
+      "line3": "一週內交由 AI 執行的礦池操作越多，您的節點中獎機會越高。",
+      "line4": "AI Bonus 每個節點最高可得 100 BARKX。",
+      "line5": "在 Discord 關注抽獎。",
+      "chat": "前往 BarkX Chat",
+      "discord": "加入 Discord",
+      "abandon": "放棄 AI",
+      "abandonWait": "放棄 AI（{seconds}）"
+    },
     "quickStart": {
       "title": "BarkX 礦池快速入門",
       "subtitle": "新節點進入 BarkX 礦池所需的全部步驟，依序排列。",

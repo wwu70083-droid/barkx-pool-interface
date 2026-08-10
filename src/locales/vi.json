@@ -131,6 +131,18 @@
       "barkxReserve": "BARKXDự trữ",
       "usdtReserve": "USDTDự trữ"
     },
+    "aiBonus": {
+      "title": "Để AI lo pool của bạn",
+      "line1": "Chúng tôi đặc biệt khuyến nghị bạn truy cập BarkX Chat và để AI xử lý phần thưởng chưa nhận cùng các thao tác pool còn lại của bạn — trải nghiệm Crypto + AI mới.",
+      "line2": "Cộng đồng tổ chức xổ số vào mỗi Chủ nhật. Mọi node đã điều khiển AI qua BarkX Chat trong tuần qua đều được tham gia tự động.",
+      "line3": "Bạn để AI thực hiện càng nhiều thao tác pool trong tuần, cơ hội thắng của node càng cao.",
+      "line4": "AI Bonus trả tối đa 100 BARKX cho mỗi node.",
+      "line5": "Theo dõi kết quả xổ số trên Discord.",
+      "chat": "Đến BarkX Chat",
+      "discord": "Tham gia Discord",
+      "abandon": "Từ bỏ AI",
+      "abandonWait": "Từ bỏ AI ({seconds})"
+    },
     "quickStart": {
       "title": "Bắt đầu nhanh BarkX Pool",
       "subtitle": "Mọi bước một node mới cần để tham gia BarkX Pool, theo thứ tự.",
