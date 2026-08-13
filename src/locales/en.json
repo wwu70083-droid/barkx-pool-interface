@@ -38,6 +38,17 @@
         "metricHint": "This metric represents the percentage of your total claimed BARKX rewards from BarkX Pool that have been reinvested into LP tokens.",
         "rulesTitle": "Compound Medal Rules:",
         "rulesHtml": "BarkAI evaluates this ratio for each user every 7 days. If your ratio is <strong style=\"color: var(--text-primary);\">≥ {threshold}%</strong> at the next snapshot, you will be awarded the Compound Medal, unlocking a yield multiplier valid for the subsequent 7 days."
+      },
+      "rewardLevel": {
+        "title": "Reward Level",
+        "currentLevel": "Current Reward Level:",
+        "levelHint": "Your rewards from this pool are currently paid at this percentage of the baseline rate. At <strong style=\"color: var(--text-primary);\">100%</strong> you receive the full baseline amount. This applies to rewards as they accrue — rewards already claimed are unaffected.",
+        "holdingTitle": "What Sets Your Level",
+        "holdingRatio": "BARKX Holding Ratio:",
+        "holdingHint": "This is your <strong>7-day average BARKX balance</strong> measured against the <strong>total BARKX you have ever claimed</strong> across the Elite and VIP pools. Holding on to more of what you have earned raises this ratio, which in turn raises your reward level. It is recalculated once daily.",
+        "learnBefore": "For the exact levels and how they are set, see the",
+        "linkText": "BarkX Handbook",
+        "learnAfter": "."
       }
     }
   },
@@ -306,11 +317,13 @@
         "totalAchieved": "Total Achieved"
       },
       "elitePool": {
-        "title": "My BarkX Elite Pool"
+        "title": "My BarkX Elite Pool",
+        "monitorTitle": "Elite Pool Monitor"
       },
       "vipPool": {
         "title": "My BarkX VIP Pool",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "VIP Pool Monitor"
       },
       "incubator": {
         "title": "My Incubator",

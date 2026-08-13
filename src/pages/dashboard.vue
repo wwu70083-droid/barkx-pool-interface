@@ -230,9 +230,26 @@
 
       <div
         v-if="showEliteCard"
-        class="card"
+        class="card clickable-card teal"
         style="border-color: rgba(20, 184, 166, 0.4)"
+        @click="openModal('eliteMonitor')"
       >
+        <div class="info-icon">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </div>
         <div
           class="card-title"
           style="color: #14b8a6; border-bottom-color: rgba(20, 184, 166, 0.2)"
@@ -273,9 +290,26 @@
 
       <div
         v-if="showVipCard"
-        class="card"
+        class="card clickable-card amber"
         style="border-color: rgba(245, 158, 11, 0.4)"
+        @click="openModal('vipMonitor')"
       >
+        <div class="info-icon">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </div>
         <div
           class="card-title"
           style="color: var(--amber); border-bottom-color: rgba(245, 158, 11, 0.2)"
@@ -458,6 +492,8 @@ import { getIncubatorProfile } from "@/composables/useIncubatorBackend";
 import { BarkXAbi } from "@/abi";
 import {
   calculateApyFromApr,
+  formatComplementAsPercent,
+  formatDecimalStringAsPercent,
   formatTokenAmount,
   formatIntegerAmount,
   truncateFixed,
@@ -465,8 +501,16 @@ import {
 import { BARKX_MARKET_CAP_BYPASS_ADDRESSES } from "@/contracts/barkxPoolConfig";
 import QuickStartModal from "@/components/mining/QuickStartModal.vue";
 
-const { t } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: "global" });
 const { walletConnected, walletIsTargetChain, account } = storeToRefs(useMainStore());
+
+// Same handbook the Settings page links to — the tier table lives there, not in
+// the API, so the modal points at it instead of restating the thresholds.
+const DOCS_LINKS = {
+  en: "https://relayx-club.gitbook.io/barkx-node-mining-pool",
+  zh: "https://relayx-club.gitbook.io/barkx-node-mining-pool/main-chn",
+};
+const docsLink = computed(() => (locale.value === "zh" ? DOCS_LINKS.zh : DOCS_LINKS.en));
 
 const poolData = usePoolData();
 const { barkxPrice, userInfo, modeABuckets } = poolData;
@@ -502,6 +546,12 @@ const circulatingSupply = ref(0n);
 const eliteCurrentApr = ref("");
 const elitePendingRewards = ref(0n);
 const eliteHistoricalIncome = ref(0n);
+
+// Reward-level inputs, read straight off each pool's own user-info endpoint.
+// Kept as the backend's decimal strings — they are formatted, never arithmetic'd.
+const EMPTY_HOLDING = { incomeHoldRatio: "", cutRatio: "" };
+const eliteHolding = ref({ ...EMPTY_HOLDING });
+const vipHolding = ref({ ...EMPTY_HOLDING });
 
 const incubatorDeposit = ref(0n);
 const incubatorAverage = ref(0n);
@@ -630,6 +680,14 @@ const modalThemeClass = computed(() => {
     return "green-theme";
   }
 
+  if (activeModalKey.value === "eliteMonitor") {
+    return "teal-theme";
+  }
+
+  if (activeModalKey.value === "vipMonitor") {
+    return "amber-theme";
+  }
+
   return "purple-theme";
 });
 
@@ -640,6 +698,14 @@ const modalTitle = computed(() => {
 
   if (activeModalKey.value === "poolDetails") {
     return t("pages.dashboard.mainPool.detailsTitle");
+  }
+
+  if (activeModalKey.value === "eliteMonitor") {
+    return t("pages.dashboard.elitePool.monitorTitle");
+  }
+
+  if (activeModalKey.value === "vipMonitor") {
+    return t("pages.dashboard.vipPool.monitorTitle");
   }
 
   return "";
@@ -701,8 +767,59 @@ const modalContent = computed(() => {
     `;
   }
 
+  if (activeModalKey.value === "eliteMonitor") {
+    return buildMonitorContent(eliteHolding.value, "#14b8a6");
+  }
+
+  if (activeModalKey.value === "vipMonitor") {
+    return buildMonitorContent(vipHolding.value, "var(--amber)");
+  }
+
   return "";
 });
+
+// Both pools expose the same two fields on their own user-info endpoint, so one
+// builder serves both monitors — only the accent colour and the source differ.
+function buildMonitorContent(holding, accent) {
+  const rewardLevel = formatComplementAsPercent(holding.cutRatio) ?? "—";
+  const holdRatio = formatDecimalStringAsPercent(holding.incomeHoldRatio) ?? "—";
+
+  return `
+    <div class="modal-inner-card">
+      <div style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+        ${t("common.modals.rewardLevel.title")}
+      </div>
+      <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+        ${t("common.modals.rewardLevel.currentLevel")}
+        <span style="color: ${accent}; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-left: 8px;">
+          ${rewardLevel}
+        </span>
+      </div>
+      <div style="font-size: 12px;">
+        ${t("common.modals.rewardLevel.levelHint")}
+      </div>
+    </div>
+    <div class="modal-inner-card">
+      <div style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+        ${t("common.modals.rewardLevel.holdingTitle")}
+      </div>
+      <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+        ${t("common.modals.rewardLevel.holdingRatio")}
+        <span style="color: ${accent}; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-left: 8px;">
+          ${holdRatio}
+        </span>
+      </div>
+      <div style="font-size: 12px; margin-bottom: 8px;">
+        ${t("common.modals.rewardLevel.holdingHint")}
+      </div>
+      <div style="font-size: 12px;">
+        ${t("common.modals.rewardLevel.learnBefore")}
+        <a href="${docsLink.value}" target="_blank" rel="noopener noreferrer" class="ext-link-inline">${t("common.modals.rewardLevel.linkText")}</a>
+        ${t("common.modals.rewardLevel.learnAfter")}
+      </div>
+    </div>
+  `;
+}
 
 async function fetchPoolApr() {
   try {
@@ -779,6 +896,7 @@ async function fetchVipData() {
   if (!account.value) {
     vipPendingRewards.value = 0n;
     vipTotalClaimed.value = 0n;
+    vipHolding.value = { ...EMPTY_HOLDING };
     return;
   }
 
@@ -786,9 +904,11 @@ async function fetchVipData() {
     const data = await getSubPoolUserInfo(account.value);
     vipPendingRewards.value = data?.pendingRewards ? BigInt(data.pendingRewards) : 0n;
     vipTotalClaimed.value = data?.totalClaimed ? BigInt(data.totalClaimed) : 0n;
+    vipHolding.value = readHolding(data);
   } catch {
     vipPendingRewards.value = 0n;
     vipTotalClaimed.value = 0n;
+    vipHolding.value = { ...EMPTY_HOLDING };
   }
 }
 
@@ -803,6 +923,7 @@ async function fetchEliteData() {
   if (!account.value) {
     elitePendingRewards.value = 0n;
     eliteHistoricalIncome.value = 0n;
+    eliteHolding.value = { ...EMPTY_HOLDING };
     return;
   }
 
@@ -824,6 +945,17 @@ async function fetchEliteData() {
   eliteHistoricalIncome.value = parseBackendAmount(
     userData?.historicalIncome ?? userData?.totalClaimed ?? 0,
   );
+  eliteHolding.value = readHolding(userData);
+}
+
+// A user who has never been through the pipeline has no row on that pool, and
+// the endpoint 404s. Keep the fields empty in that case so the modal shows a
+// placeholder rather than claiming a 100% reward level the backend never stated.
+function readHolding(data) {
+  return {
+    incomeHoldRatio: data?.incomeHoldRatio ?? "",
+    cutRatio: data?.cutRatio ?? "",
+  };
 }
 
 async function fetchIncubatorData() {
@@ -898,6 +1030,8 @@ async function loadData() {
     eliteCurrentApr.value = "";
     elitePendingRewards.value = 0n;
     eliteHistoricalIncome.value = 0n;
+    eliteHolding.value = { ...EMPTY_HOLDING };
+    vipHolding.value = { ...EMPTY_HOLDING };
     incubatorDeposit.value = 0n;
     incubatorAverage.value = 0n;
     incubatorQuotaToday.value = 0n;
@@ -1138,6 +1272,16 @@ function formatCompactUsd(value) {
   box-shadow: 0 12px 40px rgba(34, 197, 94, 0.15);
 }
 
+.clickable-card.teal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(20, 184, 166, 0.15);
+}
+
+.clickable-card.amber:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(245, 158, 11, 0.15);
+}
+
 .card-top-tools {
   position: absolute;
   top: 16px;
@@ -1187,6 +1331,14 @@ function formatCompactUsd(value) {
 
 .clickable-card.green:hover .info-icon {
   color: var(--green);
+}
+
+.clickable-card.teal:hover .info-icon {
+  color: #14b8a6;
+}
+
+.clickable-card.amber:hover .info-icon {
+  color: var(--amber);
 }
 
 .clickable-card.cyan:hover .info-icon {
@@ -1313,6 +1465,15 @@ function formatCompactUsd(value) {
   border-color: var(--cyan);
 }
 
+/* Monitor modals take the border colour of the pool card that opens them. */
+.custom-modal.teal-theme {
+  border-color: #14b8a6;
+}
+
+.custom-modal.amber-theme {
+  border-color: var(--amber);
+}
+
 .custom-modal-close {
   position: absolute;
   top: 16px;
@@ -1340,6 +1501,14 @@ function formatCompactUsd(value) {
 
 .custom-modal.cyan-theme .custom-modal-close:hover {
   color: var(--cyan);
+}
+
+.custom-modal.teal-theme .custom-modal-close:hover {
+  color: #14b8a6;
+}
+
+.custom-modal.amber-theme .custom-modal-close:hover {
+  color: var(--amber);
 }
 
 .custom-modal-title {
