@@ -47,7 +47,7 @@
         "holdingRatio": "BARKX Holding Ratio:",
         "holdingHint": "This is your <strong>7-day average BARKX balance</strong> measured against the <strong>total BARKX you have ever claimed</strong> across the Elite and VIP pools. Holding on to more of what you have earned raises this ratio, which in turn raises your reward level. It is recalculated once daily.",
         "learnBefore": "For the exact levels and how they are set, see the",
-        "linkText": "BarkX Handbook",
+        "linkText": "Docs",
         "learnAfter": "."
       }
     }

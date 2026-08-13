@@ -20,6 +20,17 @@
         "metricHint": "Cette mesure représente le pourcentage du total de vos récompensesBARKXréclamées surBarkX Poolqui ont été réinvesties dans des jetonsLP.",
         "rulesTitle": "Règles des médailles de composition :",
         "rulesHtml": "BarkAIévalue ce ratio pour chaque utilisateur tous les 7 jours. Si votre ratio est <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> au prochain instantané, vous recevrez la médaille composée, débloquant un multiplicateur de rendement valable pour les 7 jours suivants."
+      },
+      "rewardLevel": {
+        "title": "Niveau de récompense",
+        "currentLevel": "Niveau de récompense actuel :",
+        "levelHint": "Vos récompenses de ce pool sont actuellement versées à ce pourcentage du taux de référence. À <strong style=\"color: var(--text-primary);\">100%</strong>, vous percevez le montant de référence intégral. Cela s'applique aux récompenses en cours d'accumulation ; celles déjà réclamées ne sont pas affectées.",
+        "holdingTitle": "Ce qui détermine votre niveau",
+        "holdingRatio": "Ratio de détention BARKX :",
+        "holdingHint": "Il s'agit de votre <strong>solde moyen de BARKX sur 7 jours</strong> rapporté au <strong>total des BARKX que vous avez réclamés</strong> sur les pools Elite et VIP. Plus vous conservez ce que vous avez gagné, plus ce ratio augmente, et avec lui votre niveau de récompense. Il est recalculé une fois par jour.",
+        "learnBefore": "Pour connaître les niveaux exacts et leur définition, consultez les",
+        "linkText": "Docs",
+        "learnAfter": "."
       }
     },
     "balance": "Solde :{amount}",
@@ -488,11 +499,13 @@
         "totalAchieved": "Total atteint"
       },
       "elitePool": {
-        "title": "MonBarkX Elite Pool"
+        "title": "MonBarkX Elite Pool",
+        "monitorTitle": "Moniteur Elite Pool"
       },
       "vipPool": {
         "title": "MonBarkX VIP Pool",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "Moniteur VIP Pool"
       },
       "incubator": {
         "title": "Mon incubateur",

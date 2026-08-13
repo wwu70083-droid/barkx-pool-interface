@@ -40,6 +40,29 @@ export function formatDecimalStringAsPercent(value, decimals = 2) {
 }
 
 /**
+ * Same as above, but anything at or above 100% collapses to "100.00%+".
+ *
+ * The holding ratio is clamped to 10 by both backends (a user who has never
+ * claimed divides by zero and lands on the clamp), so the honest reading of a
+ * high value is "far more than enough", not the literal 1000%. Showing the
+ * ceiling itself would invite users to read it as a score to maximise.
+ */
+export function formatHoldingRatioAsPercent(value, decimals = 2) {
+  const formatted = formatDecimalStringAsPercent(value, decimals);
+  if (formatted === null) return null;
+
+  // Compare on digits, not on Number: at the clamp these strings are far
+  // outside the range where a float comparison is obviously safe.
+  const raw = String(value ?? "").trim();
+  const [intPart] = raw.replace("-", "").split(".");
+  if (!raw.startsWith("-") && BigInt(intPart) >= 1n) {
+    return `${(100).toFixed(decimals)}%+`;
+  }
+
+  return formatted;
+}
+
+/**
  * Complement of a backend decimal ratio, as a truncated percentage:
  * cutRatio "0.9500" → "5.00%". Same digit-based reasoning as above — here the
  * float path is wrong for 2259 of the 10001 possible four-decimal ratios.

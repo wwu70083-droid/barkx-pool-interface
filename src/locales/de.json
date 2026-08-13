@@ -20,6 +20,17 @@
         "metricHint": "Diese Metrik stellt den Prozentsatz Ihrer insgesamt beanspruchtenBARKX-Prämien vonBarkX Pooldar, die inLP-Tokens reinvestiert wurden.",
         "rulesTitle": "Regeln für zusammengesetzte Medaillen:",
         "rulesHtml": "BarkAIwertet dieses Verhältnis für jeden Benutzer alle 7 Tage aus. Wenn Ihr Verhältnis ist <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> Beim nächsten Schnappschuss erhalten Sie die Compound-Medaille, die einen Ertragsmultiplikator freischaltet, der für die folgenden 7 Tage gültig ist."
+      },
+      "rewardLevel": {
+        "title": "Belohnungsstufe",
+        "currentLevel": "Aktuelle Belohnungsstufe:",
+        "levelHint": "Ihre Belohnungen aus diesem Pool werden derzeit zu diesem Prozentsatz des Basissatzes ausgezahlt. Bei <strong style=\"color: var(--text-primary);\">100%</strong> erhalten Sie den vollen Basisbetrag. Dies gilt für Belohnungen, während sie anfallen; bereits beanspruchte Belohnungen bleiben unberührt.",
+        "holdingTitle": "Was Ihre Stufe bestimmt",
+        "holdingRatio": "BARKX-Haltequote:",
+        "holdingHint": "Dies ist Ihr <strong>7-Tage-Durchschnittsbestand an BARKX</strong> im Verhältnis zu den <strong>insgesamt jemals beanspruchten BARKX</strong> aus dem Elite- und dem VIP-Pool. Je mehr Sie von Ihren Erträgen halten, desto höher ist diese Quote und damit Ihre Belohnungsstufe. Sie wird einmal täglich neu berechnet.",
+        "learnBefore": "Die genauen Stufen und ihre Festlegung finden Sie in den",
+        "linkText": "Dokumente",
+        "learnAfter": "."
       }
     },
     "balance": "Kontostand:{amount}",
@@ -488,11 +499,13 @@
         "totalAchieved": "Insgesamt erreicht"
       },
       "elitePool": {
-        "title": "MeinBarkX Elite Pool"
+        "title": "MeinBarkX Elite Pool",
+        "monitorTitle": "Elite-Pool-Monitor"
       },
       "vipPool": {
         "title": "MeinBarkX VIP Pool",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "VIP-Pool-Monitor"
       },
       "incubator": {
         "title": "Mein Inkubator",

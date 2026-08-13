@@ -38,6 +38,17 @@
         "metricHint": "該指標代表您從 BarkX 礦池累計領取的 BARKX 獎勵中，有多少比例被再次複投為 LP 代幣。",
         "rulesTitle": "複投獎章規則：",
         "rulesHtml": "BarkAI 每 7 天會為每位用戶評估一次此比例。若您在下一次快照時的比例 <strong style=\"color: var(--text-primary);\">≥ {threshold}%</strong>，您將獲得複投獎章，並在後續 7 天內解鎖收益倍率。"
+      },
+      "rewardLevel": {
+        "title": "獎勵水平",
+        "currentLevel": "目前獎勵水平：",
+        "levelHint": "您在本礦池的獎勵目前按基準水平的此百分比發放。達到 <strong style=\"color: var(--text-primary);\">100%</strong> 時，您將獲得完整的基準獎勵。此比例作用於正在累積的獎勵，已領取的獎勵不受影響。",
+        "holdingTitle": "什麼決定您的水平",
+        "holdingRatio": "BARKX 持幣比率：",
+        "holdingHint": "此比率為您的 <strong>7 日平均 BARKX 餘額</strong>，與您在精英礦池及 VIP 礦池中 <strong>累計領取的 BARKX 總量</strong> 之比。持有越多已賺取的 BARKX，此比率越高，您的獎勵水平也隨之提升。該比率每日重新計算一次。",
+        "learnBefore": "如需了解具體水平及其設定方式，請查看",
+        "linkText": "文檔",
+        "learnAfter": "。"
       }
     }
   },
@@ -306,11 +317,13 @@
         "totalAchieved": "累計已獲得"
       },
       "elitePool": {
-        "title": "我的 BarkX 精英礦池"
+        "title": "我的 BarkX 精英礦池",
+        "monitorTitle": "精英礦池監視器"
       },
       "vipPool": {
         "title": "我的 BarkX VIP 礦池",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "VIP 礦池監視器"
       },
       "incubator": {
         "title": "我的孵化池",

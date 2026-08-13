@@ -38,6 +38,17 @@
         "metricHint": "Esta métrica representa a porcentagem do total de recompensas BARKX reivindicadas do BarkX Pool que foram reinvestidas em tokens LP.",
         "rulesTitle": "Regras da Medalha de Composição:",
         "rulesHtml": "O BarkAI avalia essa taxa para cada usuário a cada 7 dias. Se sua taxa for <strong style=\"color: var(--text-primary);\">≥ {threshold}%</strong> no próximo snapshot, você receberá a Medalha de Composição, desbloqueando um multiplicador de rendimento válido pelos próximos 7 dias."
+      },
+      "rewardLevel": {
+        "title": "Nível de recompensa",
+        "currentLevel": "Nível de recompensa atual:",
+        "levelHint": "As suas recompensas deste pool são atualmente pagas a esta percentagem da taxa base. A <strong style=\"color: var(--text-primary);\">100%</strong> recebe o valor base completo. Isto aplica-se às recompensas à medida que se acumulam; as já reclamadas não são afetadas.",
+        "holdingTitle": "O que define o seu nível",
+        "holdingRatio": "Rácio de detenção de BARKX:",
+        "holdingHint": "É o seu <strong>saldo médio de BARKX de 7 dias</strong> face ao <strong>total de BARKX que já reclamou</strong> nos pools Elite e VIP. Quanto mais mantiver do que ganhou, maior será este rácio e, com ele, o seu nível de recompensa. É recalculado uma vez por dia.",
+        "learnBefore": "Para saber os níveis exatos e como são definidos, consulte os",
+        "linkText": "Docs",
+        "learnAfter": "."
       }
     }
   },
@@ -306,11 +317,13 @@
         "totalAchieved": "Total Alcançado"
       },
       "elitePool": {
-        "title": "Meu BarkX Elite Pool"
+        "title": "Meu BarkX Elite Pool",
+        "monitorTitle": "Monitor do Elite Pool"
       },
       "vipPool": {
         "title": "Meu BarkX VIP Pool",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "Monitor do VIP Pool"
       },
       "incubator": {
         "title": "Minha Incubadora",

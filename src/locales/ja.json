@@ -20,6 +20,17 @@
         "metricHint": "この指標は、BarkX Poolから請求された合計BARKX報酬のうち、LPトークンに再投資された割合を表します。",
         "rulesTitle": "複合メダルのルール:",
         "rulesHtml": "BarkAIは、各ユーザーのこの比率を 7 日ごとに評価します。あなたの比率が <strong style=\"color: var(--text-primary);\">≧{threshold}%</strong> 次のスナップショットでは、複合メダルが授与され、その後 7 日間有効な収量乗数のロックが解除されます。"
+      },
+      "rewardLevel": {
+        "title": "報酬レベル",
+        "currentLevel": "現在の報酬レベル:",
+        "levelHint": "このプールからの報酬は、現在この割合で基準額に対して支払われています。<strong style=\"color: var(--text-primary);\">100%</strong> の場合、基準額の全額を受け取ります。これは発生中の報酬に適用され、受領済みの報酬には影響しません。",
+        "holdingTitle": "レベルを決める要素",
+        "holdingRatio": "BARKX 保有比率:",
+        "holdingHint": "これは、あなたの <strong>7 日間の平均 BARKX 残高</strong> を、Elite プールと VIP プールで <strong>これまでに受領した BARKX の総額</strong> と比較した比率です。獲得した BARKX をより多く保有し続けるほどこの比率は上がり、それに応じて報酬レベルも上がります。この比率は 1 日 1 回再計算されます。",
+        "learnBefore": "正確なレベルとその設定方法については、",
+        "linkText": "ドキュメント",
+        "learnAfter": "をご覧ください。"
       }
     },
     "balance": "残高:{amount}",
@@ -488,11 +499,13 @@
         "totalAchieved": "合計達成額"
       },
       "elitePool": {
-        "title": "私のBarkX Elite Pool"
+        "title": "私のBarkX Elite Pool",
+        "monitorTitle": "Elite Pool モニター"
       },
       "vipPool": {
         "title": "私のBarkX VIP Pool",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "VIP Pool モニター"
       },
       "incubator": {
         "title": "私の保育器",

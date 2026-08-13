@@ -20,6 +20,17 @@
         "metricHint": "Số liệu này thể hiện tỷ lệ phần trăm trong tổng số phần thưởngBARKXmà bạn đã nhận từBarkX Poolđã được tái đầu tư vào mã thông báoLP.",
         "rulesTitle": "Quy tắc huy chương tổng hợp:",
         "rulesHtml": "BarkAIđánh giá tỷ lệ này cho mỗi người dùng 7 ngày một lần. Nếu tỷ lệ của bạn là <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> ở lần chụp nhanh tiếp theo, bạn sẽ được trao Huy chương tổng hợp, mở khóa hệ số nhân lợi nhuận có hiệu lực trong 7 ngày tiếp theo."
+      },
+      "rewardLevel": {
+        "title": "Mức thưởng",
+        "currentLevel": "Mức thưởng hiện tại:",
+        "levelHint": "Phần thưởng của bạn từ pool này hiện được trả theo tỷ lệ phần trăm này so với mức cơ bản. Ở mức <strong style=\"color: var(--text-primary);\">100%</strong>, bạn nhận đủ phần thưởng cơ bản. Điều này áp dụng cho phần thưởng đang tích lũy; phần thưởng đã nhận không bị ảnh hưởng.",
+        "holdingTitle": "Điều gì quyết định mức của bạn",
+        "holdingRatio": "Tỷ lệ nắm giữ BARKX:",
+        "holdingHint": "Đây là <strong>số dư BARKX trung bình 7 ngày</strong> của bạn so với <strong>tổng số BARKX bạn đã từng nhận</strong> trên cả Elite Pool và VIP Pool. Giữ lại càng nhiều BARKX đã kiếm được thì tỷ lệ này càng cao, và mức thưởng của bạn cũng tăng theo. Tỷ lệ được tính lại mỗi ngày một lần.",
+        "learnBefore": "Để biết các mức chính xác và cách thiết lập, hãy xem",
+        "linkText": "Tài liệu",
+        "learnAfter": "."
       }
     },
     "balance": "Số dư:{amount}",
@@ -488,11 +499,13 @@
         "totalAchieved": "Tổng số đạt được"
       },
       "elitePool": {
-        "title": "BarkX Elite Poolcủa tôi"
+        "title": "BarkX Elite Poolcủa tôi",
+        "monitorTitle": "Trình theo dõi Elite Pool"
       },
       "vipPool": {
         "title": "BarkX VIP Poolcủa tôi",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "Trình theo dõi VIP Pool"
       },
       "incubator": {
         "title": "Vườn ươm của tôi",

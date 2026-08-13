@@ -20,6 +20,17 @@
         "metricHint": "Esta métrica representa el porcentaje del total de recompensasBARKXreclamadas deBarkX Poolque se han reinvertido en tokensLP.",
         "rulesTitle": "Reglas de medallas compuestas:",
         "rulesHtml": "BarkAIevalúa este ratio para cada usuario cada 7 días. Si su proporción es <strong style=\"color: var(--text-primary);\">≥{threshold}%</strong> en la siguiente instantánea, se le otorgará la medalla compuesta, lo que desbloqueará un multiplicador de rendimiento válido durante los siguientes 7 días."
+      },
+      "rewardLevel": {
+        "title": "Nivel de recompensa",
+        "currentLevel": "Nivel de recompensa actual:",
+        "levelHint": "Tus recompensas de este pool se pagan actualmente a este porcentaje de la tasa base. Al <strong style=\"color: var(--text-primary);\">100%</strong> recibes el importe base completo. Esto se aplica a las recompensas mientras se acumulan; las ya reclamadas no se ven afectadas.",
+        "holdingTitle": "Qué determina tu nivel",
+        "holdingRatio": "Ratio de tenencia de BARKX:",
+        "holdingHint": "Es tu <strong>saldo medio de BARKX de 7 días</strong> en relación con el <strong>total de BARKX que has reclamado</strong> en los pools Elite y VIP. Cuanto más conserves de lo que has ganado, mayor será este ratio y, con él, tu nivel de recompensa. Se recalcula una vez al día.",
+        "learnBefore": "Para conocer los niveles exactos y cómo se establecen, consulta los",
+        "linkText": "Documentos",
+        "learnAfter": "."
       }
     },
     "balance": "Saldo:{amount}",
@@ -488,11 +499,13 @@
         "totalAchieved": "Total alcanzado"
       },
       "elitePool": {
-        "title": "MiBarkX Elite Pool"
+        "title": "MiBarkX Elite Pool",
+        "monitorTitle": "Monitor de Elite Pool"
       },
       "vipPool": {
         "title": "MiBarkX VIP Pool",
-        "apr": "APR"
+        "apr": "APR",
+        "monitorTitle": "Monitor de VIP Pool"
       },
       "incubator": {
         "title": "mi incubadora",

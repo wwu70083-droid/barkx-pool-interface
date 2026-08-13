@@ -493,7 +493,7 @@ import { BarkXAbi } from "@/abi";
 import {
   calculateApyFromApr,
   formatComplementAsPercent,
-  formatDecimalStringAsPercent,
+  formatHoldingRatioAsPercent,
   formatTokenAmount,
   formatIntegerAmount,
   truncateFixed,
@@ -782,7 +782,7 @@ const modalContent = computed(() => {
 // builder serves both monitors — only the accent colour and the source differ.
 function buildMonitorContent(holding, accent) {
   const rewardLevel = formatComplementAsPercent(holding.cutRatio) ?? "—";
-  const holdRatio = formatDecimalStringAsPercent(holding.incomeHoldRatio) ?? "—";
+  const holdRatio = formatHoldingRatioAsPercent(holding.incomeHoldRatio) ?? "—";
 
   return `
     <div class="modal-inner-card">
