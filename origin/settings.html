@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Settings - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            .wallet-display {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 14px;
+                margin-bottom: 16px;
+            }
+            .wallet-details {
+                flex: 1;
+                min-width: 0; /* 在 Flex 布局中，必须设置 min-width 才能让 text-overflow 生效 */
+            }
+            .wallet-address-full {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text-primary);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .copy-btn {
+                background: rgba(56, 189, 248, 0.15);
+                border: 1px solid rgba(56, 189, 248, 0.3);
+                border-radius: 8px;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: var(--cyan);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                flex-shrink: 0;
+            }
+            .copy-btn:hover {
+                background: rgba(56, 189, 248, 0.25);
+            }
+            .copy-btn.copied {
+                background: rgba(34, 197, 94, 0.2);
+                border-color: var(--green);
+                color: var(--green);
+            }
+            .action-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .action-btn {
+                padding: 14px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                color: var(--text-primary);
+                cursor: pointer;
+                font-size: 14px;
+                transition: 0.3s;
+            }
+            .action-btn:hover {
+                border-color: var(--cyan);
+                background: rgba(56, 189, 248, 0.1);
+            }
+            .action-btn.danger {
+                color: var(--red);
+            }
+            .action-btn.danger:hover {
+                border-color: var(--red);
+                background: rgba(239, 68, 68, 0.1);
+            }
+
+            .setting-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            }
+            .setting-row:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            .btn-group {
+                display: flex;
+                gap: 8px;
+            }
+            .toggle-btn {
+                padding: 8px 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 8px;
+                color: var(--text-secondary);
+                cursor: pointer;
+                font-size: 13px;
+                transition: 0.3s;
+            }
+            .toggle-btn.active {
+                background: rgba(56, 189, 248, 0.15);
+                border-color: var(--cyan);
+                color: var(--cyan);
+            }
+
+            .link-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 12px;
+            }
+            .ext-link {
+                display: flex;
+                justify-content: center;
+                padding: 14px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                color: var(--text-secondary);
+                text-decoration: none;
+                font-size: 14px;
+                transition: 0.3s;
+            }
+            .ext-link:hover {
+                color: var(--cyan);
+                border-color: var(--border-glow);
+                background: rgba(56, 189, 248, 0.1);
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            /* Partnership 二级菜单样式 */
+            #nav-level-partnership {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-partnership #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-partnership #nav-level-partnership {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+
+            /* 弹窗系统样式 */
+            .custom-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .custom-modal {
+                width: 88%;
+                max-width: 360px;
+                background: rgba(18, 21, 30, 0.95);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            }
+            .custom-modal.cyan-theme {
+                border-color: var(--cyan);
+            }
+            .custom-modal.show {
+                transform: translateY(0);
+            }
+            .custom-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .custom-modal-close:hover {
+                color: var(--cyan);
+            }
+            .custom-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                padding-right: 24px;
+            }
+
+            /* 语言列表样式 */
+            .lang-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                max-height: 300px;
+                overflow-y: auto;
+                padding-right: 4px;
+            }
+            .lang-list::-webkit-scrollbar {
+                width: 4px;
+            }
+            .lang-list::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+            }
+            .lang-item {
+                padding: 12px 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                color: var(--text-primary);
+                cursor: pointer;
+                font-size: 14px;
+                transition: 0.3s;
+                text-align: center;
+            }
+            .lang-item:hover,
+            .lang-item.active {
+                border-color: var(--cyan);
+                background: rgba(56, 189, 248, 0.1);
+                color: var(--cyan);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="lang-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeLangModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="lang-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeLangModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Select Language</div>
+                <div class="lang-list">
+                    <div
+                        class="lang-item active"
+                        onclick="selectLang('English')"
+                    >
+                        English
+                    </div>
+                    <div class="lang-item" onclick="selectLang('繁體中文')">
+                        繁體中文
+                    </div>
+                    <div class="lang-item" onclick="selectLang('日本語')">
+                        日本語
+                    </div>
+                    <div class="lang-item" onclick="selectLang('한국어')">
+                        한국어
+                    </div>
+                    <div class="lang-item" onclick="selectLang('Tiếng Việt')">
+                        Tiếng Việt
+                    </div>
+                    <div class="lang-item" onclick="selectLang('Español')">
+                        Español
+                    </div>
+                    <div class="lang-item" onclick="selectLang('Português')">
+                        Português
+                    </div>
+                    <div class="lang-item" onclick="selectLang('Français')">
+                        Français
+                    </div>
+                    <div class="lang-item" onclick="selectLang('Deutsch')">
+                        Deutsch
+                    </div>
+                    <div class="lang-item" onclick="selectLang('Русский')">
+                        Русский
+                    </div>
+                    <div class="lang-item" onclick="selectLang('العربية')">
+                        العربية
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevelPartnership()"
+                    >
+                        Partnership
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="settings.html" class="nav-link active">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+
+                <div id="nav-level-partnership" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="hideNavLevelPartnership()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Partnership</span
+                        >
+                    </div>
+                    <a
+                        href="https://opendao.cc"
+                        target="_blank"
+                        class="nav-link"
+                        >OpenDAO</a
+                    >
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div style="text-align: center; margin-bottom: 30px">
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Settings
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    Preferences & Links
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Wallet</div>
+                <div class="wallet-display">
+                    <div class="wallet-details">
+                        <div class="wallet-address-full" id="wallet-address">
+                            0x0Cb892F48dA3F1f092374829348123489123
+                        </div>
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 4px;
+                            "
+                        >
+                            Arbitrum One
+                        </div>
+                    </div>
+                    <button
+                        class="copy-btn"
+                        onclick="copyAddress(this, 'wallet-address')"
+                        title="Copy Address"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                            ></rect>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="action-grid">
+                    <button class="action-btn">Switch Wallet</button>
+                    <button class="action-btn danger">Disconnect</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Smart Contracts</div>
+
+                <div class="wallet-display">
+                    <div class="wallet-details">
+                        <div
+                            style="
+                                font-size: 13px;
+                                font-weight: 600;
+                                color: var(--text-primary);
+                                margin-bottom: 4px;
+                            "
+                        >
+                            BARKX
+                        </div>
+                        <div class="wallet-address-full" id="barkx-address">
+                            0xfb7eD9eD95733562Fd2F02A9096Feff3a5d0c052
+                        </div>
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 4px;
+                            "
+                        >
+                            Arbitrum One
+                        </div>
+                    </div>
+                    <button
+                        class="copy-btn"
+                        onclick="copyAddress(this, 'barkx-address')"
+                        title="Copy Contract Address"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                            ></rect>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="wallet-display">
+                    <div class="wallet-details">
+                        <div
+                            style="
+                                font-size: 13px;
+                                font-weight: 600;
+                                color: var(--text-primary);
+                                margin-bottom: 4px;
+                            "
+                        >
+                            vBARKX
+                        </div>
+                        <div class="wallet-address-full" id="vbarkx-address">
+                            0x028e9387a2a0c4f6F2D6bE4D99b2c35B2B8DeA3F
+                        </div>
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 4px;
+                            "
+                        >
+                            Arbitrum One
+                        </div>
+                    </div>
+                    <button
+                        class="copy-btn"
+                        onclick="copyAddress(this, 'vbarkx-address')"
+                        title="Copy Contract Address"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                            ></rect>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="wallet-display" style="margin-bottom: 0">
+                    <div class="wallet-details">
+                        <div
+                            style="
+                                font-size: 13px;
+                                font-weight: 600;
+                                color: var(--text-primary);
+                                margin-bottom: 4px;
+                            "
+                        >
+                            USDT
+                        </div>
+                        <div class="wallet-address-full" id="usdt-address">
+                            0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9
+                        </div>
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                margin-top: 4px;
+                            "
+                        >
+                            Arbitrum One
+                        </div>
+                    </div>
+                    <button
+                        class="copy-btn"
+                        onclick="copyAddress(this, 'usdt-address')"
+                        title="Copy Contract Address"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect
+                                x="9"
+                                y="9"
+                                width="13"
+                                height="13"
+                                rx="2"
+                                ry="2"
+                            ></rect>
+                            <path
+                                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            ></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Display</div>
+                <div class="setting-row">
+                    <span style="color: var(--text-secondary); font-size: 14px"
+                        >Language</span
+                    >
+                    <button
+                        id="current-lang-btn"
+                        class="toggle-btn active"
+                        onclick="openLangModal()"
+                    >
+                        English
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">About</div>
+                <div class="setting-row">
+                    <span style="color: var(--text-secondary); font-size: 14px"
+                        >Version</span
+                    >
+                    <span
+                        style="
+                            font-family: &quot;JetBrains Mono&quot;, monospace;
+                            color: var(--text-primary);
+                        "
+                        >V1.2</span
+                    >
+                </div>
+                <div class="link-grid" style="margin-top: 16px">
+                    <a
+                        href="https://guide.barkx.xyz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ext-link"
+                        >Tutorial</a
+                    >
+                    <a
+                        id="link-docs"
+                        href="https://relayx-club.gitbook.io/barkx-node-mining-pool"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ext-link"
+                        >Docs</a
+                    >
+                    <a
+                        id="link-discord"
+                        href="https://discord.gg/barkai"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ext-link"
+                        >Discord</a
+                    >
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // 链接配置文件
+            const externalLinks = {
+                en: {
+                    docs: "https://relayx-club.gitbook.io/barkx-node-mining-pool",
+                    discord: "https://discord.gg/barkai",
+                },
+                cn: {
+                    docs: "https://relayx-club.gitbook.io/barkx-node-mining-pool/main-chn",
+                    discord: "https://discord.gg/barkcn",
+                },
+            };
+
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // 新增 Partnership 菜单的控制脚本
+            function showNavLevelPartnership() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-partnership");
+            }
+
+            function hideNavLevelPartnership() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-partnership");
+            }
+
+            function copyAddress(btnElement, targetId) {
+                // 如果没有传入 targetId，默认兼容之前的 wallet-address
+                const elementId = targetId || "wallet-address";
+                const addressText =
+                    document.getElementById(elementId).innerText;
+
+                // 成功动画回调
+                const showSuccess = () => {
+                    const originalHtml = btnElement.innerHTML;
+                    btnElement.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    btnElement.classList.add("copied");
+                    setTimeout(() => {
+                        btnElement.innerHTML = originalHtml;
+                        btnElement.classList.remove("copied");
+                    }, 2000);
+                };
+
+                // 向下兼容的 Fallback 复制方案
+                const fallbackCopy = (text) => {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+
+                    // 避免页面滚动
+                    textArea.style.top = "0";
+                    textArea.style.left = "0";
+                    textArea.style.position = "fixed";
+
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+
+                    try {
+                        document.execCommand("copy");
+                        showSuccess();
+                    } catch (err) {
+                        console.error("Fallback Copy Failed:", err);
+                    }
+
+                    document.body.removeChild(textArea);
+                };
+
+                // 判断是否支持现代 Clipboard API，不支持或者拒绝则走 Fallback
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard
+                        .writeText(addressText)
+                        .then(() => {
+                            showSuccess();
+                        })
+                        .catch((err) => {
+                            console.warn(
+                                "Clipboard API failed, using fallback.",
+                                err,
+                            );
+                            fallbackCopy(addressText);
+                        });
+                } else {
+                    fallbackCopy(addressText);
+                }
+            }
+
+            // 打开语言选择弹窗
+            function openLangModal() {
+                const overlay = document.getElementById("lang-modal-overlay");
+                const card = document.getElementById("lang-modal-card");
+                document.body.style.overflow = "hidden";
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // trigger reflow
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            // 关闭语言选择弹窗
+            function closeLangModal(e) {
+                const overlay = document.getElementById("lang-modal-overlay");
+                const card = document.getElementById("lang-modal-card");
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            }
+
+            // 选择语言并更新界面/链接
+            function selectLang(langName) {
+                document.getElementById("current-lang-btn").innerText =
+                    langName;
+
+                document.querySelectorAll(".lang-item").forEach((item) => {
+                    if (item.innerText === langName) {
+                        item.classList.add("active");
+                    } else {
+                        item.classList.remove("active");
+                    }
+                });
+
+                // 兼容现有的 externalLinks 对象 (当前只有 en 和 cn，其余默认 en)
+                let code = "en";
+                if (langName === "繁體中文") {
+                    code = "cn";
+                }
+
+                if (externalLinks[code]) {
+                    document.getElementById("link-docs").href =
+                        externalLinks[code].docs;
+                    document.getElementById("link-discord").href =
+                        externalLinks[code].discord;
+                }
+
+                closeLangModal();
+            }
+        </script>
+    </body>
+</html>

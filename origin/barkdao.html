@@ -1,0 +1,2243 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>BarkDAO - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 卡片与布局样式 */
+            .dao-card {
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                padding: 24px;
+                margin-bottom: 20px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* 警告提示框 */
+            .alert-box {
+                background: rgba(239, 68, 68, 0.1);
+                border: 1px solid rgba(239, 68, 68, 0.4);
+                border-left: 4px solid var(--red);
+                padding: 16px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                font-size: 13px;
+                color: #fca5a5;
+                line-height: 1.5;
+            }
+            .alert-box.warning {
+                background: rgba(245, 158, 11, 0.1);
+                border-color: rgba(245, 158, 11, 0.3);
+                border-left-color: var(--amber);
+                color: #fcd34d;
+            }
+
+            /* 费用展示区 */
+            .fee-display {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 12px;
+                border: 1px dashed var(--border-dark);
+                margin-bottom: 20px;
+            }
+            .fee-lbl {
+                font-size: 13px;
+                color: var(--text-secondary);
+            }
+            .fee-val {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 16px;
+                color: var(--text-primary);
+                font-weight: 600;
+            }
+            .fee-sub {
+                font-size: 11px;
+                color: var(--text-muted);
+                margin-top: 4px;
+            }
+
+            /* 复制地址区域 */
+            .address-copy-box {
+                display: flex;
+                align-items: center;
+                background: rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 6px 6px 6px 16px;
+                margin-top: 12px;
+                margin-bottom: 12px;
+            }
+            .address-text {
+                flex: 1;
+                font-family: "JetBrains Mono", monospace;
+                color: var(--cyan);
+                font-size: 14px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding-right: 12px;
+            }
+            .btn-copy {
+                background: rgba(56, 189, 248, 0.15);
+                border: 1px solid rgba(56, 189, 248, 0.3);
+                color: var(--cyan);
+                width: 36px;
+                height: 36px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .btn-copy:hover {
+                background: rgba(56, 189, 248, 0.25);
+            }
+            .btn-copy.copied {
+                background: rgba(34, 197, 94, 0.2);
+                border-color: var(--green);
+                color: var(--green);
+            }
+
+            /* 禁用按钮样式 */
+            .btn-submit:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+                pointer-events: none;
+                filter: grayscale(100%);
+            }
+
+            /* 网络可视化区域 */
+            .network-container {
+                position: relative;
+                width: 100%;
+                height: 520px;
+                margin: 0 auto;
+                background: radial-gradient(
+                    circle at center,
+                    rgba(56, 189, 248, 0.03) 0%,
+                    transparent 70%
+                );
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                overflow: hidden;
+                touch-action: none;
+            }
+            canvas {
+                display: block;
+                width: 100%;
+                height: 100%;
+                cursor: grab;
+            }
+            canvas:active {
+                cursor: grabbing;
+            }
+
+            /* 悬浮提示框 */
+            .node-tooltip {
+                position: absolute;
+                display: none;
+                background: rgba(10, 10, 15, 0.95);
+                border: 1px solid var(--border-glow);
+                padding: 8px 12px;
+                border-radius: 8px;
+                color: #fff;
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
+                pointer-events: none;
+                white-space: nowrap;
+                z-index: 10;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+                transform: translate(-50%, -130%);
+                animation: fadeIn 0.2s ease-out;
+            }
+
+            /* 帮助气泡 */
+            .help-bubble {
+                display: none;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 340px;
+                background: rgba(15, 23, 42, 0.98);
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 20px;
+                z-index: 100;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+                animation: bubbleFadeIn 0.2s ease-out forwards;
+            }
+            @keyframes bubbleFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -45%);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%);
+                }
+            }
+            .help-bubble-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+            }
+            .help-bubble-close:hover {
+                color: var(--cyan);
+            }
+
+            /* 图例网格 */
+            .legend-grid {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 10px 16px;
+                margin-top: 12px;
+                font-size: 11px;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                font-weight: 600;
+            }
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .legend-dot {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+            }
+
+            /* 右上角控制台 (归位与缩放) */
+            .canvas-controls {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                z-index: 10;
+            }
+            .btn-ctrl {
+                width: 36px;
+                height: 36px;
+                background: rgba(0, 0, 0, 0.7);
+                border: 1px solid var(--border-dark);
+                border-radius: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                color: var(--text-secondary);
+                transition: all 0.3s ease;
+                font-size: 20px;
+                font-weight: 400;
+                font-family: monospace;
+                line-height: 1;
+                user-select: none;
+            }
+            .btn-ctrl:hover {
+                background: rgba(56, 189, 248, 0.15);
+                border-color: var(--cyan);
+                color: var(--cyan);
+            }
+
+            /* 可折叠面板样式 */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 16px 16px 16px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 信号数据表样式 */
+            .signal-rules {
+                font-size: 12px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+                margin-bottom: 16px;
+                background: rgba(56, 189, 248, 0.05);
+                padding: 12px 16px;
+                border-radius: 8px;
+                border-left: 3px solid var(--cyan);
+            }
+
+            .signal-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 13px;
+                text-align: left;
+            }
+            .signal-table th {
+                color: var(--text-muted);
+                border-bottom: 1px solid var(--border-dark);
+                padding: 12px 8px;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 11px;
+                letter-spacing: 0.5px;
+            }
+            .signal-table td {
+                color: var(--text-primary);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+                padding: 12px 8px;
+                font-family: "JetBrains Mono", monospace;
+            }
+            .signal-table tr:hover td {
+                background: rgba(255, 255, 255, 0.02);
+            }
+            .signal-table tr:last-child td {
+                border-bottom: none;
+            }
+            .signal-table td.strength {
+                color: var(--cyan);
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="swap.html" class="nav-link">Swap</a>
+            <a href="liquidity.html" class="nav-link">Liquidity</a>
+            <a href="pool.html" class="nav-link">BarkX Pool</a>
+            <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+            <a href="barkdao.html" class="nav-link active">BarkDAO</a>
+            <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+            <a href="settings.html" class="nav-link">Settings</a>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 30px;
+                    position: relative;
+                "
+            >
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    BarkDAO
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    Node Leadership Network
+                </p>
+
+                <div
+                    style="
+                        position: absolute;
+                        right: 0;
+                        top: -10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        align-items: flex-end;
+                    "
+                >
+                    <button
+                        id="btn-toggle-perm"
+                        onclick="togglePermissionState()"
+                        style="
+                            background: rgba(168, 85, 247, 0.1);
+                            border: 1px solid rgba(168, 85, 247, 0.3);
+                            color: #c084fc;
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                        "
+                    >
+                        View: Max (20↑/20↓)
+                    </button>
+                    <button
+                        onclick="toggleTestState()"
+                        style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid var(--border-dark);
+                            color: var(--text-secondary);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                        "
+                    >
+                        Toggle DB State
+                    </button>
+                    <button
+                        onclick="toggleModeAState()"
+                        style="
+                            background: rgba(56, 189, 248, 0.1);
+                            border: 1px solid rgba(56, 189, 248, 0.3);
+                            color: var(--cyan);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                        "
+                    >
+                        Toggle 360-Day
+                    </button>
+                </div>
+            </div>
+
+            <div id="unregistered-view" class="dao-card" style="display: block">
+                <div
+                    style="
+                        display: inline-block;
+                        padding: 4px 12px;
+                        background: rgba(245, 158, 11, 0.15);
+                        border: 1px solid var(--amber);
+                        border-radius: 20px;
+                        color: var(--amber);
+                        font-size: 11px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        margin-bottom: 16px;
+                        letter-spacing: 1px;
+                    "
+                >
+                    Action Required
+                </div>
+
+                <h2
+                    style="
+                        font-size: 20px;
+                        margin-bottom: 12px;
+                        color: var(--text-primary);
+                    "
+                >
+                    You haven't joined BarkDAO yet.
+                </h2>
+                <p
+                    style="
+                        color: var(--text-secondary);
+                        font-size: 14px;
+                        margin-bottom: 24px;
+                        line-height: 1.6;
+                    "
+                >
+                    To participate in the network, you must register your Node
+                    Leader's wallet address. This establishes your position
+                    within the BarkDAO hierarchy.
+                </p>
+
+                <div class="alert-box">
+                    <strong>⚠️ CRITICAL WARNING:</strong><br />
+                    The leader address you enter below
+                    <strong>CANNOT BE CHANGED</strong> once registered on the
+                    smart contract. Please double-check and ensure the address
+                    is 100% accurate before confirming.
+                </div>
+
+                <div class="input-group" style="margin-bottom: 16px">
+                    <div class="input-header">
+                        <span>Leader's Wallet Address</span>
+                    </div>
+                    <div class="input-row" style="padding: 12px 16px">
+                        <input
+                            type="text"
+                            id="leader-input"
+                            placeholder="0x..."
+                            style="
+                                width: 100%;
+                                background: transparent;
+                                border: none;
+                                color: var(--text-primary);
+                                font-size: 15px;
+                                font-family:
+                                    &quot;JetBrains Mono&quot;, monospace;
+                                outline: none;
+                            "
+                        />
+                    </div>
+                </div>
+
+                <div class="fee-display">
+                    <div>
+                        <div class="fee-lbl">Registration Fee</div>
+                        <div class="fee-sub">
+                            This is a protocol fee, excluding standard network
+                            Gas.
+                        </div>
+                    </div>
+                    <div style="text-align: right">
+                        <div class="fee-val">0.0001 ETH</div>
+                    </div>
+                </div>
+
+                <button class="btn-submit amber">Confirm & Register</button>
+            </div>
+
+            <div id="registered-view" style="display: none">
+                <div class="tabs" style="margin-bottom: 20px">
+                    <div
+                        class="tab active"
+                        onclick="switchDaoTab('dao-invite')"
+                    >
+                        Invite
+                    </div>
+                    <div class="tab" onclick="switchDaoTab('dao-network')">
+                        Network
+                    </div>
+                    <div class="tab" onclick="switchDaoTab('dao-incentive')">
+                        Incentive
+                    </div>
+                </div>
+
+                <div
+                    id="dao-invite"
+                    class="panel active dao-card"
+                    style="
+                        border-color: rgba(56, 189, 248, 0.3);
+                        box-shadow: 0 0 20px rgba(56, 189, 248, 0.05);
+                    "
+                >
+                    <div
+                        style="
+                            display: inline-block;
+                            padding: 4px 12px;
+                            background: rgba(34, 197, 94, 0.15);
+                            border: 1px solid var(--green);
+                            border-radius: 20px;
+                            color: var(--green);
+                            font-size: 11px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            margin-bottom: 16px;
+                            letter-spacing: 1px;
+                        "
+                    >
+                        Active Member
+                    </div>
+
+                    <h2
+                        style="
+                            font-size: 20px;
+                            margin-bottom: 12px;
+                            color: var(--text-primary);
+                        "
+                    >
+                        Welcome to your Node Network
+                    </h2>
+                    <p
+                        style="
+                            color: var(--text-secondary);
+                            font-size: 14px;
+                            margin-bottom: 20px;
+                            line-height: 1.6;
+                        "
+                    >
+                        You are officially registered in BarkDAO. Invite others
+                        to join your network by sharing your wallet address.
+                        When they register, they should enter your address as
+                        their leader.
+                    </p>
+
+                    <div
+                        style="
+                            font-size: 13px;
+                            color: var(--text-primary);
+                            font-weight: 500;
+                            margin-bottom: 4px;
+                        "
+                    >
+                        Your Wallet Address (For Invites)
+                    </div>
+                    <div class="address-copy-box">
+                        <div class="address-text" id="my-address">
+                            0x0Cb892F48dA3F1f092374829348123489123
+                        </div>
+                        <button
+                            class="btn-copy"
+                            onclick="copyAddress(this)"
+                            title="Copy Address"
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <rect
+                                    x="9"
+                                    y="9"
+                                    width="13"
+                                    height="13"
+                                    rx="2"
+                                    ry="2"
+                                ></rect>
+                                <path
+                                    d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                                ></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div
+                        style="
+                            font-size: 13px;
+                            color: var(--text-primary);
+                            font-weight: 500;
+                            margin-top: 20px;
+                            margin-bottom: 4px;
+                        "
+                    >
+                        Invited by
+                    </div>
+                    <div class="address-copy-box" style="padding: 14px 16px">
+                        <div
+                            class="address-text"
+                            id="inviter-address"
+                            style="color: var(--text-muted); padding-right: 0"
+                        >
+                            0xLeaderAddressExample1234567890ABCDEF
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    id="dao-network"
+                    class="panel dao-card"
+                    style="padding: 24px 12px"
+                >
+                    <div
+                        style="
+                            margin-bottom: 12px;
+                            font-size: 18px;
+                            font-weight: 600;
+                            color: var(--text-primary);
+                            text-align: center;
+                            letter-spacing: 0.5px;
+                        "
+                    >
+                        BarkX Visualization
+                    </div>
+                    <div style="text-align: center; margin-bottom: 16px">
+                        <button
+                            id="btn-help"
+                            onclick="toggleHelpBubble(event)"
+                            style="
+                                background: rgba(56, 189, 248, 0.15);
+                                border: 1px solid rgba(56, 189, 248, 0.3);
+                                color: var(--cyan);
+                                padding: 6px 14px;
+                                border-radius: 20px;
+                                font-size: 11px;
+                                font-weight: 600;
+                                cursor: pointer;
+                                text-transform: uppercase;
+                            "
+                        >
+                            How to Explore
+                        </button>
+                    </div>
+
+                    <div id="help-bubble" class="help-bubble">
+                        <div
+                            class="help-bubble-close"
+                            onclick="toggleHelpBubble(event)"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </div>
+                        <h3
+                            style="
+                                color: #fff;
+                                font-size: 14px;
+                                margin-bottom: 10px;
+                                border-bottom: 1px solid var(--border-dark);
+                                padding-bottom: 10px;
+                            "
+                        >
+                            Exploration Guide
+                        </h3>
+                        <ul
+                            style="
+                                color: var(--text-secondary);
+                                font-size: 12px;
+                                line-height: 1.6;
+                                margin-bottom: 16px;
+                                padding-left: 16px;
+                            "
+                        >
+                            <li><strong>Drag</strong> the canvas to pan.</li>
+                            <li>
+                                <strong>Tap</strong> a node to view its address.
+                                Tap empty space to close.
+                            </li>
+                            <li>
+                                <strong>Double-tap</strong> solid nodes to
+                                expand.
+                            </li>
+                            <li>
+                                <strong>Limit:</strong>
+                                <span id="explore-limit-text"
+                                    >You can explore up to a maximum of
+                                    <strong>20 levels</strong> down from your
+                                    node.</span
+                                >
+                            </li>
+                        </ul>
+                        <h4
+                            style="
+                                color: #fff;
+                                font-size: 12px;
+                                margin-bottom: 8px;
+                            "
+                        >
+                            Legend
+                        </h4>
+                        <div class="legend-grid">
+                            <div class="legend-item">
+                                <span
+                                    class="legend-dot"
+                                    style="
+                                        background: #fbbf24;
+                                        box-shadow: 0 0 6px #fbbf24;
+                                    "
+                                ></span>
+                                Root
+                            </div>
+                            <div class="legend-item">
+                                <span
+                                    class="legend-dot"
+                                    style="background: #7e22ce"
+                                ></span>
+                                Higher Leader
+                            </div>
+                            <div class="legend-item">
+                                <span
+                                    class="legend-dot"
+                                    style="
+                                        background: #c084fc;
+                                        box-shadow: 0 0 6px #c084fc;
+                                    "
+                                ></span>
+                                Direct Leader
+                            </div>
+                            <div class="legend-item">
+                                <span
+                                    class="legend-dot"
+                                    style="
+                                        background: #38bdf8;
+                                        box-shadow: 0 0 6px #38bdf8;
+                                    "
+                                ></span>
+                                You
+                            </div>
+                            <div class="legend-item">
+                                <span
+                                    class="legend-dot"
+                                    style="background: #3b82f6"
+                                ></span>
+                                Sub Network
+                            </div>
+                            <div class="legend-item">
+                                <span
+                                    style="
+                                        display: inline-block;
+                                        width: 10px;
+                                        height: 10px;
+                                        border: 2px solid #3b82f6;
+                                        border-radius: 50%;
+                                        margin-right: 4px;
+                                    "
+                                ></span>
+                                Single Node
+                            </div>
+                            <div class="legend-item">
+                                <span
+                                    class="legend-dot"
+                                    style="
+                                        border: 1px dashed #94a3b8;
+                                        background: transparent;
+                                    "
+                                ></span>
+                                Clustered Single Nodes
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="network-container" id="canvas-wrapper">
+                        <div class="canvas-controls">
+                            <button
+                                class="btn-ctrl"
+                                onclick="recenterNetwork(event)"
+                                title="Recenter & Reset View"
+                            >
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <circle cx="12" cy="12" r="6"></circle>
+                                    <line x1="12" y1="2" x2="12" y2="6"></line>
+                                    <line
+                                        x1="12"
+                                        y1="18"
+                                        x2="12"
+                                        y2="22"
+                                    ></line>
+                                    <line x1="2" y1="12" x2="6" y2="12"></line>
+                                    <line
+                                        x1="18"
+                                        y1="12"
+                                        x2="22"
+                                        y2="12"
+                                    ></line>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                </svg>
+                            </button>
+                            <button
+                                class="btn-ctrl"
+                                onclick="adjustZoom(0.2, event)"
+                                title="Zoom In"
+                            >
+                                +
+                            </button>
+                            <button
+                                class="btn-ctrl"
+                                onclick="adjustZoom(-0.2, event)"
+                                title="Zoom Out"
+                            >
+                                -
+                            </button>
+                        </div>
+                        <canvas id="networkCanvas"></canvas>
+                        <div id="node-tooltip" class="node-tooltip">0x...</div>
+                    </div>
+                </div>
+
+                <div id="dao-incentive" class="panel dao-card">
+                    <div class="info-box">
+                        Merge your accumulated Node Incentives into your BarkX
+                        Pool
+                        <strong
+                            style="
+                                color: var(--cyan);
+                                text-shadow: 0 0 10px var(--cyan-glow);
+                            "
+                            >Pending Rewards</strong
+                        >
+                        for claiming or compounding.
+                        <strong
+                            style="
+                                color: var(--green);
+                                text-shadow: 0 0 10px var(--green-glow);
+                            "
+                            >0%</strong
+                        >
+                        fees applied!
+                    </div>
+
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 16px;
+                            padding: 56px 24px 32px 24px;
+                            text-align: center;
+                            margin-bottom: 24px;
+                            position: relative;
+                        "
+                    >
+                        <div
+                            id="badge-qualified"
+                            style="
+                                display: inline-block;
+                                position: absolute;
+                                top: 16px;
+                                right: 16px;
+                                padding: 4px 12px;
+                                background: rgba(34, 197, 94, 0.15);
+                                border: 1px solid var(--green);
+                                border-radius: 20px;
+                                color: var(--green);
+                                font-size: 11px;
+                                font-weight: 600;
+                                text-transform: uppercase;
+                            "
+                        >
+                            Qualified
+                        </div>
+                        <div
+                            id="badge-unqualified"
+                            style="
+                                display: none;
+                                position: absolute;
+                                top: 16px;
+                                right: 16px;
+                                padding: 4px 12px;
+                                background: rgba(245, 158, 11, 0.15);
+                                border: 1px solid var(--amber);
+                                border-radius: 20px;
+                                color: var(--amber);
+                                font-size: 11px;
+                                font-weight: 600;
+                                text-transform: uppercase;
+                            "
+                        >
+                            Unqualified
+                        </div>
+
+                        <div
+                            style="
+                                font-size: 12px;
+                                color: var(--text-muted);
+                                font-weight: 600;
+                                letter-spacing: 1px;
+                                text-transform: uppercase;
+                                margin-bottom: 12px;
+                            "
+                        >
+                            PENDING INCENTIVE
+                        </div>
+                        <div
+                            style="
+                                font-size: 36px;
+                                font-family:
+                                    &quot;JetBrains Mono&quot;, monospace;
+                                color: var(--cyan);
+                                font-weight: 600;
+                                text-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+                            "
+                        >
+                            <span id="pending-incentive-val">1,245.67</span>
+                            <span style="font-size: 18px">BARKX</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="alert-box warning"
+                        id="req-alert"
+                        style="display: none"
+                    >
+                        <strong>Qualification Required:</strong><br />
+                        Your network incentives are accumulating safely, but to
+                        merge them, you must maintain an active
+                        <strong>360-day</strong> position (holding 1 VN + LP) in
+                        the
+                        <a
+                            href="pool.html"
+                            style="
+                                color: var(--amber);
+                                text-decoration: underline;
+                            "
+                            >BarkX Pool</a
+                        >. Unlocked assets are still valid.
+                    </div>
+
+                    <div
+                        style="
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                            margin-bottom: 16px;
+                        "
+                    >
+                        <div style="font-weight: 600; margin-bottom: 10px">
+                            Merge to Rewards
+                        </div>
+                        <div class="data-row">
+                            <span class="data-lbl">Fee Rate</span
+                            ><span class="data-val green">0.00%</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-lbl">Merging Amount</span
+                            ><span class="data-val" id="merging-amount-val"
+                                >1,245.67 BARKX</span
+                            >
+                        </div>
+                        <button
+                            id="btn-merge-rewards"
+                            class="btn-submit"
+                            style="margin-top: 10px"
+                            onclick="mergeIncentive(this)"
+                        >
+                            Merge to Rewards
+                        </button>
+                    </div>
+                </div>
+
+                <div class="collapsible-card">
+                    <div
+                        class="collapsible-header"
+                        onclick="
+                            toggleCollapsible('signal-panel-content', this)
+                        "
+                    >
+                        <span
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <polyline
+                                    points="22 12 18 12 15 21 9 3 6 12 2 12"
+                                ></polyline>
+                            </svg>
+                            Network Signal Breakdown
+                        </span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div id="signal-panel-content" class="collapsible-content">
+                        <div class="signal-rules" style="margin-top: 16px">
+                            <strong>About BarkX Network and Incentives:</strong
+                            ><br />
+                            1. Your incentive efficiency depends on the scale of
+                            your downstream network.<br />
+                            2. Signal strength decays by distance. Each
+                            subsequent level retains <strong>70%</strong> of the
+                            previous.<br />
+                            3. A node's signal can reach a maximum depth of
+                            <strong>20 levels</strong>.
+                        </div>
+
+                        <div
+                            style="
+                                max-height: 280px;
+                                overflow-y: auto;
+                                border: 1px solid var(--border-dark);
+                                border-radius: 8px;
+                            "
+                        >
+                            <table class="signal-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 35%">
+                                            Signal Strength
+                                        </th>
+                                        <th style="width: 20%">Distance</th>
+                                        <th style="width: 45%">Active Nodes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="signal-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // ==========================================
+            // [CRITICAL] 权限与视野范围配置 (Permission Config)
+            // 后端可通过注入此类配置，决定当前用户的上下级视野最大深度
+            // upLimit: 向上追溯层数 (自身为 0, 直接邀请人为 1, 最高20即Root)
+            // downLimit: 向下展开层数 (自身为 0, 直接邀请下级为 1...)
+            // ==========================================
+            const PERMISSION_LEVELS = [
+                {
+                    id: "MAX",
+                    upLimit: 20,
+                    downLimit: 20,
+                    label: "Max (20↑ / 20↓)",
+                },
+                {
+                    id: "MEDIUM",
+                    upLimit: 20,
+                    downLimit: 3,
+                    label: "Medium (20↑ / 3↓)",
+                },
+                { id: "MIN", upLimit: 1, downLimit: 1, label: "Min (1↑ / 1↓)" },
+            ];
+            let currentPermIndex = 0; // 默认为最大权限
+
+            function togglePermissionState() {
+                currentPermIndex =
+                    (currentPermIndex + 1) % PERMISSION_LEVELS.length;
+                const perm = PERMISSION_LEVELS[currentPermIndex];
+
+                // 更新按钮与帮助面板文案
+                document.getElementById("btn-toggle-perm").innerText =
+                    `View: ${perm.label}`;
+                const limitTextObj =
+                    document.getElementById("explore-limit-text");
+                if (limitTextObj) {
+                    limitTextObj.innerHTML = `You can explore up to a maximum of <strong>${perm.downLimit} levels</strong> down from your node.`;
+                }
+
+                // 只有当网络视图激活时，才立即强制重绘
+                if (
+                    document
+                        .getElementById("dao-network")
+                        .classList.contains("active")
+                ) {
+                    stopNetworkVisualization();
+                    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // 重置偏移量，防止缩放后视口漂移
+                    offsetX = 0;
+                    offsetY = 0;
+
+                    buildDataModel();
+                    updateVisibleData();
+                    focusedNode = selfTreeRoot;
+                    isCenteringGlide = true;
+                    targetScale = 1.0;
+                    animate();
+                } else {
+                    // 后台静默重置数据模型备用
+                    buildDataModel();
+                    updateVisibleData();
+                    focusedNode = selfTreeRoot;
+                }
+            }
+
+            // ==========================================
+            // UI 导航与状态逻辑
+            // ==========================================
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function switchDaoTab(tabId) {
+                document
+                    .querySelectorAll("#registered-view .tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll("#registered-view .panel")
+                    .forEach((p) => p.classList.remove("active"));
+
+                document
+                    .querySelector(
+                        `#registered-view .tab[onclick="switchDaoTab('${tabId}')"]`,
+                    )
+                    .classList.add("active");
+                document.getElementById(tabId).classList.add("active");
+
+                if (tabId === "dao-network") {
+                    initAndStartNetwork();
+                } else {
+                    stopNetworkVisualization();
+                }
+            }
+
+            function copyAddress(btnElement) {
+                const addressText =
+                    document.getElementById("my-address").innerText;
+
+                // 成功动画回调
+                const showSuccess = () => {
+                    const originalHtml = btnElement.innerHTML;
+                    btnElement.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    btnElement.classList.add("copied");
+                    setTimeout(() => {
+                        btnElement.innerHTML = originalHtml;
+                        btnElement.classList.remove("copied");
+                    }, 2000);
+                };
+
+                // 向下兼容的 Fallback 复制方案
+                const fallbackCopy = (text) => {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+
+                    // 避免页面滚动
+                    textArea.style.top = "0";
+                    textArea.style.left = "0";
+                    textArea.style.position = "fixed";
+
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+
+                    try {
+                        document.execCommand("copy");
+                        showSuccess();
+                    } catch (err) {
+                        console.error("Fallback Copy Failed:", err);
+                    }
+
+                    document.body.removeChild(textArea);
+                };
+
+                // 判断是否支持现代 Clipboard API，不支持或者拒绝则走 Fallback
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard
+                        .writeText(addressText)
+                        .then(() => {
+                            showSuccess();
+                        })
+                        .catch((err) => {
+                            console.warn(
+                                "Clipboard API failed, using fallback.",
+                                err,
+                            );
+                            fallbackCopy(addressText);
+                        });
+                } else {
+                    fallbackCopy(addressText);
+                }
+            }
+
+            function toggleHelpBubble(event) {
+                if (event) event.stopPropagation();
+                const bubble = document.getElementById("help-bubble");
+                if (bubble.style.display === "block") {
+                    bubble.style.display = "none";
+                } else {
+                    bubble.style.display = "block";
+                }
+            }
+
+            document.addEventListener("click", (e) => {
+                const bubble = document.getElementById("help-bubble");
+                const btn = document.getElementById("btn-help");
+                if (
+                    bubble &&
+                    bubble.style.display === "block" &&
+                    !bubble.contains(e.target) &&
+                    e.target !== btn
+                ) {
+                    bubble.style.display = "none";
+                }
+            });
+
+            // 折叠面板控制
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                }
+            }
+
+            let isRegistered = false;
+            function toggleTestState() {
+                isRegistered = !isRegistered;
+                const unregView = document.getElementById("unregistered-view");
+                const regView = document.getElementById("registered-view");
+
+                if (isRegistered) {
+                    unregView.style.display = "none";
+                    regView.style.display = "block";
+                    regView.style.animation = "fadeIn 0.4s ease";
+                    switchDaoTab("dao-invite");
+                } else {
+                    regView.style.display = "none";
+                    unregView.style.display = "block";
+                    regView.style.animation = "fadeIn 0.4s ease";
+                    stopNetworkVisualization();
+                }
+            }
+
+            let hasModeAOrder = true;
+            function toggleModeAState() {
+                hasModeAOrder = !hasModeAOrder;
+
+                const badgeQ = document.getElementById("badge-qualified");
+                const badgeUq = document.getElementById("badge-unqualified");
+                const alertBox = document.getElementById("req-alert");
+                const btnMerge = document.getElementById("btn-merge-rewards");
+
+                if (hasModeAOrder) {
+                    badgeQ.style.display = "inline-block";
+                    badgeUq.style.display = "none";
+                    alertBox.style.display = "none";
+                    if (btnMerge) btnMerge.disabled = false;
+                } else {
+                    badgeQ.style.display = "none";
+                    badgeUq.style.display = "inline-block";
+                    alertBox.style.display = "block";
+                    if (btnMerge) btnMerge.disabled = true;
+                }
+            }
+
+            function mergeIncentive(btn) {
+                if (!btn) return;
+
+                const val = document.getElementById("pending-incentive-val");
+                const mergeVal = document.getElementById("merging-amount-val");
+
+                btn.innerText = "Merging...";
+                btn.style.opacity = "0.7";
+                btn.style.pointerEvents = "none";
+
+                setTimeout(() => {
+                    if (val) val.innerText = "0.00";
+                    if (mergeVal) mergeVal.innerText = "0.00 BARKX";
+                    btn.innerText = "Merged Successfully";
+                    btn.style.background = "rgba(34, 197, 94, 0.2)";
+                    btn.style.borderColor = "var(--green)";
+                    btn.style.color = "var(--green)";
+                    btn.style.boxShadow = "none";
+
+                    setTimeout(() => {
+                        btn.innerText = "Go to Rewards";
+                        btn.style.background = "";
+                        btn.style.borderColor = "";
+                        btn.style.color = "";
+                        btn.style.opacity = "1";
+                        btn.style.pointerEvents = "auto";
+                        btn.style.boxShadow = "";
+                        btn.onclick = function () {
+                            window.location.href = "pool.html#rewards";
+                        };
+                    }, 2000);
+                }, 1500);
+            }
+
+            // ==========================================
+            // Signal Table 动态渲染
+            // ==========================================
+            function populateSignalTable() {
+                const tbody = document.getElementById("signal-tbody");
+                if (!tbody) return;
+                tbody.innerHTML = "";
+
+                let strength = 10.0;
+                let mockNodes = [
+                    6, 24, 78, 142, 210, 265, 185, 96, 45, 28, 15, 12, 8, 5, 2,
+                    1, 0, 0, 0, 0,
+                ];
+
+                for (let i = 1; i <= 20; i++) {
+                    let distance = i - 1;
+                    let nodes = mockNodes[distance];
+
+                    // 控制深层节点显示状态
+                    let nodesDisplay =
+                        distance === 0 || distance === 1
+                            ? nodes
+                            : `<span style="color: var(--text-muted); font-style: italic;">Data Unauthorized</span>`;
+
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td class="strength">${strength.toFixed(4)}%</td>
+                        <td style="color: var(--text-muted);">${distance}</td>
+                        <td>${nodesDisplay}</td>
+                    `;
+                    tbody.appendChild(tr);
+
+                    // 下一层衰减 70%
+                    strength = strength * 0.7;
+                }
+            }
+            populateSignalTable();
+
+            // ==========================================
+            // Canvas 稳健渲染与【多端缩放平移】引擎
+            // ==========================================
+            let offsetX = 0,
+                offsetY = 0;
+            let targetOffsetX = 0,
+                targetOffsetY = 0;
+            let isCenteringGlide = false;
+            let dragStartX = 0,
+                dragStartY = 0;
+            let focusedNode = null;
+
+            // Tooltip 全局选中状态
+            let selectedNode = null;
+
+            let currentScale = 1.0;
+            let targetScale = 1.0;
+            const MAX_SCALE = 1.0;
+            const MIN_SCALE = 0.05; // 拓宽缩放极限，以支持 20 层以上大视野
+            let initialPinchDist = null;
+            let initialScaleAtPinch = 1.0;
+
+            let canvas, ctx, animId;
+            let selfTreeRoot = null;
+            let leaderChain = [];
+            let visibleNodes = [];
+            let visibleParticles = [];
+
+            function initAndStartNetwork() {
+                if (canvas) {
+                    if (!animId) animate();
+                    return;
+                }
+                canvas = document.getElementById("networkCanvas");
+                ctx = canvas.getContext("2d");
+
+                handleResize();
+                buildDataModel();
+                updateVisibleData();
+                bindInteractionEvents();
+
+                focusedNode = selfTreeRoot;
+                isCenteringGlide = true;
+                targetScale = 1.0;
+                currentScale = 1.0;
+
+                window.addEventListener("resize", handleResize);
+                animate();
+            }
+
+            function handleResize() {
+                const wrapper = document.getElementById("canvas-wrapper");
+                if (!wrapper || !canvas) return;
+                const rect = wrapper.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+
+            function stopNetworkVisualization() {
+                if (animId) {
+                    cancelAnimationFrame(animId);
+                    animId = null;
+                }
+            }
+
+            function createNode(
+                address,
+                type,
+                color,
+                r,
+                hasChildren,
+                parentRef,
+                depth,
+                angle,
+                baseR,
+                currentPermLimit,
+            ) {
+                return {
+                    x: 0,
+                    y: 0,
+                    angle: angle || 0,
+                    baseR: baseR || 0,
+                    targetR: baseR || 0,
+                    currentR: baseR || 0,
+                    address: address,
+                    type: type,
+                    color: color,
+                    r: r,
+                    hasChildren: hasChildren,
+                    isExpanded: false,
+                    children: [],
+                    particles: [],
+                    parent: parentRef,
+                    depth: depth,
+                    maxDestiny: currentPermLimit, // 控制节点的最大展开命运
+                    clusterCount: 0,
+                    goldenPath: false,
+                    massiveType: 0, // 0: 普通, 1: 30活跃节点, 2: 20活跃节点
+                };
+            }
+
+            // [CRITICAL] 严格受权限控制的数据建模层
+            function buildDataModel() {
+                const perm = PERMISSION_LEVELS[currentPermIndex];
+
+                selfTreeRoot = createNode(
+                    "0x0Cb8...F1f0",
+                    "self",
+                    "#38bdf8",
+                    16,
+                    perm.downLimit > 0, // 如果权限为0，强制抹除子集生成能力
+                    null,
+                    0,
+                    0,
+                    0,
+                    perm.downLimit,
+                );
+                selfTreeRoot.x = 0;
+                selfTreeRoot.y = 0;
+                selfTreeRoot.isExpanded = true;
+
+                // 生成向上追溯的 Leader 链条
+                leaderChain = [];
+                let curr = selfTreeRoot;
+                for (let i = 1; i <= perm.upLimit; i++) {
+                    let isRoot = i === 20; // 假定全局网络最顶层（Root）距离自身20层
+                    let nodeType = isRoot
+                        ? "root"
+                        : i === 1
+                          ? "leader"
+                          : "higher-leader";
+                    let nodeColor = isRoot
+                        ? "#fbbf24"
+                        : i === 1
+                          ? "#c084fc"
+                          : "#7e22ce";
+                    let nodeR = isRoot ? 16 : i === 1 ? 12 : 10;
+
+                    let node = createNode(
+                        isRoot ? "0x0000...ROOT" : `0xL${i}A...C3e${i}`,
+                        nodeType,
+                        nodeColor,
+                        nodeR,
+                        true, // 上级节点在渲染视觉中必定有通向自身的子树
+                        null,
+                        -i,
+                        -Math.PI / 2,
+                        120 * i,
+                        perm.downLimit,
+                    );
+                    node.x = 0;
+                    node.y = -120 * i;
+                    leaderChain.push(node);
+
+                    let pColor = isRoot ? "#fde68a" : "#d8b4fe";
+                    curr.particles.push({
+                        start: curr,
+                        end: node,
+                        progress: Math.random(),
+                        speed: 0.006,
+                        direction: Math.random() > 0.5 ? 1 : -1,
+                        color: pColor,
+                    });
+                    curr = node;
+                }
+
+                // 触发自身的一级展开
+                if (perm.downLimit > 0) {
+                    generateSubNodes(selfTreeRoot);
+                }
+            }
+
+            // [CRITICAL] 严格受权限控制的动态分叉生成
+            function generateSubNodes(parent) {
+                const permLimit = PERMISSION_LEVELS[currentPermIndex].downLimit;
+                if (parent.depth >= permLimit) return; // 绝对防御，切断超权限生成
+
+                let totalCount, branchCount;
+                let maxD = parent.maxDestiny || permLimit;
+
+                if (parent.depth === 0) {
+                    totalCount = 6;
+                    branchCount = 6;
+                } else if (parent.depth === 1 && parent.massiveType === 1) {
+                    totalCount = 100;
+                    branchCount = 30;
+                } else if (parent.depth === 1 && parent.massiveType === 2) {
+                    totalCount = 80;
+                    branchCount = 20;
+                } else {
+                    let isMassive = Math.random() < 0.05;
+                    totalCount = isMassive
+                        ? Math.floor(Math.random() * 40 + 10)
+                        : Math.floor(Math.random() * 3 + 2);
+
+                    if (parent.goldenPath) {
+                        branchCount = Math.max(
+                            1,
+                            Math.floor(Math.random() * 2) + 1,
+                        );
+                    } else if (parent.depth < maxD) {
+                        branchCount = Math.floor(Math.random() * 2) + 1;
+                    } else {
+                        branchCount = 0;
+                    }
+                    branchCount = Math.min(branchCount, totalCount);
+                }
+
+                let leafCount = totalCount - branchCount;
+                let renderNodes = [];
+
+                for (let i = 0; i < branchCount; i++) {
+                    let isGolden = false;
+                    let nextDestiny = maxD;
+
+                    if (parent.depth === 0) {
+                        if (i === 1) isGolden = true;
+                        if (i === 3) nextDestiny = 10;
+                    } else if (parent.goldenPath && i === 0) {
+                        isGolden = true;
+                    }
+
+                    renderNodes.push({
+                        isBranch: true,
+                        destiny: nextDestiny,
+                        goldenPath: isGolden,
+                    });
+                }
+
+                if (leafCount === 1) {
+                    renderNodes.push({
+                        isBranch: true,
+                        destiny: parent.depth + 1,
+                        goldenPath: false,
+                    });
+                } else if (leafCount > 1) {
+                    renderNodes.push({ isBranch: false, count: leafCount });
+                }
+
+                let renderCount = renderNodes.length;
+                let startA = parent.depth === 0 ? Math.PI / 8 : Math.PI / 12;
+                let endA =
+                    parent.depth === 0
+                        ? Math.PI - Math.PI / 8
+                        : Math.PI - Math.PI / 12;
+                let theta = endA - startA;
+
+                let minArcDistance = 45;
+                let requiredRadius =
+                    renderCount > 1
+                        ? (renderCount * minArcDistance) / theta
+                        : 130;
+                let baseR = Math.max(130, requiredRadius);
+
+                renderNodes.forEach((nodeData, i) => {
+                    let a =
+                        renderCount === 1
+                            ? Math.PI / 2
+                            : startA +
+                              i * ((endA - startA) / (renderCount - 1));
+
+                    if (nodeData.isBranch) {
+                        // 权限裁定：即便它有 destiny，若到达当前用户的 downLimit 也会被强制剥夺 hasChildren 渲染成空心终点
+                        let willHaveChildren =
+                            parent.depth + 1 < nodeData.destiny ||
+                            nodeData.goldenPath;
+                        if (parent.depth + 1 >= permLimit)
+                            willHaveChildren = false;
+
+                        let child = createNode(
+                            `0x${Math.floor(Math.random() * 90 + 10)}...B${i}`,
+                            "child",
+                            "#3b82f6",
+                            8,
+                            willHaveChildren,
+                            parent,
+                            parent.depth + 1,
+                            a,
+                            baseR,
+                            Math.min(nodeData.destiny, permLimit),
+                        );
+                        child.goldenPath = nodeData.goldenPath;
+
+                        if (parent.depth === 0 && i === 2) {
+                            child.massiveType = 1;
+                            child.hasChildren = parent.depth + 1 < permLimit;
+                        }
+                        if (parent.depth === 0 && i === 4) {
+                            child.massiveType = 2;
+                            child.hasChildren = parent.depth + 1 < permLimit;
+                        }
+
+                        child.x = parent.x + Math.cos(a) * child.currentR;
+                        child.y = parent.y + Math.sin(a) * child.currentR;
+
+                        child.particles.push({
+                            start: child,
+                            end: parent,
+                            progress: Math.random(),
+                            speed: 0.005 + Math.random() * 0.003,
+                            direction: Math.random() > 0.5 ? 1 : -1,
+                            color: "#60a5fa",
+                        });
+                        parent.children.push(child);
+                    } else {
+                        let cluster = createNode(
+                            `+${nodeData.count} Single Nodes`,
+                            "cluster",
+                            "#94a3b8",
+                            16,
+                            false,
+                            parent,
+                            parent.depth + 1,
+                            a,
+                            baseR,
+                            permLimit,
+                        );
+                        cluster.clusterCount = nodeData.count;
+                        cluster.x = parent.x + Math.cos(a) * cluster.currentR;
+                        cluster.y = parent.y + Math.sin(a) * cluster.currentR;
+
+                        cluster.particles.push({
+                            start: cluster,
+                            end: parent,
+                            progress: Math.random(),
+                            speed: 0.004,
+                            direction: Math.random() > 0.5 ? 1 : -1,
+                            color: "#64748b",
+                        });
+                        parent.children.push(cluster);
+                    }
+                });
+            }
+
+            function collapseAll(node) {
+                node.isExpanded = false;
+                node.targetR = node.baseR;
+                node.children.forEach((c) => collapseAll(c));
+            }
+
+            function updateVisibleData() {
+                visibleNodes = [];
+                visibleParticles = [];
+
+                leaderChain.forEach((n) => visibleNodes.push(n));
+                visibleNodes.push(selfTreeRoot);
+
+                selfTreeRoot.particles.forEach((p) => visibleParticles.push(p));
+                leaderChain.forEach((n) =>
+                    n.particles.forEach((p) => visibleParticles.push(p)),
+                );
+
+                function traverse(n) {
+                    if (n.isExpanded) {
+                        n.children.forEach((c) => {
+                            visibleNodes.push(c);
+                            c.particles.forEach((p) =>
+                                visibleParticles.push(p),
+                            );
+                            traverse(c);
+                        });
+                    }
+                }
+                traverse(selfTreeRoot);
+            }
+
+            function adjustZoom(delta, e) {
+                if (e) e.stopPropagation();
+                targetScale += delta;
+                targetScale = Math.max(
+                    MIN_SCALE,
+                    Math.min(targetScale, MAX_SCALE),
+                );
+            }
+
+            function recenterNetwork(e) {
+                if (e) e.stopPropagation();
+                focusedNode = selfTreeRoot;
+
+                selfTreeRoot.children.forEach((c) => collapseAll(c));
+
+                updateVisibleData();
+                isCenteringGlide = true;
+                targetScale = 1.0;
+                selectedNode = null; // 清除可能存在的气泡
+            }
+
+            function updatePositions(node) {
+                if (
+                    node.parent &&
+                    (node.type === "child" || node.type === "cluster")
+                ) {
+                    node.currentR += (node.targetR - node.currentR) * 0.12;
+                    node.x =
+                        node.parent.x + Math.cos(node.angle) * node.currentR;
+                    node.y =
+                        node.parent.y + Math.sin(node.angle) * node.currentR;
+                }
+                node.children.forEach((c) => updatePositions(c));
+            }
+
+            function animate() {
+                if (!canvas) return;
+
+                const width = canvas.width / (window.devicePixelRatio || 1);
+                const height = canvas.height / (window.devicePixelRatio || 1);
+
+                updatePositions(selfTreeRoot);
+
+                currentScale += (targetScale - currentScale) * 0.12;
+
+                if (isCenteringGlide && focusedNode) {
+                    targetOffsetX = -focusedNode.x;
+                    targetOffsetY =
+                        -focusedNode.y + (focusedNode.type === "self" ? 0 : 60);
+
+                    offsetX += (targetOffsetX - offsetX) * 0.12;
+                    offsetY += (targetOffsetY - offsetY) * 0.12;
+
+                    let nodeStable =
+                        !focusedNode.parent ||
+                        Math.abs(focusedNode.currentR - focusedNode.targetR) <
+                            1;
+                    let camStable =
+                        Math.abs(offsetX - targetOffsetX) < 0.5 &&
+                        Math.abs(offsetY - targetOffsetY) < 0.5;
+                    if (nodeStable && camStable) {
+                        offsetX = targetOffsetX;
+                        offsetY = targetOffsetY;
+                        isCenteringGlide = false;
+                    }
+                }
+
+                ctx.save();
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.restore();
+
+                ctx.save();
+                ctx.translate(width / 2, height / 2);
+                ctx.scale(currentScale, currentScale);
+                ctx.translate(offsetX, offsetY);
+
+                ctx.lineWidth = 1.5;
+                visibleNodes
+                    .filter((n) => n.type === "child" || n.type === "cluster")
+                    .forEach((c) => {
+                        if (c.parent) {
+                            ctx.strokeStyle =
+                                c.type === "cluster"
+                                    ? "rgba(100, 116, 139, 0.3)"
+                                    : "rgba(59, 130, 246, 0.4)";
+                            ctx.beginPath();
+                            ctx.moveTo(c.x, c.y);
+                            ctx.lineTo(c.parent.x, c.parent.y);
+                            ctx.stroke();
+                        }
+                    });
+
+                ctx.strokeStyle = "rgba(168, 85, 247, 0.4)";
+                ctx.beginPath();
+                ctx.moveTo(selfTreeRoot.x, selfTreeRoot.y);
+                leaderChain.forEach((l) => ctx.lineTo(l.x, l.y));
+                ctx.stroke();
+
+                visibleParticles.forEach((p) => {
+                    const dx = p.end.x - p.start.x;
+                    const dy = p.end.y - p.start.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    const beamLength = 25;
+                    const progressOffset =
+                        distance > 0 ? beamLength / distance : 0.2;
+
+                    // Normalize speed based on a standard distance of 150px
+                    // so beams travel at a constant physical speed regardless of line length.
+                    const normalizedSpeed =
+                        distance > 0 ? (p.speed * 150) / distance : p.speed;
+                    p.progress += normalizedSpeed * p.direction;
+
+                    if (p.progress >= 1 + progressOffset) {
+                        p.progress = 1 + progressOffset;
+                        p.direction = -1;
+                    } else if (p.progress <= -progressOffset) {
+                        p.progress = -progressOffset;
+                        p.direction = 1;
+                    }
+
+                    const headP = Math.max(0, Math.min(1, p.progress));
+                    let tailP;
+                    if (p.direction === 1) {
+                        tailP = Math.max(
+                            0,
+                            Math.min(1, p.progress - progressOffset),
+                        );
+                    } else {
+                        tailP = Math.max(
+                            0,
+                            Math.min(1, p.progress + progressOffset),
+                        );
+                    }
+
+                    if (headP !== tailP) {
+                        const x = p.start.x + dx * headP;
+                        const y = p.start.y + dy * headP;
+                        const tx = p.start.x + dx * tailP;
+                        const ty = p.start.y + dy * tailP;
+
+                        ctx.beginPath();
+                        ctx.moveTo(tx, ty);
+                        ctx.lineTo(x, y);
+                        ctx.strokeStyle = p.color;
+                        ctx.lineWidth = p.start.type === "cluster" ? 2.5 : 3.5;
+                        ctx.lineCap = "round";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = p.color;
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    }
+                });
+
+                visibleNodes.forEach((n) => {
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+
+                    if (n.type === "cluster") {
+                        ctx.fillStyle = "#0f172a";
+                        ctx.fill();
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([3, 3]);
+                        ctx.strokeStyle = n.color;
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        ctx.font = "10px JetBrains Mono";
+                        ctx.fillStyle = "#cbd5e1";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText("+" + n.clusterCount, n.x, n.y);
+                    } else {
+                        let isSolid =
+                            n.type === "self" ||
+                            n.type === "leader" ||
+                            n.type === "higher-leader" ||
+                            n.type === "root" ||
+                            n.hasChildren;
+                        ctx.fillStyle = isSolid ? n.color : "#0f172a";
+                        ctx.fill();
+
+                        ctx.lineWidth = 2.5;
+                        ctx.strokeStyle = n.color;
+                        ctx.shadowBlur = 12;
+                        ctx.shadowColor = n.color;
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+
+                        if (n.type !== "child") {
+                            ctx.shadowBlur = 15;
+                            ctx.shadowColor = n.color;
+                            ctx.fillStyle = n.color;
+                            ctx.beginPath();
+                            ctx.arc(n.x, n.y, n.r - 2.5, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                });
+
+                ctx.restore();
+
+                // --- 绘制右下角固定水印 ---
+                ctx.save();
+                ctx.textAlign = "right";
+                ctx.textBaseline = "bottom";
+
+                // 主标题 BarkAI
+                ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+                ctx.font = "800 28px 'Outfit', sans-serif";
+                ctx.fillText("BarkAI", width - 24, height - 24);
+
+                // 副标题 Powered By
+                ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+                ctx.font = "500 13px 'Outfit', sans-serif";
+                ctx.fillText("Powered By", width - 24, height - 52); // Y轴排在主标题上方
+                ctx.restore();
+
+                // ---- Tooltip 渲染 (跟随 selectedNode) ----
+                const tooltip = document.getElementById("node-tooltip");
+                if (selectedNode && visibleNodes.includes(selectedNode)) {
+                    const screenX =
+                        width / 2 + (selectedNode.x + offsetX) * currentScale;
+                    const screenY =
+                        height / 2 + (selectedNode.y + offsetY) * currentScale;
+
+                    if (
+                        tooltip.style.display !== "block" ||
+                        tooltip.innerText !== selectedNode.address
+                    ) {
+                        tooltip.innerText = selectedNode.address;
+                        tooltip.style.display = "block";
+                        tooltip.style.borderColor = selectedNode.color;
+                    }
+                    tooltip.style.left = screenX + "px";
+                    tooltip.style.top = screenY + "px";
+                } else {
+                    if (tooltip && tooltip.style.display !== "none") {
+                        tooltip.style.display = "none";
+                    }
+                    selectedNode = null;
+                }
+
+                animId = requestAnimationFrame(animate);
+            }
+
+            // ==========================================
+            // 交互事件重构：拖拽与点击分离
+            // ==========================================
+            function bindInteractionEvents() {
+                const wrapper = document.getElementById("canvas-wrapper");
+
+                wrapper.addEventListener(
+                    "wheel",
+                    (e) => {
+                        e.preventDefault();
+                        const zoomSensitivity = 0.0015;
+                        targetScale -= e.deltaY * zoomSensitivity;
+                        targetScale = Math.max(
+                            MIN_SCALE,
+                            Math.min(targetScale, MAX_SCALE),
+                        );
+                    },
+                    { passive: false },
+                );
+
+                function getHoveredNode(clientX, clientY) {
+                    const rect = wrapper.getBoundingClientRect();
+                    const mx =
+                        (clientX - rect.left - rect.width / 2) / currentScale -
+                        offsetX;
+                    const my =
+                        (clientY - rect.top - rect.height / 2) / currentScale -
+                        offsetY;
+
+                    for (let i = 0; i < visibleNodes.length; i++) {
+                        let n = visibleNodes[i];
+                        let dx = mx - n.x;
+                        let dy = my - n.y;
+                        if (dx * dx + dy * dy < 30 * 30) return n;
+                    }
+                    return null;
+                }
+
+                const handleNodeExpansion = (node) => {
+                    if (node.type !== "child" || !node.hasChildren) return;
+
+                    if (node.isExpanded) {
+                        collapseAll(node);
+                    } else {
+                        if (node.children.length === 0) {
+                            generateSubNodes(node);
+                        }
+                        if (node.parent) {
+                            node.parent.children.forEach((sib) => {
+                                if (sib !== node) collapseAll(sib);
+                            });
+                        }
+                        node.isExpanded = true;
+                        node.targetR = node.baseR * 2.0;
+                    }
+
+                    updateVisibleData();
+                    focusedNode = node;
+                    isCenteringGlide = true;
+                };
+
+                // PC端逻辑
+                let isPointerDown = false;
+                let isPointerDragged = false;
+
+                wrapper.addEventListener("mousedown", (e) => {
+                    isCenteringGlide = false;
+                    isPointerDown = true;
+                    isPointerDragged = false;
+                    dragStartX = e.clientX / currentScale - offsetX;
+                    dragStartY = e.clientY / currentScale - offsetY;
+                });
+
+                wrapper.addEventListener("mousemove", (e) => {
+                    if (isPointerDown) {
+                        isPointerDragged = true;
+                        offsetX = e.clientX / currentScale - dragStartX;
+                        offsetY = e.clientY / currentScale - dragStartY;
+                        wrapper.style.cursor = "grabbing";
+                    } else {
+                        let hoveredNode = getHoveredNode(e.clientX, e.clientY);
+                        wrapper.style.cursor = hoveredNode ? "pointer" : "grab";
+                    }
+                });
+
+                wrapper.addEventListener("mouseup", (e) => {
+                    isPointerDown = false;
+                    let hoveredNode = getHoveredNode(e.clientX, e.clientY);
+                    wrapper.style.cursor = hoveredNode ? "pointer" : "grab";
+                });
+
+                wrapper.addEventListener("mouseleave", () => {
+                    isPointerDown = false;
+                });
+
+                // 干净的 Click 事件：负责气泡锁定与清除
+                wrapper.addEventListener("click", (e) => {
+                    if (!isPointerDragged) {
+                        let hoveredNode = getHoveredNode(e.clientX, e.clientY);
+                        selectedNode = hoveredNode; // 命中节点则绑定，点空则设为 null 并自动清除
+                    }
+                });
+
+                wrapper.addEventListener("dblclick", (e) => {
+                    let hoveredNode = getHoveredNode(e.clientX, e.clientY);
+                    if (hoveredNode) handleNodeExpansion(hoveredNode);
+                });
+
+                // 移动端逻辑
+                let lastTap = 0;
+                let touchDown = false;
+                let touchDragged = false;
+
+                wrapper.addEventListener(
+                    "touchstart",
+                    (e) => {
+                        if (e.touches.length === 2) {
+                            initialPinchDist = Math.hypot(
+                                e.touches[0].clientX - e.touches[1].clientX,
+                                e.touches[0].clientY - e.touches[1].clientY,
+                            );
+                            initialScaleAtPinch = targetScale;
+                            touchDown = false;
+                            e.preventDefault();
+                        } else if (e.touches.length === 1) {
+                            const touch = e.touches[0];
+                            const currentTime = new Date().getTime();
+                            const tapLength = currentTime - lastTap;
+
+                            if (tapLength < 300 && tapLength > 0) {
+                                // 双击探测
+                                let hoveredNode = getHoveredNode(
+                                    touch.clientX,
+                                    touch.clientY,
+                                );
+                                if (hoveredNode)
+                                    handleNodeExpansion(hoveredNode);
+                                e.preventDefault();
+                                lastTap = 0;
+                                touchDown = false;
+                            } else {
+                                // 单击按下
+                                isCenteringGlide = false;
+                                touchDown = true;
+                                touchDragged = false;
+                                dragStartX =
+                                    touch.clientX / currentScale - offsetX;
+                                dragStartY =
+                                    touch.clientY / currentScale - offsetY;
+                            }
+                            lastTap = currentTime;
+                        }
+                    },
+                    { passive: false },
+                );
+
+                wrapper.addEventListener(
+                    "touchmove",
+                    (e) => {
+                        if (e.touches.length === 2 && initialPinchDist) {
+                            const currentDist = Math.hypot(
+                                e.touches[0].clientX - e.touches[1].clientX,
+                                e.touches[0].clientY - e.touches[1].clientY,
+                            );
+                            const scaleFactor = currentDist / initialPinchDist;
+                            targetScale = Math.max(
+                                MIN_SCALE,
+                                Math.min(
+                                    initialScaleAtPinch * scaleFactor,
+                                    MAX_SCALE,
+                                ),
+                            );
+                            e.preventDefault();
+                        } else if (e.touches.length === 1 && touchDown) {
+                            touchDragged = true;
+                            offsetX =
+                                e.touches[0].clientX / currentScale -
+                                dragStartX;
+                            offsetY =
+                                e.touches[0].clientY / currentScale -
+                                dragStartY;
+                            e.preventDefault();
+                        }
+                    },
+                    { passive: false },
+                );
+
+                wrapper.addEventListener("touchend", (e) => {
+                    if (e.touches.length < 2) initialPinchDist = null;
+                    if (e.touches.length === 0 && touchDown) {
+                        touchDown = false;
+                        if (!touchDragged) {
+                            // 纯净的单指点击：负责气泡锁定与清除
+                            const touch = e.changedTouches[0];
+                            let hoveredNode = getHoveredNode(
+                                touch.clientX,
+                                touch.clientY,
+                            );
+                            selectedNode = hoveredNode;
+                        }
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

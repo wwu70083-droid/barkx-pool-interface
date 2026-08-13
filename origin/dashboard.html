@@ -1,0 +1,1774 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Dashboard - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 顶部全局数据概览网格 */
+            .grid-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .metric-box {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 14px;
+                padding: 16px;
+                text-align: center;
+            }
+            .metric-val {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--text-primary);
+            }
+            .metric-lbl {
+                font-size: 11px;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-top: 4px;
+                letter-spacing: 0.5px;
+            }
+
+            /* 可点击卡片交互样式 */
+            .clickable-card {
+                cursor: pointer;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+                position: relative;
+            }
+            /* 针对不同主题颜色的 Hover 效果 */
+            .clickable-card.purple:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(168, 85, 247, 0.15);
+            }
+            .clickable-card.cyan:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(56, 189, 248, 0.15);
+            }
+            .clickable-card.green:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 40px rgba(34, 197, 94, 0.15);
+            }
+
+            /* 右上角标签与 info 图标系统 */
+            .card-corner-badge {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                transition: color 0.3s ease;
+            }
+
+            /* Status 专属颜色 */
+            .status-active {
+                color: var(--green);
+            }
+            .status-inactive {
+                color: var(--text-muted);
+            }
+
+            /* 悬停时的统一反馈 (Purple 融合版) */
+            .clickable-card.purple:hover .card-corner-badge,
+            .clickable-card.purple:hover .info-icon {
+                color: #c084fc;
+                opacity: 1;
+            }
+
+            .clickable-card.green:hover .info-icon {
+                color: var(--green);
+            }
+
+            /* 原有单一 Info 标的交互反馈 */
+            .info-icon {
+                color: var(--text-muted);
+                transition: color 0.3s ease;
+                display: flex;
+                align-items: center;
+            }
+
+            .clickable-card.cyan:hover .info-icon {
+                color: var(--cyan);
+                opacity: 1;
+            }
+
+            /* 弹窗系统样式 (统一为不透明深色背景) */
+            .custom-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85); /* 遮罩层保留模糊效果 */
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .custom-modal {
+                width: 88%;
+                max-width: 360px;
+                background: #111827; /* 统一不透明深蓝黑底色 */
+                border: 1px solid var(--cyan);
+                border-radius: 16px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+            }
+            .custom-modal.purple-theme {
+                border-color: #c084fc;
+            }
+            .custom-modal.cyan-theme {
+                border-color: var(--cyan);
+            }
+            .custom-modal.green-theme {
+                border-color: var(--green);
+            }
+            .custom-modal.show {
+                transform: translateY(0);
+            }
+            .custom-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.3s;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .custom-modal-close:hover {
+                color: var(--cyan);
+            }
+            .custom-modal.purple-theme .custom-modal-close:hover {
+                color: #c084fc;
+            }
+            .custom-modal.green-theme .custom-modal-close:hover {
+                color: var(--green);
+            }
+            .custom-modal-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                padding-right: 24px;
+            }
+            .custom-modal-text {
+                font-size: 13px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+            .custom-modal-text strong {
+                color: var(--text-primary);
+            }
+
+            /* 弹窗内的子信息卡片统一样式 */
+            .modal-inner-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            .modal-inner-card:last-child {
+                margin-bottom: 0;
+            }
+
+            /* 可折叠面板样式 (Pool Status) */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-top: 24px;
+                margin-bottom: 16px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 16px 16px 16px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 数据网格 (用于 Pool Status) */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 0;
+            }
+            .stat-card {
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+            }
+            .stat-card-title {
+                font-size: 11px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+            .stat-card-value {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            /* 流动性画板容器 */
+            .chart-container {
+                display: block;
+                margin-top: 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+            }
+            .chart-canvas-wrapper {
+                position: relative;
+                width: 100%;
+                height: 160px;
+            }
+            #liquidityCanvas {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            /* 覆盖所有统计行的左侧标题颜色为纯白以提高可读性 */
+            .data-lbl {
+                color: #ffffff !important;
+            }
+
+            /* 外部链接样式 */
+            .ext-link-inline {
+                color: var(--cyan);
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            .ext-link-inline:hover {
+                text-decoration: underline;
+                color: #fff;
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+
+            /* ==========================================
+               APR <-> APY 交错无缝动画效果 (CSS Keyframes)
+               ========================================== */
+            .rate-crossfade-wrapper {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                height: 24px;
+            }
+            .rate-cf-1,
+            .rate-cf-2 {
+                display: inline-block;
+                white-space: nowrap;
+            }
+            .rate-cf-2 {
+                position: absolute;
+            }
+
+            /* 6s 一个完整循环，前 3s 显示 1，后 3s 显示 2，交替过渡 0.48s (8%) */
+            @keyframes cf-slide-1 {
+                0%,
+                42% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                48%,
+                50% {
+                    opacity: 0;
+                    transform: translateY(-8px);
+                }
+                51%,
+                91% {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+                98%,
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes cf-slide-2 {
+                0%,
+                41% {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+                48%,
+                91% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                98%,
+                100% {
+                    opacity: 0;
+                    transform: translateY(-8px);
+                }
+            }
+
+            .rate-cf-1 {
+                animation: cf-slide-1 6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .rate-cf-2 {
+                animation: cf-slide-2 6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div
+            id="custom-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeModal(event)"
+        >
+            <div
+                class="custom-modal"
+                id="custom-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title" id="custom-modal-title">
+                    Title
+                </div>
+                <div class="custom-modal-text" id="custom-modal-text">
+                    Content
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="weight-modal-overlay"
+            class="custom-modal-overlay"
+            onclick="closeWeightModal(event)"
+        >
+            <div
+                class="custom-modal cyan-theme"
+                id="weight-modal-card"
+                onclick="event.stopPropagation()"
+            >
+                <div class="custom-modal-close" onclick="closeWeightModal()">
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="custom-modal-title">Node Weight</div>
+                <div class="custom-modal-text">
+                    <div
+                        style="
+                            background: rgba(0, 0, 0, 0.3);
+                            border: 1px solid var(--border-dark);
+                            border-radius: 12px;
+                            padding: 16px;
+                        "
+                    >
+                        <div
+                            style="
+                                margin-bottom: 12px;
+                                padding-bottom: 12px;
+                                border-bottom: 1px dashed
+                                    rgba(255, 255, 255, 0.15);
+                            "
+                        >
+                            Yesterday's Weight:
+                            <span
+                                style="
+                                    color: var(--cyan);
+                                    font-family:
+                                        &quot;JetBrains Mono&quot;, monospace;
+                                    font-size: 18px;
+                                    font-weight: 700;
+                                    margin-left: 8px;
+                                "
+                                >1.00</span
+                            >
+                        </div>
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-secondary);
+                                line-height: 1.6;
+                            "
+                        >
+                            This value is securely fetched from the
+                            <strong style="color: var(--text-primary)"
+                                >OpenDAO API</strong
+                            >.<br /><br />
+                            It acts as a multiplier applied directly to your
+                            <strong>30-Day Average Balance</strong>. A higher
+                            weight factor significantly amplifies your
+                            competitive proportion in the daily snapshot,
+                            securing a larger share of the BARKX conversion
+                            quota.<br /><br />
+                            To learn how to increase your Node Weight, please
+                            visit
+                            <a
+                                href="https://opendao.cc/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="ext-link-inline"
+                                >OpenDAO</a
+                            >
+                            for detailed requirements.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link active"
+                        >Dashboard</a
+                    >
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 30px;
+                    position: relative;
+                "
+            >
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Dashboard
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    BARKX Liquidity Mining
+                </p>
+
+                <div
+                    style="
+                        position: absolute;
+                        right: 0;
+                        top: -10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        align-items: flex-end;
+                    "
+                >
+                    <button
+                        id="btn-toggle-node"
+                        onclick="toggleNodeStatus()"
+                        style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid var(--border-dark);
+                            color: var(--text-secondary);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        "
+                    >
+                        Toggle Node Status
+                    </button>
+                    <button
+                        id="btn-toggle-pools"
+                        onclick="togglePoolsDisplay()"
+                        style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border: 1px solid var(--border-dark);
+                            color: var(--text-secondary);
+                            padding: 4px 10px;
+                            border-radius: 20px;
+                            font-size: 11px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        "
+                    >
+                        Toggle Pools Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="metric-box">
+                    <div
+                        class="metric-val"
+                        style="
+                            color: #ffd700;
+                            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+                        "
+                    >
+                        1.240
+                    </div>
+                    <div class="metric-lbl">BARKX/USDT Price</div>
+                </div>
+                <div class="metric-box">
+                    <div
+                        class="metric-val"
+                        style="
+                            color: #ffd700;
+                            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+                        "
+                    >
+                        $1.00M
+                    </div>
+                    <div class="metric-lbl">BARKX Market Cap</div>
+                </div>
+            </div>
+
+            <div
+                class="card clickable-card purple"
+                style="border-color: rgba(168, 85, 247, 0.4)"
+                onclick="openCombinedInfoModal()"
+            >
+                <div
+                    style="
+                        position: absolute;
+                        top: 16px;
+                        right: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    "
+                >
+                    <div
+                        class="card-corner-badge status-active"
+                        id="node-status-badge"
+                        style="position: static"
+                    >
+                        <span id="node-status-text">Active Node</span>
+                    </div>
+                    <div class="info-icon" style="position: static">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                </div>
+
+                <div
+                    class="card-title"
+                    style="
+                        color: #c084fc;
+                        border-bottom-color: rgba(168, 85, 247, 0.2);
+                    "
+                >
+                    My BarkX Pool
+                </div>
+                <div class="data-row">
+                    <div
+                        class="rate-crossfade-wrapper"
+                        style="justify-content: flex-start"
+                    >
+                        <span class="data-lbl rate-cf-1">Boosted APR</span>
+                        <span class="data-lbl rate-cf-2" style="left: 0"
+                            >Boosted APY</span
+                        >
+                    </div>
+                    <div style="text-align: right">
+                        <div
+                            class="rate-crossfade-wrapper"
+                            style="justify-content: flex-end; width: 100px"
+                        >
+                            <div
+                                class="data-val green rate-cf-1"
+                                id="main-pool-apr"
+                                data-apr="1.00"
+                            >
+                                100.00%
+                            </div>
+                            <div
+                                class="data-val green rate-cf-2"
+                                id="main-pool-apy"
+                                style="right: 0"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Vector Nexus (VN)</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: #c084fc">0 VN</div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">LP Token</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: #c084fc">
+                            0.000000 LP
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Pending Rewards</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: #c084fc">
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row" style="border-bottom: none">
+                    <span class="data-lbl">Total Achieved</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: #c084fc">
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="panel-elite"
+                class="card"
+                style="border-color: rgba(20, 184, 166, 0.4)"
+            >
+                <div
+                    class="card-title"
+                    style="
+                        color: #14b8a6;
+                        border-bottom-color: rgba(20, 184, 166, 0.2);
+                    "
+                >
+                    My BarkX Elite Pool
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Boosted APR</span>
+                    <div style="text-align: right">
+                        <div class="data-val green">75.00%</div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Vector Nexus (VN)</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="elite-vn-val"
+                            style="color: #14b8a6"
+                        >
+                            0 VN
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">LP Token</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="elite-lp-val"
+                            style="color: #14b8a6"
+                        >
+                            0.000000 LP
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Pending Rewards</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="elite-pending-val"
+                            style="color: #14b8a6"
+                        >
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row" style="border-bottom: none">
+                    <span class="data-lbl">Total Achieved</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="elite-total-val"
+                            style="color: #14b8a6"
+                        >
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="panel-vip"
+                class="card"
+                style="border-color: rgba(245, 158, 11, 0.4)"
+            >
+                <div
+                    class="card-title"
+                    style="
+                        color: var(--amber);
+                        border-bottom-color: rgba(245, 158, 11, 0.2);
+                    "
+                >
+                    My BarkX VIP Pool
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">APR</span>
+                    <div style="text-align: right">
+                        <div class="data-val green">56.50%</div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Vector Nexus (VN)</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="vip-vn-val"
+                            style="color: var(--amber)"
+                        >
+                            0/0 VN
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">LP Token</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="vip-lp-val"
+                            style="color: var(--amber)"
+                        >
+                            0.00 vLP
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Pending Rewards</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="vip-pending-val"
+                            style="color: var(--amber)"
+                        >
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row" style="border-bottom: none">
+                    <span class="data-lbl">Total Achieved</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="vip-total-val"
+                            style="color: var(--amber)"
+                        >
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="panel-incubator"
+                class="card clickable-card cyan"
+                style="border-color: var(--border-glow)"
+                onclick="openWeightModal()"
+            >
+                <div
+                    class="info-icon"
+                    style="position: absolute; top: 16px; right: 16px"
+                >
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <div
+                    class="card-title"
+                    style="
+                        color: var(--cyan);
+                        border-bottom-color: rgba(56, 189, 248, 0.2);
+                    "
+                >
+                    My Incubator
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">My Deposit</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="incub-dep-val"
+                            style="color: var(--cyan)"
+                        >
+                            0.00 vBARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">30-Day Average</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="incub-avg-val"
+                            style="color: var(--cyan)"
+                        >
+                            0.00 vBARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">My Quota Today</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="incub-quota-val"
+                            style="color: var(--cyan)"
+                        >
+                            0.00 vBARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row" style="border-bottom: none">
+                    <span class="data-lbl">Total Incubated</span>
+                    <div style="text-align: right">
+                        <div
+                            class="data-val"
+                            id="incub-total-val"
+                            style="color: var(--cyan)"
+                        >
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="card clickable-card green"
+                style="border-color: rgba(34, 197, 94, 0.4)"
+                onclick="openAssetsModal()"
+            >
+                <div
+                    class="info-icon"
+                    style="position: absolute; top: 16px; right: 16px"
+                >
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <div
+                    class="card-title"
+                    style="
+                        color: var(--green);
+                        border-bottom-color: rgba(34, 197, 94, 0.2);
+                    "
+                >
+                    Assets in Wallet
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">New Vector Nexus</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: var(--green)">
+                            0 VN
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">Used Vector Nexus</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: var(--green)">
+                            0 wVN
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <span class="data-lbl">BARKX Token</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: var(--green)">
+                            0.00 BARKX
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row" style="border-bottom: none">
+                    <span class="data-lbl">LP Token</span>
+                    <div style="text-align: right">
+                        <div class="data-val" style="color: var(--green)">
+                            0.000000 LP
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible-card">
+                <div
+                    class="collapsible-header"
+                    onclick="toggleCollapsible('pool-status-content', this)"
+                >
+                    <span style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18 17V9"></path>
+                            <path d="M13 17V5"></path>
+                            <path d="M8 17v-3"></path>
+                        </svg>
+                        Pool Status
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div id="pool-status-content" class="collapsible-content">
+                    <div class="stats-grid" style="margin-bottom: 0">
+                        <div class="stat-card">
+                            <div class="stat-card-title">Total Liquidity</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                $2.48M
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">LP Minted</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                1.542827
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">BARKX Reserve</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--cyan)"
+                            >
+                                1.00M
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">USDT Reserve</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--green)"
+                            >
+                                1.24M
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="liquidity-chart-container" class="chart-container">
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                margin-bottom: 12px;
+                            "
+                        >
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: var(--text-secondary);
+                                    font-weight: 600;
+                                "
+                            >
+                                Liquidity Trend (USD)
+                            </div>
+                            <div
+                                id="liquidity-change-val"
+                                style="
+                                    font-size: 13px;
+                                    font-weight: 600;
+                                    font-family:
+                                        &quot;JetBrains Mono&quot;, monospace;
+                                "
+                            ></div>
+                        </div>
+
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="liquidityCanvas"></canvas>
+                        </div>
+                        <div
+                            class="percent-btns"
+                            style="margin-top: 16px; gap: 12px"
+                        >
+                            <button
+                                id="btn-range-24h"
+                                class="p-btn active chart-range-btn"
+                                onclick="updateChart('24H', this)"
+                                style="
+                                    background: rgba(56, 189, 248, 0.2);
+                                    color: var(--text-primary);
+                                    border-color: var(--cyan);
+                                "
+                            >
+                                24H
+                            </button>
+                            <button
+                                class="p-btn chart-range-btn"
+                                onclick="updateChart('7D', this)"
+                            >
+                                7D
+                            </button>
+                            <button
+                                class="p-btn chart-range-btn"
+                                onclick="updateChart('30D', this)"
+                            >
+                                30D
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // ==========================================
+            // 前端计算 APY 并注入 (针对 My BarkX Pool)
+            // 公式: apy = (1 + apr / 365 ) ^ 365 - 1
+            // ==========================================
+            function calculateAndSetApy() {
+                const aprEl = document.getElementById("main-pool-apr");
+                const apyEl = document.getElementById("main-pool-apy");
+
+                if (aprEl && apyEl) {
+                    const aprVal = parseFloat(aprEl.getAttribute("data-apr")); // 例如 1.00 表示 100%
+                    const apyVal = Math.pow(1 + aprVal / 365, 365) - 1;
+                    apyEl.innerText = (apyVal * 100).toFixed(2) + "%";
+                }
+            }
+
+            // 页面加载完成后进行前端计算
+            document.addEventListener("DOMContentLoaded", () => {
+                calculateAndSetApy();
+            });
+
+            // ==========================================
+            // 节点状态切换逻辑 (Active / Inactive)
+            // ==========================================
+            let isActiveNode = true;
+
+            function toggleNodeStatus() {
+                isActiveNode = !isActiveNode;
+                const badge = document.getElementById("node-status-badge");
+                const text = document.getElementById("node-status-text");
+                const btn = document.getElementById("btn-toggle-node");
+
+                if (isActiveNode) {
+                    badge.classList.remove("status-inactive");
+                    badge.classList.add("status-active");
+                    text.innerText = "Active Node";
+
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255, 255, 255, 0.05)";
+                } else {
+                    badge.classList.remove("status-active");
+                    badge.classList.add("status-inactive");
+                    text.innerText = "Inactive Node";
+
+                    btn.style.color = "var(--cyan)";
+                    btn.style.borderColor = "rgba(56, 189, 248, 0.3)";
+                    btn.style.background = "rgba(56, 189, 248, 0.1)";
+                }
+            }
+
+            // ==========================================
+            // 动态奖池面板显示/隐藏逻辑 (Pools Visibility)
+            // ==========================================
+            let hasPoolData = false;
+
+            function checkAndHidePools() {
+                const panels = [
+                    {
+                        id: "panel-elite",
+                        vals: [
+                            "elite-vn-val",
+                            "elite-lp-val",
+                            "elite-pending-val",
+                            "elite-total-val",
+                        ],
+                    },
+                    {
+                        id: "panel-vip",
+                        vals: [
+                            "vip-vn-val",
+                            "vip-lp-val",
+                            "vip-pending-val",
+                            "vip-total-val",
+                        ],
+                    },
+                    {
+                        id: "panel-incubator",
+                        vals: [
+                            "incub-dep-val",
+                            "incub-avg-val",
+                            "incub-quota-val",
+                            "incub-total-val",
+                        ],
+                    },
+                ];
+
+                panels.forEach((p) => {
+                    let allZero = true;
+
+                    p.vals.forEach((valId) => {
+                        const rawText = document
+                            .getElementById(valId)
+                            .innerText.replace(/,/g, "");
+                        let num = 0;
+
+                        if (rawText.includes("/")) {
+                            num = parseFloat(rawText.split("/")[0]);
+                        } else {
+                            num = parseFloat(rawText) || 0;
+                        }
+
+                        if (num !== 0) {
+                            allZero = false;
+                        }
+                    });
+
+                    const panelEl = document.getElementById(p.id);
+                    if (allZero) {
+                        panelEl.style.display = "none";
+                    } else {
+                        panelEl.style.display = "block";
+                    }
+                });
+            }
+
+            function togglePoolsDisplay() {
+                hasPoolData = !hasPoolData;
+                const btn = document.getElementById("btn-toggle-pools");
+
+                if (hasPoolData) {
+                    // 注入真实模拟数据
+                    document.getElementById("elite-vn-val").innerText = "2 VN";
+                    document.getElementById("elite-lp-val").innerText =
+                        "1.234567 LP";
+                    document.getElementById("elite-pending-val").innerText =
+                        "142.50 BARKX";
+                    document.getElementById("elite-total-val").innerText =
+                        "850.00 BARKX";
+
+                    document.getElementById("vip-vn-val").innerText = "5/50 VN";
+                    document.getElementById("vip-lp-val").innerText =
+                        "10.00 vLP";
+                    document.getElementById("vip-pending-val").innerText =
+                        "36.20 BARKX";
+                    document.getElementById("vip-total-val").innerText =
+                        "120.00 BARKX";
+
+                    document.getElementById("incub-dep-val").innerText =
+                        "25,000.00 vBARKX";
+                    document.getElementById("incub-avg-val").innerText =
+                        "18,450.00 vBARKX";
+                    document.getElementById("incub-quota-val").innerText =
+                        "1,250.00 vBARKX";
+                    document.getElementById("incub-total-val").innerText =
+                        "15,400.00 BARKX";
+
+                    btn.style.color = "var(--cyan)";
+                    btn.style.borderColor = "rgba(56, 189, 248, 0.3)";
+                    btn.style.background = "rgba(56, 189, 248, 0.1)";
+                } else {
+                    // 数据清零
+                    document.getElementById("elite-vn-val").innerText = "0 VN";
+                    document.getElementById("elite-lp-val").innerText =
+                        "0.000000 LP";
+                    document.getElementById("elite-pending-val").innerText =
+                        "0.00 BARKX";
+                    document.getElementById("elite-total-val").innerText =
+                        "0.00 BARKX";
+
+                    document.getElementById("vip-vn-val").innerText = "0/0 VN";
+                    document.getElementById("vip-lp-val").innerText =
+                        "0.00 vLP";
+                    document.getElementById("vip-pending-val").innerText =
+                        "0.00 BARKX";
+                    document.getElementById("vip-total-val").innerText =
+                        "0.00 BARKX";
+
+                    document.getElementById("incub-dep-val").innerText =
+                        "0.00 vBARKX";
+                    document.getElementById("incub-avg-val").innerText =
+                        "0.00 vBARKX";
+                    document.getElementById("incub-quota-val").innerText =
+                        "0.00 vBARKX";
+                    document.getElementById("incub-total-val").innerText =
+                        "0.00 BARKX";
+
+                    btn.style.color = "var(--text-secondary)";
+                    btn.style.borderColor = "var(--border-dark)";
+                    btn.style.background = "rgba(255, 255, 255, 0.05)";
+                }
+
+                // 注入/清零后触发检测器更新面板的显示状态
+                checkAndHidePools();
+            }
+
+            // 初始化：检测HTML中的初始值（0.00），并执行隐藏动作
+            document.addEventListener("DOMContentLoaded", () => {
+                checkAndHidePools();
+            });
+
+            // ==========================================
+            // 弹窗交互逻辑
+            // ==========================================
+
+            // 模拟当前用户的全生涯复投比例
+            const mockUserCompoundRatio = 55;
+
+            // 整合版：Node Status & Compound Eligibility
+            function openCombinedInfoModal() {
+                const overlay = document.getElementById("custom-modal-overlay");
+                const card = document.getElementById("custom-modal-card");
+                const title = document.getElementById("custom-modal-title");
+                const text = document.getElementById("custom-modal-text");
+
+                document.body.style.overflow = "hidden";
+
+                card.className = "custom-modal purple-theme";
+                title.innerText = "My BarkX Pool Details";
+
+                const statusColor = isActiveNode
+                    ? "var(--green)"
+                    : "var(--text-muted)";
+                const statusText = isActiveNode
+                    ? "Active Node"
+                    : "Inactive Node";
+
+                text.innerHTML = `
+                    <div class="modal-inner-card">
+                        <div style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Node Status</div>
+                        <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            Current Status: <span style="color: ${statusColor}; font-weight: 700; margin-left: 8px; text-transform: uppercase;">${statusText}</span>
+                        </div>
+                        <div style="font-size: 12px;">A node is considered <strong style="color: var(--green);">Active</strong> if it maintains a <strong>360-day position</strong> in the BarkX Pool. This means holding at least <strong>1 VN</strong> and any amount of <strong>LP tokens</strong> configured for the 360-day locking cycle. Unlocked assets within this cycle still count towards the active status.</div>
+                    </div>
+
+                    <div class="modal-inner-card">
+                        <div style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Compound Eligibility</div>
+                        <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                            Lifetime Compounding Ratio: <span style="color: #c084fc; font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-left: 8px;">${mockUserCompoundRatio}%</span>
+                        </div>
+                        <div style="font-size: 12px; margin-bottom: 8px;">This metric represents the percentage of your total claimed BARKX rewards from BarkX Pool that have been reinvested into LP tokens.</div>
+                        <div style="font-size: 12px;"><strong>Compound Medal Rules:</strong> BarkAI evaluates this ratio for each user every 7 days. If your ratio is <strong style="color: var(--text-primary);">≥ 50%</strong> at the next snapshot, you will be awarded the Compound Medal, unlocking a yield multiplier valid for the subsequent 7 days.</div>
+                    </div>
+                `;
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // 触发重绘
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            // Assets 详情弹窗
+            function openAssetsModal() {
+                const overlay = document.getElementById("custom-modal-overlay");
+                const card = document.getElementById("custom-modal-card");
+                const title = document.getElementById("custom-modal-title");
+                const text = document.getElementById("custom-modal-text");
+
+                document.body.style.overflow = "hidden";
+
+                card.className = "custom-modal green-theme";
+                title.innerText = "Complete Asset Overview";
+
+                text.innerHTML = `
+                    <div class="modal-inner-card">
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">New Vector Nexus</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0 VN</div></div></div>
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">Used Vector Nexus I</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0 wVN</div></div></div>
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">Used Vector Nexus II</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0 wVN2</div></div></div>
+                    </div>
+
+                    <div class="modal-inner-card">
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">BARKX Token</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0.00 BARKX</div></div></div>
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">vBARKX Token</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0.00 vBARKX</div></div></div>
+                    </div>
+
+                    <div class="modal-inner-card">
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">LP Token</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0.000000 LP</div></div></div>
+                        <div class="data-row" style="padding: 4px 0; border: none;"><span class="data-lbl">vLP Token</span><div style="text-align: right"><div class="data-val" style="color: var(--green)">0.00 vLP</div></div></div>
+                    </div>
+                `;
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth;
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeModal(e) {
+                const overlay = document.getElementById("custom-modal-overlay");
+                const card = document.getElementById("custom-modal-card");
+
+                document.body.style.overflow = "";
+                overlay.style.opacity = "0";
+                card.classList.remove("show");
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                }, 300);
+            }
+
+            // ==========================================
+            // Node Weight 详情弹窗逻辑
+            // ==========================================
+            function openWeightModal() {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                document.body.style.overflow = "hidden";
+
+                overlay.style.display = "flex";
+                void overlay.offsetWidth; // trigger reflow
+                overlay.style.opacity = "1";
+                card.classList.add("show");
+            }
+
+            function closeWeightModal(e) {
+                const overlay = document.getElementById("weight-modal-overlay");
+                const card = document.getElementById("weight-modal-card");
+
+                if (overlay && card) {
+                    document.body.style.overflow = "";
+                    overlay.style.opacity = "0";
+                    card.classList.remove("show");
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 300);
+                }
+            }
+
+            // ==========================================
+            // 折叠面板控制逻辑与图表首次初始化
+            // ==========================================
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                    if (chartData.length === 0) {
+                        updateChart(
+                            "24H",
+                            document.getElementById("btn-range-24h"),
+                        );
+                    } else {
+                        setTimeout(drawChart, 50);
+                    }
+                }
+            }
+
+            // ==========================================
+            // 纯原生 Canvas 流动性折线图逻辑
+            // ==========================================
+            let chartData = [];
+            let currentRange = "24H";
+
+            function generateMockData(range) {
+                let points = 24;
+                let volatility = 30000;
+                let currentVal = 2400000;
+
+                if (range === "7D") {
+                    points = 21;
+                    volatility = 80000;
+                    currentVal = 2250000;
+                } else if (range === "30D") {
+                    points = 30;
+                    volatility = 150000;
+                    currentVal = 2700000;
+                }
+
+                let data = [];
+                for (let i = 0; i < points; i++) {
+                    currentVal =
+                        currentVal + (Math.random() - 0.45) * volatility;
+                    data.push(currentVal);
+                }
+                data[data.length - 1] = 2480000;
+                return data;
+            }
+
+            function updateChart(range, btnElement) {
+                document.querySelectorAll(".chart-range-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                    btn.style.background = "rgba(56,189,248,0.1)";
+                    btn.style.color = "var(--cyan)";
+                    btn.style.borderColor = "rgba(56,189,248,0.3)";
+                });
+
+                if (btnElement) {
+                    btnElement.classList.add("active");
+                    btnElement.style.background = "rgba(56,189,248,0.2)";
+                    btnElement.style.color = "var(--text-primary)";
+                    btnElement.style.borderColor = "var(--cyan)";
+                }
+
+                currentRange = range;
+                chartData = generateMockData(range);
+                drawChart();
+            }
+
+            function drawChart() {
+                const canvas = document.getElementById("liquidityCanvas");
+                if (!canvas) return;
+
+                const ctx = canvas.getContext("2d");
+                const wrapper = canvas.parentElement;
+                const rect = wrapper.getBoundingClientRect();
+
+                if (rect.width === 0 || rect.height === 0) return;
+
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+
+                const width = rect.width;
+                const height = rect.height;
+
+                ctx.clearRect(0, 0, width, height);
+
+                if (chartData.length === 0) return;
+
+                const firstVal = chartData[0];
+                const lastVal = chartData[chartData.length - 1];
+                const changePercent = ((lastVal - firstVal) / firstVal) * 100;
+
+                const changeEl = document.getElementById(
+                    "liquidity-change-val",
+                );
+                if (changePercent >= 0) {
+                    changeEl.innerText = `+${changePercent.toFixed(2)}%`;
+                    changeEl.style.color = "var(--green)";
+                } else {
+                    changeEl.innerText = `${changePercent.toFixed(2)}%`;
+                    changeEl.style.color = "var(--red)";
+                }
+
+                const paddingX = 8;
+                const paddingY = 16;
+                const max = Math.max(...chartData);
+                const min = Math.min(...chartData);
+                const rangeDiff = max - min || 1;
+
+                const stepX = (width - paddingX * 2) / (chartData.length - 1);
+
+                ctx.beginPath();
+                ctx.moveTo(paddingX, height);
+                chartData.forEach((val, index) => {
+                    const x = paddingX + index * stepX;
+                    const y =
+                        paddingY +
+                        (height - paddingY * 2) * (1 - (val - min) / rangeDiff);
+                    ctx.lineTo(x, y);
+                });
+                ctx.lineTo(width - paddingX, height);
+                ctx.closePath();
+
+                const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                gradient.addColorStop(0, "rgba(56, 189, 248, 0.4)");
+                gradient.addColorStop(1, "rgba(56, 189, 248, 0.0)");
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                ctx.beginPath();
+                chartData.forEach((val, index) => {
+                    const x = paddingX + index * stepX;
+                    const y =
+                        paddingY +
+                        (height - paddingY * 2) * (1 - (val - min) / rangeDiff);
+                    if (index === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.strokeStyle = "#38bdf8";
+                ctx.lineWidth = 2.5;
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
+                ctx.stroke();
+
+                chartData.forEach((val, index) => {
+                    const x = paddingX + index * stepX;
+                    const y =
+                        paddingY +
+                        (height - paddingY * 2) * (1 - (val - min) / rangeDiff);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = "#0f172a";
+                    ctx.fill();
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                });
+            }
+
+            window.addEventListener("resize", () => {
+                const container = document.getElementById(
+                    "pool-status-content",
+                );
+                if (container && container.classList.contains("show")) {
+                    drawChart();
+                }
+            });
+        </script>
+    </body>
+</html>

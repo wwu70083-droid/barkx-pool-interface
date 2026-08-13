@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Swap - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* 隐藏数字输入框箭头 */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            /* 覆盖 style.css，将输入框顶部的文字颜色从灰色改为白色 */
+            .input-header {
+                color: #ffffff !important;
+            }
+
+            /* 可折叠面板样式 */
+            .collapsible-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 16px;
+                margin-bottom: 16px;
+                overflow: hidden;
+                transition: border-color 0.3s ease;
+            }
+            .collapsible-card:hover {
+                border-color: var(--border-glow);
+            }
+            .collapsible-header {
+                padding: 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                font-weight: 600;
+                color: var(--cyan);
+                font-size: 15px;
+            }
+            .collapsible-content {
+                padding: 0 16px 16px 16px;
+                display: none;
+            }
+            .collapsible-content.show {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            .chevron {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+            .chevron.up {
+                transform: rotate(180deg);
+            }
+
+            /* 切换开关样式 (Toggle Switch) */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 44px;
+                height: 24px;
+            }
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                transition: 0.4s;
+                border-radius: 24px;
+                border: 1px solid var(--border-dark);
+            }
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 3px;
+                bottom: 3px;
+                background-color: var(--text-secondary);
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+            input:checked + .slider {
+                background-color: rgba(56, 189, 248, 0.2);
+                border-color: var(--cyan);
+            }
+            input:checked + .slider:before {
+                transform: translateX(20px);
+                background-color: var(--cyan);
+            }
+
+            /* 数据网格 (复用) */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .stat-card {
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+            }
+            .stat-card-title {
+                font-size: 11px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+            .stat-card-value {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            /* 输入框特定样式微调：修复箭头重叠不对称问题 */
+            .swap-direction {
+                margin-top: -24px !important;
+                margin-bottom: -8px !important;
+            }
+            .swap-direction-btn {
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+            .swap-direction-btn:hover {
+                transform: rotate(180deg);
+                box-shadow: 0 0 15px var(--cyan-glow);
+            }
+
+            /* 流动性画板容器 */
+            .chart-container {
+                display: block;
+                margin-top: 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+            }
+            .chart-canvas-wrapper {
+                position: relative;
+                width: 100%;
+                height: 160px;
+            }
+            #liquidityCanvas {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link active">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link">BarkX VIP Pool</a>
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div style="text-align: center; margin-bottom: 30px">
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    Swap
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    Uniswap V2 • Arbitrum One
+                </p>
+            </div>
+
+            <div class="swap-card">
+                <div class="input-group">
+                    <div class="input-header">
+                        <span>You Pay</span
+                        ><span id="top-token-balance">Balance: 1,245.67</span>
+                    </div>
+                    <div class="input-row">
+                        <input
+                            type="number"
+                            id="pay-input"
+                            class="input-field"
+                            placeholder="0.00"
+                        />
+                        <div class="asset-badge">
+                            <span id="top-token-name">BARKX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swap-direction">
+                    <button class="swap-direction-btn" onclick="swapTokens()">
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <polyline points="19 12 12 19 5 12"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-header">
+                        <span>You Receive</span
+                        ><span id="bottom-token-balance"
+                            >Balance: 5,000.00</span
+                        >
+                    </div>
+                    <div class="input-row">
+                        <input
+                            type="number"
+                            id="receive-input"
+                            class="input-field"
+                            placeholder="0.00"
+                            readonly
+                        />
+                        <div class="asset-badge">
+                            <span id="bottom-token-name">USDT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        margin-top: 16px;
+                        padding: 14px;
+                        background: rgba(0, 0, 0, 0.2);
+                        border-radius: 12px;
+                        border: 1px solid var(--border-dark);
+                    "
+                >
+                    <div class="data-row" style="padding: 4px 0">
+                        <span class="data-lbl">Rate</span
+                        ><span class="data-val">1 BARKX = 1.240 USDT</span>
+                    </div>
+                    <div class="data-row" style="padding: 4px 0">
+                        <span class="data-lbl">Price Impact</span
+                        ><span class="data-val green">&lt; 0.01%</span>
+                    </div>
+                    <div class="data-row" style="padding: 4px 0">
+                        <span class="data-lbl">Network Fee</span
+                        ><span class="data-val">~$0.12</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit">Swap</button>
+            </div>
+
+            <div class="collapsible-card">
+                <div
+                    class="collapsible-header"
+                    onclick="toggleCollapsible('options-content', this)"
+                >
+                    <span style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                            ></path>
+                        </svg>
+                        Options
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div id="options-content" class="collapsible-content">
+                    <div style="margin-bottom: 16px">
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: var(--text-muted);
+                                margin-bottom: 10px;
+                            "
+                        >
+                            Slippage Tolerance
+                        </div>
+                        <div
+                            class="percent-btns"
+                            style="justify-content: flex-start; margin: 0"
+                        >
+                            <button
+                                class="p-btn"
+                                onclick="selectSlippage(this)"
+                            >
+                                0.1%
+                            </button>
+                            <button
+                                class="p-btn active"
+                                style="
+                                    background: rgba(56, 189, 248, 0.2);
+                                    color: var(--text-primary);
+                                    border-color: var(--cyan);
+                                "
+                                onclick="selectSlippage(this)"
+                            >
+                                0.5%
+                            </button>
+                            <button
+                                class="p-btn"
+                                onclick="selectSlippage(this)"
+                            >
+                                1.0%
+                            </button>
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    background: rgba(0, 0, 0, 0.4);
+                                    border: 1px solid var(--border-dark);
+                                    border-radius: 6px;
+                                    padding: 0 8px;
+                                "
+                            >
+                                <input
+                                    type="number"
+                                    placeholder="Custom"
+                                    style="
+                                        width: 50px;
+                                        background: transparent;
+                                        border: none;
+                                        color: var(--text-primary);
+                                        padding: 6px 0;
+                                        font-size: 13px;
+                                        outline: none;
+                                        text-align: right;
+                                    "
+                                />
+                                <span
+                                    style="
+                                        font-size: 12px;
+                                        color: var(--text-muted);
+                                        margin-left: 4px;
+                                    "
+                                    >%</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="
+                            margin-bottom: 16px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        "
+                    >
+                        <div style="font-size: 13px; color: var(--text-muted)">
+                            Transaction Deadline
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; gap: 8px"
+                        >
+                            <input
+                                type="number"
+                                value="20"
+                                style="
+                                    width: 50px;
+                                    background: rgba(0, 0, 0, 0.4);
+                                    border: 1px solid var(--border-dark);
+                                    border-radius: 6px;
+                                    color: var(--text-primary);
+                                    padding: 6px 8px;
+                                    font-size: 13px;
+                                    outline: none;
+                                    text-align: right;
+                                "
+                            />
+                            <span
+                                style="
+                                    font-size: 13px;
+                                    color: var(--text-muted);
+                                "
+                                >minutes</span
+                            >
+                        </div>
+                    </div>
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        "
+                    >
+                        <div style="font-size: 13px; color: var(--text-muted)">
+                            Expert Mode
+                            <span
+                                style="
+                                    font-size: 11px;
+                                    color: var(--amber);
+                                    display: block;
+                                    margin-top: 4px;
+                                "
+                                >Allow high slippage trades</span
+                            >
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible-card">
+                <div
+                    class="collapsible-header"
+                    onclick="toggleCollapsible('pool-status-content', this)"
+                >
+                    <span style="display: flex; align-items: center; gap: 8px">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18 17V9"></path>
+                            <path d="M13 17V5"></path>
+                            <path d="M8 17v-3"></path>
+                        </svg>
+                        Pool Status
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div id="pool-status-content" class="collapsible-content">
+                    <div class="stats-grid" style="margin-bottom: 0">
+                        <div class="stat-card">
+                            <div class="stat-card-title">Total Liquidity</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                $2.48M
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">LP Minted</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                1.542827
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">BARKX Reserve</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--cyan)"
+                            >
+                                1.00M
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">USDT Reserve</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--green)"
+                            >
+                                1.24M
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="liquidity-chart-container" class="chart-container">
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                margin-bottom: 12px;
+                            "
+                        >
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: var(--text-secondary);
+                                    font-weight: 600;
+                                "
+                            >
+                                Liquidity Trend (USD)
+                            </div>
+                            <div
+                                id="liquidity-change-val"
+                                style="
+                                    font-size: 13px;
+                                    font-weight: 600;
+                                    font-family:
+                                        &quot;JetBrains Mono&quot;, monospace;
+                                "
+                            ></div>
+                        </div>
+
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="liquidityCanvas"></canvas>
+                        </div>
+                        <div
+                            class="percent-btns"
+                            style="margin-top: 16px; gap: 12px"
+                        >
+                            <button
+                                id="btn-range-24h"
+                                class="p-btn active chart-range-btn"
+                                onclick="updateChart('24H', this)"
+                                style="
+                                    background: rgba(56, 189, 248, 0.2);
+                                    color: var(--text-primary);
+                                    border-color: var(--cyan);
+                                "
+                            >
+                                24H
+                            </button>
+                            <button
+                                class="p-btn chart-range-btn"
+                                onclick="updateChart('7D', this)"
+                            >
+                                7D
+                            </button>
+                            <button
+                                class="p-btn chart-range-btn"
+                                onclick="updateChart('30D', this)"
+                            >
+                                30D
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // 侧边导航逻辑
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            // 双向互换交易货币逻辑
+            let isBarkxTop = true;
+            function swapTokens() {
+                isBarkxTop = !isBarkxTop;
+
+                const topName = document.getElementById("top-token-name");
+                const topBalance = document.getElementById("top-token-balance");
+
+                const bottomName = document.getElementById("bottom-token-name");
+                const bottomBalance = document.getElementById(
+                    "bottom-token-balance",
+                );
+
+                if (isBarkxTop) {
+                    topName.innerText = "BARKX";
+                    topBalance.innerText = "Balance: 1,245.67";
+
+                    bottomName.innerText = "USDT";
+                    bottomBalance.innerText = "Balance: 5,000.00";
+                } else {
+                    topName.innerText = "USDT";
+                    topBalance.innerText = "Balance: 5,000.00";
+
+                    bottomName.innerText = "BARKX";
+                    bottomBalance.innerText = "Balance: 1,245.67";
+                }
+
+                // 清空输入框数值
+                document.getElementById("pay-input").value = "";
+                document.getElementById("receive-input").value = "";
+            }
+
+            // 折叠面板控制逻辑与图表首次初始化
+            function toggleCollapsible(contentId, headerElement) {
+                const content = document.getElementById(contentId);
+                const chevron = headerElement.querySelector(".chevron");
+
+                if (content.classList.contains("show")) {
+                    content.classList.remove("show");
+                    chevron.classList.remove("up");
+                } else {
+                    content.classList.add("show");
+                    chevron.classList.add("up");
+                    // 当展开面板且目标是图表面板时进行初始化
+                    if (contentId === "pool-status-content") {
+                        if (chartData.length === 0) {
+                            updateChart(
+                                "24H",
+                                document.getElementById("btn-range-24h"),
+                            );
+                        } else {
+                            setTimeout(drawChart, 50);
+                        }
+                    }
+                }
+            }
+
+            // 滑点按钮高亮切换
+            function selectSlippage(btn) {
+                const container = btn.parentElement;
+                container.querySelectorAll(".p-btn").forEach((b) => {
+                    b.classList.remove("active");
+                    b.style.background = "rgba(56,189,248,0.1)";
+                    b.style.color = "var(--cyan)";
+                    b.style.borderColor = "rgba(56,189,248,0.3)";
+                });
+                btn.classList.add("active");
+                btn.style.background = "rgba(56,189,248,0.2)";
+                btn.style.color = "var(--text-primary)";
+                btn.style.borderColor = "var(--cyan)";
+            }
+
+            // ==========================================
+            // 纯原生 Canvas 流动性折线图逻辑
+            // ==========================================
+            let chartData = [];
+            let currentRange = "24H";
+
+            // 模拟不同维度的资金池流动性波动数据 (终点锚定 2.48M)
+            function generateMockData(range) {
+                let points = 24;
+                let volatility = 30000;
+                let currentVal = 2400000; // 24H 基准，呈现稳健小涨趋势 (约 +3.3%)
+
+                if (range === "7D") {
+                    points = 21; // 7天 * (24/8) = 21 点
+                    volatility = 80000;
+                    currentVal = 2250000; // 7D 基准，呈现大幅拉升趋势 (约 +10.2%)
+                } else if (range === "30D") {
+                    points = 30; // 30天 * 1 = 30 点
+                    volatility = 150000;
+                    currentVal = 2700000; // 30D 基准，呈现高位回落趋势 (约 -8.1%)
+                }
+
+                let data = [];
+                // 生成随机漫步
+                for (let i = 0; i < points; i++) {
+                    currentVal =
+                        currentVal + (Math.random() - 0.45) * volatility;
+                    data.push(currentVal);
+                }
+                // 确保最右侧的数据点对齐 UI 面板上的 2.48M (2480000)
+                data[data.length - 1] = 2480000;
+                return data;
+            }
+
+            function updateChart(range, btnElement) {
+                // 切换按钮高亮状态
+                document.querySelectorAll(".chart-range-btn").forEach((btn) => {
+                    btn.classList.remove("active");
+                    btn.style.background = "rgba(56,189,248,0.1)";
+                    btn.style.color = "var(--cyan)";
+                    btn.style.borderColor = "rgba(56,189,248,0.3)";
+                });
+
+                if (btnElement) {
+                    btnElement.classList.add("active");
+                    btnElement.style.background = "rgba(56,189,248,0.2)";
+                    btnElement.style.color = "var(--text-primary)";
+                    btnElement.style.borderColor = "var(--cyan)";
+                }
+
+                currentRange = range;
+                chartData = generateMockData(range);
+                drawChart();
+            }
+
+            function drawChart() {
+                const canvas = document.getElementById("liquidityCanvas");
+                if (!canvas) return;
+
+                const ctx = canvas.getContext("2d");
+                const wrapper = canvas.parentElement;
+                const rect = wrapper.getBoundingClientRect();
+
+                if (rect.width === 0 || rect.height === 0) return; // 避免隐藏态报错
+
+                // 处理高分屏 Dpi 缩放，保持边缘锐利
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+
+                const width = rect.width;
+                const height = rect.height;
+
+                ctx.clearRect(0, 0, width, height);
+
+                if (chartData.length === 0) return;
+
+                // 计算并更新百分比变化
+                const firstVal = chartData[0];
+                const lastVal = chartData[chartData.length - 1];
+                const changePercent = ((lastVal - firstVal) / firstVal) * 100;
+
+                const changeEl = document.getElementById(
+                    "liquidity-change-val",
+                );
+                if (changePercent >= 0) {
+                    changeEl.innerText = `+${changePercent.toFixed(2)}%`;
+                    changeEl.style.color = "var(--green)";
+                } else {
+                    changeEl.innerText = `${changePercent.toFixed(2)}%`;
+                    changeEl.style.color = "var(--red)";
+                }
+
+                const paddingX = 8;
+                const paddingY = 16;
+                const max = Math.max(...chartData);
+                const min = Math.min(...chartData);
+                const rangeDiff = max - min || 1;
+
+                const stepX = (width - paddingX * 2) / (chartData.length - 1);
+
+                // 1. 绘制带赛博感的底部渐变填充
+                ctx.beginPath();
+                ctx.moveTo(paddingX, height);
+                chartData.forEach((val, index) => {
+                    const x = paddingX + index * stepX;
+                    // Y轴倒置计算
+                    const y =
+                        paddingY +
+                        (height - paddingY * 2) * (1 - (val - min) / rangeDiff);
+                    ctx.lineTo(x, y);
+                });
+                ctx.lineTo(width - paddingX, height);
+                ctx.closePath();
+
+                const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                gradient.addColorStop(0, "rgba(56, 189, 248, 0.4)");
+                gradient.addColorStop(1, "rgba(56, 189, 248, 0.0)");
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // 2. 绘制干净的连接折线
+                ctx.beginPath();
+                chartData.forEach((val, index) => {
+                    const x = paddingX + index * stepX;
+                    const y =
+                        paddingY +
+                        (height - paddingY * 2) * (1 - (val - min) / rangeDiff);
+                    if (index === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.strokeStyle = "#38bdf8";
+                ctx.lineWidth = 2.5;
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
+                ctx.stroke();
+
+                // 3. 绘制关键数据点标记 (圆点)
+                chartData.forEach((val, index) => {
+                    const x = paddingX + index * stepX;
+                    const y =
+                        paddingY +
+                        (height - paddingY * 2) * (1 - (val - min) / rangeDiff);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = "#0f172a"; // 与背景融合
+                    ctx.fill();
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                });
+            }
+
+            // 监听窗口尺寸变化，防止画布被拉伸
+            window.addEventListener("resize", () => {
+                const container = document.getElementById(
+                    "pool-status-content",
+                );
+                if (container && container.classList.contains("show")) {
+                    drawChart();
+                }
+            });
+        </script>
+    </body>
+</html>

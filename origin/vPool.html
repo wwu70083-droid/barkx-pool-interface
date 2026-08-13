@@ -1,0 +1,1628 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>BarkX VIP Pool - BarkX Mining</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            /* =========================================
+               VIP Pool 专属黑金/橙金视觉主题覆盖
+               ========================================= */
+            :root {
+                --cyan: #fbbf24; /* 主色调整为尊贵金 */
+                --cyan-glow: rgba(251, 191, 36, 0.4);
+                --purple: #f59e0b; /* 次色调整为琥珀/橙金 */
+                --green: #fde68a; /* 成功态调整为亮金色 */
+                --green-glow: rgba(253, 230, 138, 0.4);
+                --amber: #f59e0b;
+
+                --bg-dark: #0a0806; /* 极暗的暖黑色底 */
+                --bg-card: rgba(18, 14, 10, 0.95);
+                --bg-card-solid: #14100c;
+                --border-dark: rgba(251, 191, 36, 0.15);
+                --border-glow: rgba(251, 191, 36, 0.35);
+            }
+
+            body {
+                background: var(--bg-dark) !important;
+            }
+
+            .header {
+                background: rgba(10, 8, 6, 0.85) !important;
+            }
+
+            .grid-bg {
+                background-image:
+                    linear-gradient(
+                        rgba(251, 191, 36, 0.03) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(251, 191, 36, 0.03) 1px,
+                        transparent 1px
+                    ) !important;
+            }
+
+            .glow-bg {
+                background:
+                    radial-gradient(
+                        ellipse at 20% 0%,
+                        rgba(251, 191, 36, 0.08) 0%,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 100%,
+                        rgba(245, 158, 11, 0.06) 0%,
+                        transparent 50%
+                    ) !important;
+            }
+
+            /* 强制覆盖硬编码的底层蓝色系 rgba 组件背景色 */
+            .tab.active {
+                background: rgba(251, 191, 36, 0.15) !important;
+            }
+            .info-box {
+                background: rgba(251, 191, 36, 0.05) !important;
+            }
+            .info-box.amber {
+                background: rgba(245, 158, 11, 0.05) !important;
+            }
+            .p-btn {
+                background: rgba(251, 191, 36, 0.1) !important;
+                border-color: rgba(251, 191, 36, 0.3) !important;
+            }
+            .p-btn:hover {
+                background: rgba(251, 191, 36, 0.2) !important;
+            }
+            .nav-link:hover,
+            .nav-link.active {
+                background: rgba(251, 191, 36, 0.1) !important;
+            }
+
+            /* 按钮与图标渐变色系同步 */
+            .btn-submit {
+                background: linear-gradient(
+                    135deg,
+                    #fbbf24 0%,
+                    #d97706 100%
+                ) !important;
+                color: #000 !important;
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.3) !important;
+            }
+            .btn-submit.amber,
+            .btn-submit.purple {
+                background: linear-gradient(
+                    135deg,
+                    #f59e0b 0%,
+                    #b45309 100%
+                ) !important;
+                color: #fff !important;
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
+            }
+            .asset-icon.lp {
+                background: linear-gradient(
+                    135deg,
+                    #f59e0b,
+                    #fbbf24
+                ) !important;
+            }
+
+            .brand-logo {
+                box-shadow: 0 0 10px rgba(251, 191, 36, 0.15) !important;
+            }
+            .brand-logo:hover {
+                box-shadow: 0 0 15px rgba(251, 191, 36, 0.4) !important;
+            }
+            /* ========================================= */
+
+            /* 隐藏数字输入框箭头 */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type="number"] {
+                -moz-appearance: textfield;
+            }
+
+            /* 覆盖 style.css，将输入框顶部的文字颜色从灰色改为白色 */
+            .input-header {
+                color: #ffffff !important;
+            }
+
+            /* 专属子选项卡样式 */
+            .sub-tab-container {
+                display: flex;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 4px;
+                margin-bottom: 20px;
+            }
+            .sub-tab-btn {
+                flex: 1;
+                padding: 10px;
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .sub-tab-btn.active {
+                background: rgba(251, 191, 36, 0.15);
+                color: var(--cyan);
+                box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+            }
+            .sub-panel {
+                animation: fadeIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* 并排长方形卡片样式 */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .stat-card {
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+            }
+            .stat-card-title {
+                font-size: 11px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+            .stat-card-value {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 20px;
+                font-weight: 600;
+            }
+
+            /* 凭证选择列表 UI */
+            .order-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 12px;
+                min-height: 200px;
+                padding-right: 4px;
+            }
+            .order-item {
+                display: flex;
+                align-items: center;
+                padding: 14px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid var(--border-dark);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .order-item:hover {
+                border-color: var(--amber);
+                background: rgba(245, 158, 11, 0.05);
+            }
+            .order-checkbox {
+                margin-right: 14px;
+                accent-color: var(--amber);
+                transform: scale(1.3);
+                cursor: pointer;
+            }
+
+            /* 左右两列布局 */
+            .order-details-left {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .order-id {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
+                color: var(--text-primary);
+                font-weight: 600;
+            }
+            .order-status {
+                font-size: 11px;
+                color: var(--green);
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+
+            .order-assets-right {
+                text-align: right;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .asset-line {
+                font-size: 14px;
+                color: var(--text-secondary);
+                font-weight: 500;
+            }
+
+            /* 分页按钮 UI */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 16px;
+                margin-top: 16px;
+                margin-bottom: 8px;
+            }
+            .page-btn {
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-dark);
+                border-radius: 8px;
+                color: var(--text-primary);
+                padding: 6px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            .page-btn:hover:not(:disabled) {
+                border-color: var(--amber);
+                color: var(--amber);
+                background: rgba(245, 158, 11, 0.1);
+            }
+            .page-btn:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+
+            /* VIP 邀请函弹窗样式 (黑金奢华版) */
+            .vip-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                z-index: 1000;
+                display: none; /* JS 控制为 flex */
+                justify-content: center;
+                align-items: center;
+                opacity: 1;
+                transition: opacity 0.5s ease;
+            }
+            .vip-card {
+                width: 88%;
+                max-width: 380px;
+                /* 确保至少占据 60% 高度，最大不超过 76%，从而保证上下至少各 12% 留白 */
+                min-height: 60vh;
+                max-height: 76vh;
+                overflow-y: auto;
+                background: linear-gradient(180deg, #1a1610 0%, #06080d 100%);
+                border: 1px solid rgba(245, 158, 11, 0.15);
+                border-radius: 20px;
+                box-shadow:
+                    0 30px 60px rgba(0, 0, 0, 0.9),
+                    inset 0 1px 0 rgba(245, 158, 11, 0.1);
+                position: relative;
+                padding: 40px 30px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                text-align: center;
+                animation: vipSlideUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)
+                    forwards;
+                cursor: pointer;
+            }
+
+            /* 弹窗内部的自定义细窄滚动条 */
+            .vip-card::-webkit-scrollbar {
+                width: 4px;
+            }
+            .vip-card::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .vip-card::-webkit-scrollbar-thumb {
+                background: rgba(245, 158, 11, 0.3);
+                border-radius: 4px;
+            }
+            .vip-card::-webkit-scrollbar-thumb:hover {
+                background: rgba(245, 158, 11, 0.5);
+            }
+
+            @keyframes vipSlideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .vip-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                background: transparent;
+                border: none;
+                color: var(--text-muted);
+                font-size: 20px;
+                cursor: pointer;
+                transition: color 0.3s;
+                padding: 8px;
+            }
+            .vip-close:hover {
+                color: var(--amber);
+            }
+            .vip-header-title {
+                font-family: "Outfit", sans-serif;
+                font-weight: 300;
+                font-size: 24px;
+                letter-spacing: 4px;
+                color: #fbbf24;
+                text-shadow: 0 2px 15px rgba(245, 158, 11, 0.3);
+                text-transform: uppercase;
+                margin-top: 10px;
+                margin-bottom: 20px;
+                flex-shrink: 0; /* 阻止高度动画时的挤压变形 */
+            }
+            .vip-header-title::after {
+                content: "";
+                display: block;
+                width: 30px;
+                height: 1px;
+                background: rgba(245, 158, 11, 0.4);
+                margin: 20px auto 0;
+            }
+            .vip-body-text {
+                color: #fde68a;
+                font-size: 14px;
+                line-height: 1.8;
+                font-weight: 300;
+                margin-bottom: 20px;
+                transition: opacity 0.3s ease;
+                opacity: 1;
+                width: 100%;
+            }
+            .vip-body-text p {
+                margin-bottom: 12px;
+            }
+            .vip-signature {
+                margin-top: auto;
+                margin-bottom: 30px;
+                color: #fbbf24;
+                font-size: 16px;
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-style: italic;
+                flex-shrink: 0; /* 阻止高度动画时的挤压变形 */
+            }
+            #vip-signature-text {
+                transition: opacity 0.3s ease;
+            }
+            .vip-signature strong {
+                font-style: normal;
+                font-weight: 500;
+                display: block;
+                margin-top: 4px;
+                color: var(--amber);
+            }
+            .vip-icon-box {
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+                background-image: url("barkx_sq.png");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+                border: 1px solid rgba(245, 158, 11, 0.15);
+                flex-shrink: 0; /* 阻止高度动画时的挤压变形 */
+            }
+
+            /* ==========================================
+               二级导航菜单系统
+               ========================================== */
+            .nav-levels-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            .nav-level {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s ease;
+            }
+            #nav-level-1 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #nav-level-2 {
+                transform: translateX(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-1 {
+                transform: translateX(-20%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .side-nav.show-level-2 #nav-level-2 {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-link-parent {
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-back-btn {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-muted);
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 12px;
+                font-size: 16px;
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
+            .nav-back-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-primary);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="glow-bg"></div>
+
+        <div id="vip-invite-overlay" class="vip-overlay">
+            <div
+                class="vip-card"
+                onclick="cycleVipLanguage(event)"
+                title="Click to change language"
+            >
+                <button class="vip-close" onclick="closeVipInvite(event)">
+                    ✕
+                </button>
+                <div class="vip-header-title">V.I.P</div>
+                <div class="vip-body-text" id="vip-body-text"></div>
+                <div class="vip-signature">
+                    <span id="vip-signature-text">Sincerely</span>
+                    <strong>BarkAI</strong>
+                </div>
+                <div class="vip-icon-box"></div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 12px">
+                <button class="menu-btn" onclick="toggleNav()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="brand-logo" title="BarkX"></div>
+            </div>
+            <div class="wallet-info">
+                <span class="wallet-dot"></span><span>0x0Cb8...F1f0</span>
+            </div>
+        </header>
+
+        <div class="nav-overlay" onclick="toggleNav()"></div>
+        <nav class="side-nav" id="main-side-nav">
+            <div class="nav-levels-wrapper">
+                <div id="nav-level-1" class="nav-level">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="swap.html" class="nav-link">Swap</a>
+                    <a href="liquidity.html" class="nav-link">Liquidity</a>
+                    <a href="pool.html" class="nav-link">BarkX Pool</a>
+
+                    <div
+                        class="nav-link nav-link-parent active"
+                        onclick="showNavLevel2()"
+                    >
+                        Featured Pools
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+
+                    <a href="nodeBoost.html" class="nav-link">Node Boost</a>
+                    <a href="vn.html" class="nav-link">Vector Nexus</a>
+                    <a href="settings.html" class="nav-link">Settings</a>
+                </div>
+
+                <div id="nav-level-2" class="nav-level">
+                    <div
+                        class="nav-back-btn"
+                        onclick="showNavLevel1()"
+                        style="margin-bottom: 8px"
+                    >
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span
+                            style="
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                font-weight: 600;
+                            "
+                            >Featured Pools</span
+                        >
+                    </div>
+
+                    <a href="ePool.html" class="nav-link">BarkX Elite Pool</a>
+                    <a href="vPool.html" class="nav-link active"
+                        >BarkX VIP Pool</a
+                    >
+                    <a href="incubator.html" class="nav-link">Incubator</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            <div
+                style="
+                    text-align: center;
+                    margin-bottom: 20px;
+                    position: relative;
+                "
+            >
+                <div
+                    onclick="openVipInvite()"
+                    title="View Invitation"
+                    style="
+                        display: inline-block;
+                        padding: 4px 12px;
+                        background: rgba(251, 191, 36, 0.15);
+                        border: 1px solid var(--cyan);
+                        border-radius: 20px;
+                        color: var(--cyan);
+                        font-size: 11px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        margin-bottom: 12px;
+                        letter-spacing: 1px;
+                        cursor: pointer;
+                    "
+                >
+                    Invite-Only Members
+                </div>
+                <h1 style="font-size: 28px; color: var(--text-primary)">
+                    BarkX VIP Pool
+                </h1>
+                <p style="color: var(--text-muted); font-size: 14px">
+                    vLP Mining Pool
+                </p>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('dep-vn')">
+                    Deposit VN
+                </div>
+                <div class="tab" onclick="switchTab('dep-vlp')">
+                    Deposit vLP
+                </div>
+                <div class="tab" onclick="switchTab('withdraw')">Withdraw</div>
+                <div class="tab" onclick="switchTab('rewards')">Rewards</div>
+            </div>
+
+            <div id="dep-vn" class="panel active">
+                <div class="info-box">
+                    Deposit your VN to expand vLP Effective Cap.
+                </div>
+
+                <div class="sub-tab-container">
+                    <button
+                        class="sub-tab-btn active"
+                        onclick="switchSubTab(this, 'dep-vn-new', 'dep-vn')"
+                    >
+                        VN
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchSubTab(this, 'dep-vn-wvn', 'dep-vn')"
+                    >
+                        wVN
+                    </button>
+                    <button
+                        class="sub-tab-btn"
+                        onclick="switchSubTab(this, 'dep-vn-wvn2', 'dep-vn')"
+                    >
+                        wVN2
+                    </button>
+                </div>
+
+                <div id="dep-vn-new" class="sub-panel" style="display: block">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-title">APR</div>
+                            <div class="stat-card-value green">210.00%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">Lock Period</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                24 Hours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 16px">
+                        <div class="input-header">
+                            <span>Deposit New VN</span><span>Balance: 4</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                class="input-field"
+                                placeholder="0"
+                                step="1"
+                            />
+                            <div class="asset-badge">VN</div>
+                        </div>
+                        <div class="percent-btns">
+                            <button class="p-btn">MAX</button>
+                        </div>
+                    </div>
+
+                    <div class="data-row">
+                        <span class="data-lbl">vLP Cap Increase</span
+                        ><span class="data-val highlight">+0.00 vLP</span>
+                    </div>
+
+                    <button class="btn-submit">Deposit VN</button>
+                    <div
+                        style="
+                            text-align: center;
+                            margin-top: 12px;
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        "
+                    >
+                        Unlock 24 hours later.
+                    </div>
+                </div>
+
+                <div id="dep-vn-wvn" class="sub-panel" style="display: none">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-title">APR</div>
+                            <div class="stat-card-value green">210.00%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">Lock Period</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                24 Hours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 16px">
+                        <div class="input-header">
+                            <span>Deposit wVN</span><span>Balance: 2</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                class="input-field"
+                                placeholder="0"
+                                step="1"
+                            />
+                            <div
+                                class="asset-badge"
+                                style="background: var(--bg-card-solid)"
+                            >
+                                wVN
+                            </div>
+                        </div>
+                        <div class="percent-btns">
+                            <button class="p-btn">MAX</button>
+                        </div>
+                    </div>
+
+                    <div class="data-row">
+                        <span class="data-lbl">vLP Cap Increase</span
+                        ><span class="data-val highlight">+0.00 vLP</span>
+                    </div>
+
+                    <button class="btn-submit">Deposit wVN</button>
+                    <div
+                        style="
+                            text-align: center;
+                            margin-top: 12px;
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        "
+                    >
+                        Unlock 24 hours later.
+                    </div>
+                </div>
+
+                <div id="dep-vn-wvn2" class="sub-panel" style="display: none">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-title">APR</div>
+                            <div class="stat-card-value green">210.00%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-title">Lock Period</div>
+                            <div
+                                class="stat-card-value"
+                                style="color: var(--text-primary)"
+                            >
+                                24 Hours
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 16px">
+                        <div class="input-header">
+                            <span>Deposit wVN2</span><span>Balance: 2</span>
+                        </div>
+                        <div class="input-row">
+                            <input
+                                type="number"
+                                class="input-field"
+                                placeholder="0"
+                                step="1"
+                            />
+                            <div
+                                class="asset-badge"
+                                style="
+                                    background: var(--bg-card-solid);
+                                    border-color: var(--cyan);
+                                "
+                            >
+                                <span style="color: var(--cyan)">wVN2</span>
+                            </div>
+                        </div>
+                        <div class="percent-btns">
+                            <button class="p-btn">MAX</button>
+                        </div>
+                    </div>
+
+                    <div class="data-row">
+                        <span class="data-lbl">vLP Cap Increase</span
+                        ><span class="data-val highlight">+0.00 vLP</span>
+                    </div>
+
+                    <button class="btn-submit">Deposit wVN2</button>
+                    <div
+                        style="
+                            text-align: center;
+                            margin-top: 12px;
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        "
+                    >
+                        Unlock 24 hours later.
+                    </div>
+                </div>
+            </div>
+
+            <div id="dep-vlp" class="panel">
+                <div class="info-box">
+                    Deposit your vLP to increase mining power.
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-title">APR</div>
+                        <div class="stat-card-value green">210.00%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-title">Lock Period</div>
+                        <div
+                            class="stat-card-value"
+                            style="color: var(--text-primary)"
+                        >
+                            24 Hours
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 16px">
+                    <div class="input-header">
+                        <span>Deposit vLP</span><span>Balance: 1,500.00</span>
+                    </div>
+                    <div class="input-row">
+                        <input
+                            type="number"
+                            class="input-field"
+                            placeholder="0.00"
+                        />
+                        <div class="asset-badge">vLP</div>
+                    </div>
+                    <div class="percent-btns">
+                        <button class="p-btn">25%</button
+                        ><button class="p-btn">50%</button>
+                        <button class="p-btn">75%</button
+                        ><button class="p-btn">100%</button>
+                    </div>
+                </div>
+                <button class="btn-submit">Deposit vLP</button>
+                <div
+                    style="
+                        text-align: center;
+                        margin-top: 12px;
+                        font-size: 12px;
+                        color: var(--text-muted);
+                    "
+                >
+                    Unlock 24 hours later.
+                </div>
+            </div>
+
+            <div id="withdraw" class="panel">
+                <div class="info-box amber">
+                    Select unlocked deposit records to withdraw your assets.
+                    Your vLP Effective Cap and mining power will decrease
+                    accordingly.
+                </div>
+
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 16px;
+                    "
+                >
+                    <label
+                        style="
+                            display: flex;
+                            align-items: center;
+                            cursor: pointer;
+                            font-size: 13px;
+                            color: var(--text-secondary);
+                            font-weight: 500;
+                        "
+                    >
+                        <input
+                            type="checkbox"
+                            id="select-all-page"
+                            style="
+                                margin-right: 8px;
+                                accent-color: var(--amber);
+                                transform: scale(1.2);
+                            "
+                            onchange="toggleSelectAllPage(this.checked)"
+                        />
+                        Select All on Current Page
+                    </label>
+                </div>
+
+                <div id="order-list-container" class="order-list"></div>
+
+                <div class="pagination">
+                    <button
+                        id="prev-page"
+                        class="page-btn"
+                        onclick="changePage(-1)"
+                    >
+                        &#10094;
+                    </button>
+                    <span
+                        id="page-info"
+                        style="
+                            font-size: 13px;
+                            color: var(--text-primary);
+                            font-weight: 600;
+                            letter-spacing: 1px;
+                        "
+                        >1 / 1</span
+                    >
+                    <button
+                        id="next-page"
+                        class="page-btn"
+                        onclick="changePage(1)"
+                    >
+                        &#10095;
+                    </button>
+                </div>
+
+                <div
+                    style="
+                        background: rgba(0, 0, 0, 0.4);
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 16px;
+                        margin-top: 16px;
+                    "
+                >
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                            margin-bottom: 8px;
+                            letter-spacing: 0.5px;
+                        "
+                    >
+                        Selected to Withdraw (Aggregated)
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Total wVN2</span>
+                        <span
+                            class="data-val highlight"
+                            id="sel-wvn2-val"
+                            style="color: var(--amber); font-size: 16px"
+                            >0 wVN2</span
+                        >
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">Total vLP</span>
+                        <span
+                            class="data-val highlight"
+                            id="sel-vlp-val"
+                            style="color: var(--amber); font-size: 16px"
+                            >0.00 vLP</span
+                        >
+                    </div>
+                    <div class="data-row" style="padding: 4px 0; border: none">
+                        <span class="data-lbl">vLP Cap Decrease</span>
+                        <span
+                            class="data-val"
+                            id="sel-vlp-cap-val"
+                            style="color: var(--amber); font-size: 16px"
+                            >-0.00 vLP</span
+                        >
+                    </div>
+                </div>
+
+                <button class="btn-submit amber" style="margin-top: 16px">
+                    Withdraw Selected
+                </button>
+            </div>
+
+            <div id="rewards" class="panel">
+                <div class="info-box">
+                    Claim your VIP rewards directly to your wallet. Zero fees
+                    applied!
+                </div>
+
+                <div
+                    style="
+                        text-align: center;
+                        padding: 20px 0;
+                        background: rgba(0, 0, 0, 0.2);
+                        border-radius: 16px;
+                        border: 1px solid var(--border-dark);
+                        margin-bottom: 20px;
+                    "
+                >
+                    <div
+                        style="
+                            font-size: 13px;
+                            color: var(--text-secondary);
+                            margin-bottom: 12px;
+                        "
+                    >
+                        Rewards are auto-accumulated every 24 hours.
+                    </div>
+                    <div
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            text-transform: uppercase;
+                        "
+                    >
+                        Pending Rewards
+                    </div>
+                    <div
+                        id="pending-rewards-val"
+                        style="
+                            font-size: 36px;
+                            font-weight: 700;
+                            color: var(--cyan);
+                            font-family: &quot;JetBrains Mono&quot;, monospace;
+                        "
+                    >
+                        156.32 <span style="font-size: 20px">BARKX</span>
+                    </div>
+                </div>
+
+                <div
+                    style="
+                        border: 1px solid var(--border-dark);
+                        border-radius: 12px;
+                        padding: 16px;
+                    "
+                >
+                    <div style="font-weight: 600; margin-bottom: 10px">
+                        Direct Claim
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Fee Rate</span>
+                        <span class="data-val green">0.00%</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-lbl">Receiving Amount</span>
+                        <span id="direct-claim-val" class="data-val"
+                            >156.32 BARKX</span
+                        >
+                    </div>
+                    <button class="btn-submit" style="margin-top: 10px">
+                        Claim to Wallet
+                    </button>
+                </div>
+            </div>
+
+            <div
+                class="card"
+                style="margin-top: 24px; border-color: var(--border-glow)"
+            >
+                <div
+                    class="card-title"
+                    style="
+                        color: var(--cyan);
+                        border-bottom-color: var(--border-glow);
+                    "
+                >
+                    Personal Status
+                </div>
+
+                <div class="data-row">
+                    <span class="data-lbl">Personal VN Capacity</span>
+                    <span class="data-val">10/50 VN</span>
+                </div>
+
+                <div class="data-row" style="align-items: flex-start">
+                    <span class="data-lbl">vLP Token</span>
+                    <div style="text-align: right">
+                        <div class="data-val">80.00 vLP</div>
+                    </div>
+                </div>
+
+                <div
+                    class="data-row"
+                    style="align-items: flex-start; border-bottom: none"
+                >
+                    <span class="data-lbl">vLP Effective Cap</span>
+                    <div style="text-align: right">
+                        <div class="data-val">100.00 vLP</div>
+                        <div
+                            id="unused-cap-text"
+                            style="
+                                font-size: 12px;
+                                color: var(--green);
+                                margin-top: 4px;
+                                font-weight: 500;
+                            "
+                        >
+                            20.00 vLP Cap Unused
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    id="capacity-hint-box"
+                    style="
+                        background: rgba(251, 191, 36, 0.1);
+                        border: 1px dashed var(--cyan);
+                        border-radius: 8px;
+                        padding: 12px;
+                        margin-top: 12px;
+                        font-size: 13px;
+                        color: var(--text-secondary);
+                        text-align: center;
+                    "
+                >
+                    💡 You have unused vLP capacity.
+                    <span
+                        style="
+                            color: var(--cyan);
+                            cursor: pointer;
+                            text-decoration: underline;
+                        "
+                        onclick="
+                            switchTab('dep-vlp');
+                            window.scrollTo(0, 0);
+                        "
+                        >Deposit more vLP</span
+                    >
+                    to maximize mining power!
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // VIP 邀请函翻译数据与切换逻辑
+            const vipTranslations = {
+                en: [
+                    "Distinguished Guest,",
+                    "Welcome to the exclusive BarkX VIP Pool.",
+                    "Your remarkable contributions and steadfast trust have distinguished you within our ecosystem. As a testament to your status, this private sanctuary is designed to maximize your assets with our highest tier of premium yields.",
+                    "It is our profound honor to serve you.",
+                    "Please enjoy your exceptional rewards.",
+                ],
+                cn: [
+                    "尊貴的賓客，",
+                    "歡迎來到專屬的 BarkX VIP 礦池。",
+                    "您的卓越貢獻與堅定信任，使您在我們的生態系統中脫穎而出。作為您尊貴身份的象徵，我們為您打造了這處私人專屬空間，旨在以最高級別的優質收益，最大化您的資產回報。",
+                    "為您服務是我們無上的榮幸。",
+                    "請盡情享受您的專屬豐厚回報。",
+                ],
+            };
+            const signatureTranslations = {
+                en: "Sincerely",
+                cn: "誠摯敬上",
+            };
+
+            const langOrder = ["en", "cn"];
+            let currentVipLangIndex = 0;
+            let isVipAnimating = false; // 动画防抖锁
+
+            function renderVipText(animate = false) {
+                const container = document.getElementById("vip-body-text");
+                const sigText = document.getElementById("vip-signature-text");
+                const card = document.querySelector(".vip-card");
+
+                if (!container || !sigText || !card) return;
+
+                const lang = langOrder[currentVipLangIndex];
+                const lines = vipTranslations[lang];
+                const sigLine = signatureTranslations[lang];
+                const htmlContent = lines
+                    .map((line) => `<p>${line}</p>`)
+                    .join("");
+
+                if (animate) {
+                    // 1. 触发文本淡出
+                    container.style.opacity = "0";
+                    sigText.style.opacity = "0";
+
+                    setTimeout(() => {
+                        // 保护性设置 box-sizing 以确保 offsetHeight 赋值精准
+                        card.style.boxSizing = "border-box";
+                        container.style.boxSizing = "border-box";
+
+                        // 2. 锁定当前高度 (卡片 + 文本容器)
+                        const currentCardHeight = card.offsetHeight;
+                        const currentTextHeight = container.offsetHeight;
+
+                        // 3. 预先注入新文本以获取目标高度
+                        container.innerHTML = htmlContent;
+                        sigText.innerText = sigLine;
+
+                        // 4. 测量目标高度 (受限于 CSS 的 max-height / min-height)
+                        card.style.height = "auto";
+                        container.style.height = "auto";
+                        const targetCardHeight = card.offsetHeight;
+                        const targetTextHeight = container.offsetHeight;
+
+                        // 5. 将卡片和文本高度同时恢复至旧高度，并准备过渡
+                        card.style.height = currentCardHeight + "px";
+                        container.style.height = currentTextHeight + "px";
+
+                        // 临时锁定滚动条以防止伸缩过程中的闪烁
+                        const prevOverflow = card.style.overflowY || "auto";
+                        card.style.overflowY = "hidden";
+
+                        // 同步设定匀速动画
+                        card.style.transition = "height 0.3s linear";
+                        container.style.transition =
+                            "height 0.3s linear, opacity 0.3s ease";
+
+                        // 6. 强制浏览器重绘 (Reflow)
+                        void card.offsetHeight;
+
+                        // 7. 改变高度并同步淡入文字
+                        card.style.height = targetCardHeight + "px";
+                        container.style.height = targetTextHeight + "px";
+                        container.style.opacity = "1";
+                        sigText.style.opacity = "1";
+
+                        // 8. 动画完成后清理内联样式，释放防抖锁
+                        setTimeout(() => {
+                            card.style.transition = "";
+                            card.style.height = "";
+                            card.style.overflowY = prevOverflow;
+
+                            container.style.transition = "opacity 0.3s ease";
+                            container.style.height = "";
+
+                            isVipAnimating = false;
+                        }, 300);
+                    }, 300); // 300ms 等待旧文本彻底淡出
+                } else {
+                    container.innerHTML = htmlContent;
+                    sigText.innerText = sigLine;
+                    container.style.opacity = "1";
+                    sigText.style.opacity = "1";
+                    isVipAnimating = false;
+                }
+            }
+
+            function cycleVipLanguage(e) {
+                // 点击关闭按钮时，禁止触发语言切换
+                if (e.target.closest(".vip-close")) return;
+
+                // 动画播放中锁定，防止连续点击造成高度计算紊乱
+                if (isVipAnimating) return;
+
+                isVipAnimating = true;
+                currentVipLangIndex =
+                    (currentVipLangIndex + 1) % langOrder.length;
+                renderVipText(true);
+            }
+
+            // 弹出 VIP 邀请函
+            function openVipInvite() {
+                const overlay = document.getElementById("vip-invite-overlay");
+                if (overlay) {
+                    overlay.style.display = "flex";
+                    document.body.style.overflow = "hidden"; // 锁定背景滚动
+
+                    // 重置弹窗内部滚动条到顶部
+                    const card = overlay.querySelector(".vip-card");
+                    if (card) card.scrollTop = 0;
+
+                    // 确保重置透明度，以便触发淡入
+                    setTimeout(() => {
+                        overlay.style.opacity = "1";
+                    }, 10);
+                }
+            }
+
+            // VIP 邀请函关闭与 Cookie 写入
+            function closeVipInvite(e) {
+                if (e) e.stopPropagation(); // 阻止事件冒泡到卡片触发语言切换
+                const overlay = document.getElementById("vip-invite-overlay");
+                if (overlay) {
+                    overlay.style.opacity = "0";
+                    document.body.style.overflow = ""; // 恢复背景滚动
+
+                    setTimeout(() => {
+                        overlay.style.display = "none";
+                    }, 500); // 等待淡出动画完成
+                }
+                // 写入 Cookie，有效期 1 年 (31536000 秒)
+                document.cookie =
+                    "vpool_invited=true; max-age=31536000; path=/";
+            }
+
+            // 监听 DOM 加载以检测首选语言与决定是否弹出邀请函
+            window.addEventListener("DOMContentLoaded", () => {
+                // 1. 获取全局语言偏好（与 Settings 联动）
+                const savedLang = localStorage.getItem("barkx_lang") || "en";
+                const foundIndex = langOrder.indexOf(savedLang);
+                currentVipLangIndex = foundIndex !== -1 ? foundIndex : 0;
+                renderVipText(false);
+
+                // 2. Cookie 检测弹出
+                const hasBeenInvited = document.cookie
+                    .split("; ")
+                    .find((row) => row.startsWith("vpool_invited="));
+                if (!hasBeenInvited) {
+                    const overlay =
+                        document.getElementById("vip-invite-overlay");
+                    if (overlay) {
+                        overlay.style.display = "flex";
+                        document.body.style.overflow = "hidden"; // 锁定背景滚动
+
+                        // 重置弹窗内部滚动条到顶部
+                        const card = overlay.querySelector(".vip-card");
+                        if (card) card.scrollTop = 0;
+                    }
+                }
+            });
+
+            function toggleNav() {
+                document.querySelector(".side-nav").classList.toggle("active");
+                document
+                    .querySelector(".nav-overlay")
+                    .classList.toggle("active");
+            }
+
+            function showNavLevel2() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.add("show-level-2");
+            }
+
+            function showNavLevel1() {
+                document
+                    .getElementById("main-side-nav")
+                    .classList.remove("show-level-2");
+            }
+
+            let hasRenderedRecords = false;
+
+            // 切换主级选项卡
+            function switchTab(tabId) {
+                document
+                    .querySelectorAll(".tabs > .tab")
+                    .forEach((t) => t.classList.remove("active"));
+                document
+                    .querySelectorAll(".panel")
+                    .forEach((p) => p.classList.remove("active"));
+
+                // 激活对应的主选项卡样式
+                document
+                    .querySelector(
+                        `.tabs .tab[onclick="switchTab('${tabId}')"]`,
+                    )
+                    .classList.add("active");
+                document.getElementById(tabId).classList.add("active");
+
+                // 当切换到 Withdraw 面板时，初始化渲染凭证列表
+                if (tabId === "withdraw" && !hasRenderedRecords) {
+                    renderRecords();
+                    hasRenderedRecords = true;
+                }
+            }
+
+            // 强制显隐控制：切换子级选项卡
+            function switchSubTab(btnElement, targetPanelId, parentPanelId) {
+                const parentPanel = document.getElementById(parentPanelId);
+
+                // 1. 更新按钮状态
+                parentPanel
+                    .querySelectorAll(".sub-tab-btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                btnElement.classList.add("active");
+
+                // 2. 强制控制面板显隐
+                parentPanel.querySelectorAll(".sub-panel").forEach((panel) => {
+                    panel.style.display = "none";
+                });
+                document.getElementById(targetPanelId).style.display = "block";
+            }
+
+            /* =========================================
+               VIP 凭证中心取款逻辑 (Withdraw Logic)
+               ========================================= */
+
+            // 模拟后端数据：VIP 池中只需支持 wVN2 与 vLP
+            const mockRecords = Array.from({ length: 30 }, (_, i) => ({
+                id: `0x5A${i.toString().padStart(2, "0")}...E${i.toString().padStart(2, "0")}F`,
+                wvn2: i % 2 === 0 ? 2 : 0,
+                vlp: i % 2 === 0 ? 0 : 150.5,
+            }));
+
+            let currentWithdrawPage = 1;
+            const ITEMS_PER_PAGE = 20;
+            let selectedRecords = new Map(); // recordId -> {wvn2, vlp}
+
+            function renderRecords() {
+                const container = document.getElementById(
+                    "order-list-container",
+                );
+                const totalPages =
+                    Math.ceil(mockRecords.length / ITEMS_PER_PAGE) || 1;
+
+                if (currentWithdrawPage > totalPages)
+                    currentWithdrawPage = totalPages;
+                if (currentWithdrawPage < 1) currentWithdrawPage = 1;
+
+                const startIdx = (currentWithdrawPage - 1) * ITEMS_PER_PAGE;
+                const pageRecords = mockRecords.slice(
+                    startIdx,
+                    startIdx + ITEMS_PER_PAGE,
+                );
+
+                let html = "";
+                let allCheckedOnPage = true;
+                let hasRecords = pageRecords.length > 0;
+
+                if (!hasRecords) {
+                    html = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">No unlocked records found.</div>`;
+                    allCheckedOnPage = false;
+                } else {
+                    pageRecords.forEach((r) => {
+                        const isChecked = selectedRecords.has(r.id);
+                        if (!isChecked) allCheckedOnPage = false;
+
+                        let assetsHtml = "";
+                        if (r.wvn2 > 0) {
+                            assetsHtml += `<div class="asset-line">${r.wvn2} wVN2</div>`;
+                        }
+                        if (r.vlp > 0) {
+                            assetsHtml += `<div class="asset-line">${r.vlp.toFixed(2)} vLP</div>`;
+                        }
+
+                        html += `
+                            <label class="order-item">
+                                <input type="checkbox" class="order-checkbox" value="${r.id}"
+                                       onchange="toggleRecordSelection('${r.id}', ${r.wvn2}, ${r.vlp}, this.checked)" ${isChecked ? "checked" : ""}>
+                                <div class="order-details-left">
+                                    <div class="order-id">${r.id}</div>
+                                    <div class="order-status">Unlocked</div>
+                                </div>
+                                <div class="order-assets-right">
+                                    ${assetsHtml}
+                                </div>
+                            </label>
+                        `;
+                    });
+                }
+                container.innerHTML = html;
+
+                document.getElementById("select-all-page").checked =
+                    allCheckedOnPage;
+                document.getElementById("select-all-page").disabled =
+                    !hasRecords;
+
+                document.getElementById("page-info").innerText =
+                    `${currentWithdrawPage} / ${totalPages}`;
+                document.getElementById("prev-page").disabled =
+                    currentWithdrawPage === 1;
+                document.getElementById("next-page").disabled =
+                    currentWithdrawPage === totalPages;
+            }
+
+            function changePage(delta) {
+                currentWithdrawPage += delta;
+                renderRecords();
+            }
+
+            function toggleSelectAllPage(isChecked) {
+                const startIdx = (currentWithdrawPage - 1) * ITEMS_PER_PAGE;
+                const pageRecords = mockRecords.slice(
+                    startIdx,
+                    startIdx + ITEMS_PER_PAGE,
+                );
+
+                pageRecords.forEach((r) => {
+                    if (isChecked) {
+                        selectedRecords.set(r.id, { wvn2: r.wvn2, vlp: r.vlp });
+                    } else {
+                        selectedRecords.delete(r.id);
+                    }
+                });
+
+                renderRecords();
+                calculateCartTotal();
+            }
+
+            function toggleRecordSelection(id, wvn2, vlp, isChecked) {
+                if (isChecked) {
+                    selectedRecords.set(id, { wvn2, vlp });
+                } else {
+                    selectedRecords.delete(id);
+                }
+                updateSelectAllCheckboxState();
+                calculateCartTotal();
+            }
+
+            function updateSelectAllCheckboxState() {
+                const startIdx = (currentWithdrawPage - 1) * ITEMS_PER_PAGE;
+                const pageRecords = mockRecords.slice(
+                    startIdx,
+                    startIdx + ITEMS_PER_PAGE,
+                );
+
+                if (pageRecords.length === 0) return;
+
+                let allCheckedOnPage = true;
+                pageRecords.forEach((r) => {
+                    if (!selectedRecords.has(r.id)) allCheckedOnPage = false;
+                });
+
+                document.getElementById("select-all-page").checked =
+                    allCheckedOnPage;
+            }
+
+            function calculateCartTotal() {
+                let totalWvn2 = 0;
+                let totalVlp = 0;
+
+                // 遍历整个购物车（不局限于当前页）
+                selectedRecords.forEach((val) => {
+                    totalWvn2 += val.wvn2;
+                    totalVlp += val.vlp;
+                });
+
+                const capDecrease = totalWvn2 * 10;
+
+                document.getElementById("sel-wvn2-val").innerText =
+                    `${totalWvn2} wVN2`;
+                document.getElementById("sel-vlp-val").innerText =
+                    `${totalVlp.toFixed(2)} vLP`;
+                document.getElementById("sel-vlp-cap-val").innerText =
+                    `-${capDecrease.toFixed(2)} vLP`;
+            }
+
+            // ==========================================
+            // [CRITICAL] 存款状态显示逻辑 (Deposit Status Logic)
+            // 当用户的 VN 存入量为 0 时 (即没有任何 Cap)，
+            // 必须隐藏 "Unused Cap" 剩余额度提示 和 底部 "Deposit More" 提示框。
+            // ==========================================
+            function checkCapacityDisplay(vnAmount) {
+                const unusedCapText =
+                    document.getElementById("unused-cap-text");
+                const capacityHintBox =
+                    document.getElementById("capacity-hint-box");
+
+                if (vnAmount <= 0) {
+                    if (unusedCapText) unusedCapText.style.display = "none";
+                    if (capacityHintBox) capacityHintBox.style.display = "none";
+                } else {
+                    if (unusedCapText) unusedCapText.style.display = "block";
+                    if (capacityHintBox)
+                        capacityHintBox.style.display = "block";
+                }
+            }
+
+            // 监听 URL Hash 并在页面加载时自动切换 Tab
+            window.addEventListener("DOMContentLoaded", () => {
+                const hash = window.location.hash.substring(1);
+                if (hash === "dep-more-lp" || hash === "dep-more-wvn") {
+                    switchTab("dep-more");
+                    const btn = document.querySelector(
+                        `button[onclick*="'${hash}'"]`,
+                    );
+                    if (btn) switchSubTab(btn, hash, "dep-more");
+                } else if (
+                    hash === "dep-more" ||
+                    hash === "withdraw" ||
+                    hash === "rewards" ||
+                    hash === "dep-vn"
+                ) {
+                    switchTab(hash);
+                }
+
+                // 初始化状态：在此传入当前用户的 VN 数量。
+                // 若测试设为 0，相关的额度和提示框将自动消失。
+                let currentVN = 12;
+                checkCapacityDisplay(currentVN);
+            });
+        </script>
+    </body>
+</html>

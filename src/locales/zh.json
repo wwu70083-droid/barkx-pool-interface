@@ -1,0 +1,1181 @@
+{
+  "app": {
+    "name": "BarkX Mining",
+    "brand": "BarkX"
+  },
+  "common": {
+    "balance": "餘額: {amount}",
+    "unlocked": "已解鎖: {amount}",
+    "max": "最大",
+    "lockPeriods": {
+      "hours24": "24 小時",
+      "days90": "90 天",
+      "days360": "360 天"
+    },
+    "duration": {
+      "hours24": "24 小時",
+      "day": "{count} 天",
+      "days": "{count} 天",
+      "hour": "{count} 小時",
+      "hours": "{count} 小時",
+      "minute": "{count} 分鐘",
+      "minutes": "{count} 分鐘",
+      "lessThanMinute": "少於 1 分鐘"
+    },
+    "modals": {
+      "close": "關閉",
+      "nodeStatus": {
+        "title": "節點狀態",
+        "active": "活躍節點",
+        "inactive": "非活躍節點",
+        "currentStatus": "當前狀態：",
+        "howToMaintain": "如何保持活躍狀態？",
+        "descriptionHtml": "當節點在 BarkX 礦池中保持 <strong>360 天倉位</strong>時，即被視為 <strong style=\"color: var(--green);\">活躍</strong>。這意味著您需要在 360 天鎖定週期下持有至少 <strong>1 個 VN</strong> 與任意數量的 <strong>LP 代幣</strong>。即使該週期中的資產已解鎖，只要尚未提取，仍然會計入活躍狀態。"
+      },
+      "compoundEligibility": {
+        "title": "複投資格",
+        "lifetimeRatio": "終身複投比例：",
+        "metricHint": "該指標代表您從 BarkX 礦池累計領取的 BARKX 獎勵中，有多少比例被再次複投為 LP 代幣。",
+        "rulesTitle": "複投獎章規則：",
+        "rulesHtml": "BarkAI 每 7 天會為每位用戶評估一次此比例。若您在下一次快照時的比例 <strong style=\"color: var(--text-primary);\">≥ {threshold}%</strong>，您將獲得複投獎章，並在後續 7 天內解鎖收益倍率。"
+      }
+    }
+  },
+  "routes": {
+    "titles": {
+      "dashboard": "儀表盤",
+      "swap": "兌換",
+      "liquidity": "流動性",
+      "pool": "BarkX 礦池",
+      "ePool": "BarkX 精英礦池",
+      "vPool": "BarkX VIP 礦池",
+      "incubator": "孵化池",
+      "nodeBoost": "節點提速",
+      "barkdao": "BarkDAO",
+      "settings": "設置",
+      "noticeTest": "BarkX 礦池提示測試"
+    }
+  },
+  "nav": {
+    "dashboard": "儀表盤",
+    "swap": "兌換",
+    "liquidity": "流動性",
+    "pool": "BarkX 礦池",
+    "featuredPools": "特選服務",
+    "ePool": "BarkX 精英礦池",
+    "vPool": "BarkX VIP 礦池",
+    "incubator": "孵化池",
+    "orderbook": "訂單簿",
+    "nodeBoost": "節點提速",
+    "vn": "向量權證",
+    "barkdao": "BarkDAO",
+    "partnership": "合作夥伴",
+    "openDao": "OpenDAO",
+    "settings": "設置"
+  },
+  "wallet": {
+    "install": "安裝錢包",
+    "connect": "連接錢包",
+    "connecting": "連接中...",
+    "reconnect": "重新連接錢包",
+    "switch": "切換至 {chain}",
+    "switchTo": "切換至 {chain}",
+    "target": "目標網絡: {chain}",
+    "unknownNetwork": "未知網絡",
+    "networkSwitchHint": "{network} · 切換至 {chain}",
+    "notConnected": "未連接錢包",
+    "noInjected": "未檢測到注入的錢包",
+    "disconnectHint": "如果您想撤銷訪問權限，請在錢包擴展程序中斷開與注入錢包的連接。",
+    "pending": "處理中...",
+    "errors": {
+      "noInjected": "未找到注入的錢包。請安裝 MetaMask 或兼容的錢包。",
+      "noAccount": "未返回任何錢包賬戶。",
+      "rejected": "您取消了錢包請求。",
+      "addChain": "請將 {chain} 添加到您的錢包並重試。",
+      "untrustedHost": "當前宿主環境未被信任。請從已批准的來源重新打開應用。",
+      "switchNetwork": "請切換至 {chain}。",
+      "generic": "錢包連接失敗，請重試。"
+    }
+  },
+  "components": {
+    "approvalActionGroup": {
+      "connectWallet": "連接錢包",
+      "approve": "授權 {token}",
+      "approving": "正在授權 {token}...",
+      "checking": "檢查中..."
+    },
+    "pendingNotice": {
+      "default": "處理中..."
+    },
+    "collapsibleCard": {
+      "poolStatus": "交易池狀態",
+      "options": "選項",
+      "swapOptions": "兌換選項"
+    },
+    "poolStatus": {
+      "totalLiquidity": "總流動性",
+      "lpMinted": "LP 鑄造量",
+      "barkxReserve": "BARKX 儲備量",
+      "usdtReserve": "USDT 儲備量"
+    },
+    "swapOptions": {
+      "slippageTolerance": "滑點容差",
+      "transactionDeadline": "交易截止時間",
+      "minutes": "分鐘",
+      "expertMode": "專家模式",
+      "expertModeHint": "允許高滑點交易",
+      "custom": "自定義",
+      "slippage": {
+        "low": "0.1%",
+        "medium": "0.5%",
+        "high": "1.0%"
+      }
+    },
+    "aiBonus": {
+      "title": "讓 AI 打理您的礦池",
+      "line1": "我們強烈建議前往 BarkX Chat，讓 AI 為您處理待領取的獎勵以及其餘的礦池操作 —— 全新的 Crypto + AI 體驗。",
+      "line2": "社群每週日進行一次抽獎。過去一週內曾透過 BarkX Chat 指揮 AI 的節點，皆自動獲得參加資格。",
+      "line3": "一週內交由 AI 執行的礦池操作越多，您的節點中獎機會越高。",
+      "line4": "AI Bonus 每個節點最高可得 100 BARKX。",
+      "line5": "在 Discord 關注抽獎。",
+      "chat": "前往 BarkX Chat",
+      "discord": "加入 Discord",
+      "abandon": "放棄 AI",
+      "abandonWait": "放棄 AI（{seconds}）"
+    },
+    "quickStart": {
+      "title": "BarkX 礦池快速入門",
+      "subtitle": "新節點進入 BarkX 礦池所需的全部步驟，依序排列。",
+      "entry": "BarkX 礦池快速入門",
+      "common": {
+        "finish": "完成"
+      },
+      "approve": {
+        "title": "授權",
+        "checking": "正在檢查授權...",
+        "approved": "已授權",
+        "action": "授權 {token}",
+        "hint": "請從最上方的按鈕開始。您的錢包接下來會依序提示其餘的授權。",
+        "vn": "VN",
+        "usdtPool": "USDT（BarkX 礦池）",
+        "usdtRouter": "USDT（Uniswap）",
+        "barkx": "BARKX",
+        "lp": "LP",
+        "failed": "授權未完成，請重試。"
+      },
+      "skip": "跳過此步驟",
+      "depositVn": {
+        "title": "存入新 VN",
+        "vnToDeposit": "待存入 VN",
+        "pairingUsdt": "配對 USDT",
+        "bonus": "BARKX 贈予",
+        "lock": "這些資產將鎖定 360 天。",
+        "action": "存入 VN + USDT",
+        "reasonNoVn": "您的錢包中沒有可存入的 VN。",
+        "reasonNoUsdt": "USDT 不足，無法為 1 個 VN 的贈予配對。"
+      },
+      "buyBarkx": {
+        "title": "購買 BARKX",
+        "spend": "待花費 USDT",
+        "receive": "獲得 BARKX",
+        "hint": "依您的錢包餘額與待填滿的 LP 額度空間計算。",
+        "action": "購買 BARKX",
+        "checking": "正在檢查是否需要購買 BARKX...",
+        "quotaTooFull": "LP 額度空間不足，無法繼續。請存入更多 VN 以提升額度空間，然後重新開始。點擊上方的 X 關閉此視窗。"
+      },
+      "mintLp": {
+        "title": "鑄造 LP",
+        "barkxIn": "投入 BARKX",
+        "usdtIn": "投入 USDT",
+        "lpOut": "獲得 LP",
+        "action": "添加流動性",
+        "checking": "正在檢查還需鑄造多少 LP..."
+      },
+      "depositLp": {
+        "title": "存入更多 LP",
+        "amount": "待存入 LP",
+        "lock": "此 LP 將鎖定 24 小時。",
+        "action": "存入 LP",
+        "pending": "正在存入 LP...",
+        "finishQuotaFull": "您的 LP 額度空間已填滿，沒有可再存入的部分。",
+        "finishNoLp": "您目前在 BarkX 礦池中持有 {lpStake} LP。"
+      }
+    }
+  },
+  "messages": {
+    "barkxPool": {
+      "groups": {
+        "depositVnLp": "存入 VN+LP",
+        "depositWvnOnly": "僅存入 wVN",
+        "depositLpOnly": "僅存入 LP",
+        "withdrawWvn": "提取 wVN",
+        "withdrawLp": "提取 LP",
+        "directClaim": "直接領取",
+        "compound": "複投"
+      },
+      "items": {
+        "deposit_vn_lp_success": "存入完成。已生成 {lpAmount} LP 並發送至礦池。",
+        "deposit_vn_lp_failure_cap_reached": "失敗。已達到 LP 額度空間。請先存入更多 VN。",
+        "deposit_vn_lp_failure_retry": "失敗。請重試。",
+        "deposit_wvn_only_success": "存入完成。您的 LP 額度空間已提升。",
+        "deposit_wvn_only_failure_requires_lp": "失敗。在存入額外的 wVN 之前，您必須在礦池中至少擁有 {lpAmount} LP。",
+        "deposit_wvn_only_failure_retry": "失敗。請重試。",
+        "deposit_lp_only_success": "存入完成。您現在的挖礦算力已提升。",
+        "deposit_lp_only_failure_requires_vn": "失敗。在存入額外的 LP 之前，您必須在礦池中至少擁有 {vnAmount} VN。",
+        "deposit_lp_only_failure_cap_reached": "失敗。已達到 LP 額度空間。請先存入更多 VN。",
+        "deposit_lp_only_failure_retry": "失敗。請重試。",
+        "withdraw_wvn_success_cap_decreased": "提取完成。您的 LP 額度空間已降低。",
+        "withdraw_wvn_success_all_removed": "提取完成。您所有的 wVN 和 LP 已被移除並退回至您的錢包。",
+        "withdraw_wvn_failure_cap_exceeded": "失敗。提取 VN 後將超出 LP 額度空間。請先移除 LP。",
+        "withdraw_wvn_failure_retry": "失敗。請重試。",
+        "withdraw_lp_success": "提取完成。您的挖礦算力已降低。",
+        "withdraw_lp_failure_requires_lp": "失敗。當您在礦池中擁有 VN 時，必須至少保留 {lpAmount} LP。",
+        "withdraw_lp_failure_retry": "失敗。請重試。",
+        "direct_claim_success": "太棒了！已將 {barkxAmount} BARKX 領取至錢包。",
+        "direct_claim_failure_retry": "失敗。請重試。",
+        "compound_success": "太棒了！已將 {barkxAmount} BARKX 複投為 {lpAmount} LP 並發送至礦池。",
+        "compound_failure_cap_exceeded": "失敗。複投後將超出 LP 額度空間。請先存入更多 VN。",
+        "compound_failure_retry": "失敗。請重試。"
+      }
+    },
+    "uniswap": {
+      "groups": {
+        "swap": "兌換",
+        "addLiquidity": "添加流動性",
+        "removeLiquidity": "移除流動性"
+      },
+      "items": {
+        "uniswap_swap_success": "兌換完成。",
+        "uniswap_swap_failure_retry": "失敗。請重試。",
+        "uniswap_add_liquidity_success": "已提供流動性。生成了 {lpAmount} LP。",
+        "uniswap_add_liquidity_failure_retry": "失敗。請重試。",
+        "uniswap_remove_liquidity_success": "已移除流動性。銷毀了 {lpAmount} LP。",
+        "uniswap_remove_liquidity_failure_retry": "失敗。請重試。"
+      }
+    }
+  },
+  "errors": {
+    "barkxPool": {
+      "paused": "此操作當前已暫停。",
+      "stillLocked": "該資產仍處於鎖定狀態。",
+      "lpCapExceeded": "超出 LP 額度空間。請先增加更多的 VN 額度。",
+      "noVnStaked": "未質押任何 VN，因此無法單獨存入 LP。",
+      "insufficientLp": "當前的 LP 頭寸過低，無法存入更多 wVN1。",
+      "belowLpMin": "此次提取將導致 LP 餘額低於最低要求。",
+      "mustWithdrawAllLp": "移除最後一部分 VN 時，必須提取所有的 LP。",
+      "invalidSignature": "簽名無效。請請求新的簽名。",
+      "signatureExpired": "簽名已過期。請請求新的簽名。",
+      "alreadyUsedInModeA": "此 wVN1 已在模式 A 中使用，無法再次獲得獎勵。",
+      "zeroAmount": "金額必須大於零。",
+      "nothingToWithdraw": "沒有可提取的資產。",
+      "invalidBucket": "選擇的存儲桶不存在。",
+      "slippageExceeded": "超出滑點限制。請調整參數後重試。",
+      "insufficientBalance": "礦池獎勵餘額不足。",
+      "invalidParam": "參數無效。請檢查輸入值。"
+    }
+  },
+  "pages": {
+    "dashboard": {
+      "title": "儀表盤",
+      "subtitle": "BARKX 流動性挖礦",
+      "metrics": {
+        "price": "BARKX/USDT 價格",
+        "apy": "APR",
+        "marketCap": "BARKX 流通規模"
+      },
+      "nodeWeight": {
+        "title": "節點權重",
+        "yesterdayWeight": "昨日權重：",
+        "fetchedFrom": "該數值由",
+        "sourceName": "OpenDAO API",
+        "multiplierBefore": "它會作為倍率直接作用於您的",
+        "averageBalance": "30 日平均餘額",
+        "multiplierAfter": "。更高的權重係數會顯著提升您在每日快照中的競爭佔比，從而獲得更大的 BARKX 兌換額度。",
+        "learnBefore": "如需了解如何提高節點權重，請訪問",
+        "linkText": "OpenDAO",
+        "learnAfter": "查看詳細要求。"
+      },
+      "mainPool": {
+        "title": "我的 BarkX 礦池",
+        "detailsTitle": "我的 BarkX 礦池詳情",
+        "boostedApr": "提速 APR",
+        "boostedApy": "提速 APY",
+        "vectorNexus": "向量權證（VN）",
+        "lpToken": "LP 代幣",
+        "pendingRewards": "待領取獎勵",
+        "totalAchieved": "累計已獲得"
+      },
+      "elitePool": {
+        "title": "我的 BarkX 精英礦池"
+      },
+      "vipPool": {
+        "title": "我的 BarkX VIP 礦池",
+        "apr": "APR"
+      },
+      "incubator": {
+        "title": "我的孵化池",
+        "myDeposit": "我的存入",
+        "average30Day": "30 日平均",
+        "myQuotaToday": "今日我的額度",
+        "totalIncubated": "累計孵化"
+      },
+      "cards": {
+        "newVn": "新 VN",
+        "newVnInWallet": "錢包中的新 VN",
+        "usedVn": "已用 VN",
+        "usedVnInWallet": "錢包中的已用 VN",
+        "barkx": "BARKX",
+        "barkxInWallet": "錢包中的 BARKX",
+        "lpToken": "LP 代幣",
+        "lpTokenInWallet": "錢包中的 LP 代幣",
+        "pendingRewards": "待領取的獎勵",
+        "achievedRewards": "已獲得的獎勵",
+        "inWallet": "錢包餘額"
+      },
+      "depositStatus": {
+        "title": "我的存入狀態",
+        "vectorNexus": "向量權證（VN）",
+        "lpToken": "LP 代幣",
+        "lpCap": "LP 額度空間",
+        "lpCapUnused": "{amount} LP 剩餘額度",
+        "note": "您還有未使用的 LP 額度。",
+        "cta": "存入更多 LP",
+        "tail": "以最大化您的挖礦算力！",
+        "noteOver70": "您的 LP 容量已使用超過 70%。請記得始終留出一些空間用於複投。"
+      },
+      "assetsInWallet": {
+        "title": "錢包資產",
+        "overviewTitle": "完整資產總覽",
+        "newVn": "新向量權證",
+        "usedVn": "已用向量權證",
+        "usedVn1": "已用向量權證 I",
+        "usedVn2": "已用向量權證 II",
+        "barkx": "BARKX 代幣",
+        "vbarkx": "vBARKX 代幣",
+        "lp": "LP 代幣",
+        "vlp": "vLP 代幣"
+      },
+      "poolRewards": {
+        "title": "BarkX 礦池獎勵",
+        "pendingMining": "待領取挖礦獎勵",
+        "totalAchieved": "累計已獲得"
+      },
+      "vipPoolRewards": {
+        "title": "BarkX VIP 礦池獎勵",
+        "pendingMining": "待領取挖礦獎勵",
+        "totalAchieved": "累計已獲得"
+      }
+    },
+    "incubator": {
+      "title": "孵化池",
+      "subtitle": "vBARKX-BARKX 網關",
+      "updateTime": "00:45 UTC",
+      "oneToOne": "1 vBARKX = 1 BARKX",
+      "connectPrompt": "連接錢包以查看您的孵化數據。",
+      "tabs": {
+        "normal": "常規孵化",
+        "leader": "領袖孵化"
+      },
+      "normalInfo": "根據您分配到的配額，將已注入的 vBARKX 轉換為 BARKX。當日未使用的轉換配額將被作廢，不會順延至次日。",
+      "leaderInfo": "領袖孵化池根據 OpenDAO 節點訊號模型與節點反饋模型的收益數據映射每日轉換配額。在任意一天，節點的動態獎勵與反饋獎勵都會自動映射為其在領袖孵化池中的每日轉換配額。若當日轉換配額未使用，將自動累積。",
+      "stats": {
+        "myInjection": "我的注入",
+        "avgWeighted": "30 日均存量加權",
+        "nodeWeight": "OpenDAO 節點權重",
+        "quotaShare": "當前配額佔比",
+        "globalQuota": "今日全局配額",
+        "myQuota": "今日我的配額",
+        "dynamicReward": "動態獎勵",
+        "feedbackReward": "反饋獎勵",
+        "mappingEfficiency": "OpenDAO 映射效率",
+        "leaderQuotaGrowth": "領袖配額增長",
+        "totalUnused": "未用領袖配額總額"
+      },
+      "preview": {
+        "amountToIncubate": "孵化數量",
+        "injected": "已注入: {amount} vBARKX",
+        "convertedAmount": "轉換數量"
+      },
+      "buttons": {
+        "incubate": "孵化為 BARKX",
+        "insufficientInjection": "注入不足",
+        "lessThanOne": "少於 1 BARKX",
+        "inject": "注入 vBARKX",
+        "approve": "授權 vBARKX",
+        "insufficientBalance": "餘額不足",
+        "suspended": "轉換已暫停"
+      },
+      "done": {
+        "normalTitle": "常規孵化已完成",
+        "leaderTitle": "領袖孵化已完成",
+        "normalDesc": "您今日已在常規孵化池完成轉換。",
+        "leaderDesc": "您今日已在領袖孵化池完成轉換。",
+        "comeBack": "請於明日 {time} 再回來。"
+      },
+      "inject": {
+        "title": "注入 vBARKX",
+        "info": "注入您的 vBARKX 以建立 30 日平均存量。每日於 <strong>00:45 UTC</strong> 拍攝的快照將決定您次日 BARKX 轉換配額中的佔比。",
+        "amount": "注入數量",
+        "warning": "警告：注入不可逆。已注入的 vBARKX 只能轉換，不能提取。",
+        "success": "注入成功。已注入 {amount} vBARKX。",
+        "failure": "失敗。"
+      },
+      "confirm": {
+        "title": "確認孵化",
+        "confirm": "確認",
+        "success": "孵化成功。已轉換 {amount} BARKX。",
+        "failure": "失敗。",
+        "messageNormal": "您即將把常規配額 <strong>{amount} vBARKX</strong> 按 1:1 比例孵化為 BARKX。",
+        "messageLeader": "您即將把累積的領袖配額 <strong>{amount} vBARKX</strong> 按 1:1 比例孵化為 BARKX。",
+        "pending": "已有一筆轉換正在進行中。請稍候片刻後重試。",
+        "cooldown": "請等待幾秒後再次轉換。",
+        "inProgress": "等待中繼",
+        "inCooldown": "轉換冷卻中"
+      },
+      "weightModal": {
+        "title": "OpenDAO 節點權重",
+        "desc": "此數值安全地取自 <strong>OpenDAO Partner API</strong>。<br><br>它作為乘數直接作用於您的 30 日均注入量。更高的權重係數會顯著放大您在每日快照中的競爭佔比，從而獲得更大份額的 BARKX 轉換配額。",
+        "colTier": "節點等級",
+        "colWeight": "節點權重"
+      },
+      "dynamicModal": {
+        "title": "動態獎勵映射",
+        "desc": "此數值安全地取自 <strong>OpenDAO Partner API</strong>。<br><br>它作為係數，將您的 OpenDAO 動態獎勵直接映射為領袖孵化配額。",
+        "colEfficiency": "映射效率"
+      },
+      "feedbackModal": {
+        "title": "反饋獎勵映射",
+        "desc": "此數值安全地取自 <strong>OpenDAO Partner API</strong>。<br><br>它作為係數，將您的 OpenDAO 反饋獎勵直接映射為領袖孵化配額。",
+        "colEfficiency": "映射效率"
+      },
+      "leaderboard": {
+        "title": "孵化排行榜",
+        "value": "{amount} BARKX"
+      },
+      "tiers": {
+        "notRegistered": "未註冊",
+        "nova": "新星",
+        "voyager": "探險",
+        "navigator": "領航",
+        "commander": "指揮",
+        "stellarMaster": "星際"
+      },
+      "errors": {
+        "userSuspended": "您的孵化轉換已被暫停。",
+        "alreadyConverted": "今日已完成該孵化轉換。",
+        "insufficientInjection": "注入量不足，無法完成本次轉換。",
+        "quotaBelowMin": "配額少於 1 BARKX。",
+        "approverLocked": "後端簽名服務尚未解鎖，請稍後再試。",
+        "notConfigured": "孵化池服務尚未配置完成。",
+        "authRequired": "錢包授權已失效，請重新確認。",
+        "badSignature": "錢包簽名驗證失敗，請重試。",
+        "badChallenge": "錢包驗證已過期，請重新確認。",
+        "rateLimited": "請求過於頻繁，請稍後再試。",
+        "signFailed": "後端生成轉換簽名失敗，請稍後再試。"
+      }
+    },
+    "orderbook": {
+      "title": "訂單簿",
+      "subtitle": "vBARKX-BARKX 市場",
+      "connectPrompt": "連接您的錢包以查看訂單簿並進行交易。",
+      "priceTierLabel": "價格檔位（每枚 vBARKX 對應的 BARKX）",
+      "selectAll": "全選當前頁",
+      "noOrders": "此價格檔位暫無掛單。",
+      "tabs": {
+        "buy": "買入 vBARKX",
+        "sell": "賣出 vBARKX"
+      },
+      "buy": {
+        "info": "選擇您理想的價格檔位，然後從列表中勾選訂單並支付 BARKX 以購買 vBARKX。買方需承擔 {pct}% 的交易手續費。",
+        "depth": "市場深度",
+        "cartTitle": "已選購買（彙總）",
+        "totalDemand": "總需求量",
+        "totalPayment": "總支付額",
+        "fee": "手續費（銷毀 {pct}%）",
+        "action": "購買所選",
+        "insufficientBalance": "餘額不足",
+        "success": "購買已在鏈上確認。",
+        "failure": "購買失敗，請重試。"
+      },
+      "sell": {
+        "placeTitle": "建立新訂單",
+        "placeInfo": "指定一個價格檔位，然後選擇您希望賣出的 vBARKX 數量。提交後，您的 vBARKX 將託管於智能合約中。掛單免費。",
+        "selectPrice": "選擇價格（每枚 vBARKX 對應的 BARKX）",
+        "selectAmount": "選擇數量（vBARKX）",
+        "estimatedValue": "預估價值",
+        "walletBalance": "錢包餘額",
+        "placeAction": "提交訂單",
+        "placeSuccess": "訂單已在鏈上掛出。",
+        "placeFailure": "掛單失敗，請重試。",
+        "activeTitle": "您的有效訂單",
+        "revokeInfo": "選擇一個價格檔位，然後從列表中勾選訂單以撤銷。撤銷訂單免手續費。",
+        "yourDepth": "您的總深度",
+        "noActive": "此價格檔位暫無有效訂單。",
+        "revokeCartTitle": "已選撤銷（彙總）",
+        "totalRevoke": "撤銷總量",
+        "revokeAction": "撤銷所選",
+        "revokeSuccess": "訂單已在鏈上撤銷。",
+        "revokeFailure": "撤銷失敗，請重試。"
+      },
+      "deals": {
+        "title": "近期成交",
+        "purchase": "買入",
+        "sale": "賣出",
+        "bought": "已買入",
+        "sold": "已賣出",
+        "paid": "已支付",
+        "earned": "已獲得",
+        "none": "暫無近期成交。"
+      },
+      "errors": {
+        "revokeTooEarly": "訂單掛出後需等待約 12 個區塊才能撤銷。請稍後重試。",
+        "orderUnavailable": "您所選的一個或多個訂單已不可用（已成交或已撤銷）。列表已重新整理。",
+        "orderLimit": "您已達到 100 個有效訂單的上限。請先撤銷或賣出部分訂單。",
+        "paused": "此操作當前已暫停。"
+      }
+    },
+    "swap": {
+      "title": "兌換",
+      "subtitle": "Uniswap V2 • Arbitrum One",
+      "pay": "支付",
+      "receive": "收到",
+      "rate": "匯率",
+      "priceImpact": "價格影響",
+      "minimumReceived": "最少收到",
+      "networkFee": "網絡費用",
+      "action": "兌換",
+      "priceImpactTooHigh": "價格影響過高",
+      "pending": "兌換中..."
+    },
+    "liquidity": {
+      "title": "流動性",
+      "subtitle": "提供 BARKX-USDT 流動性",
+      "tabs": {
+        "add": "添加流動性",
+        "remove": "移除流動性"
+      },
+      "add": {
+        "tokenA": "代幣 A",
+        "tokenB": "代幣 B",
+        "receive": "您將收到",
+        "shareOfPool": "流動性佔比",
+        "action": "添加流動性",
+        "pending": "添加流動性中..."
+      },
+      "remove": {
+        "lpAmount": "LP 代幣數量",
+        "receive": "您將收到",
+        "action": "移除流動性",
+        "pending": "移除流動性中..."
+      }
+    },
+    "pool": {
+      "title": "BarkX 礦池",
+      "subtitle": "BARKX-USDT 流動性挖礦",
+      "personalBoostedApy": "您的個人提速 APY",
+      "common": {
+        "nodeBoostTitle": "查看節點提速明細"
+      },
+      "tabs": {
+        "depositVn": "存入 VN",
+        "depositMore": "追加存入",
+        "withdraw": "提取",
+        "rewards": "獎勵"
+      },
+      "depositVn": {
+        "info": "將您的新 VN 與 USDT 一起存入以自動鑄造 LP。每個 VN 可被贈予 {bonus} BARKX！",
+        "infoBefore": "將您的新 VN 與 USDT 一起存入以自動鑄造 LP。每個 VN 可被贈予 ",
+        "infoAfter": "！",
+        "currentApy": "APR",
+        "lockPeriod": "鎖定期",
+        "depositNewVn": "存入新 VN",
+        "bonusToDeposit": "存入贈予",
+        "barkxPrice": "BARKX 價格: {price} USDT",
+        "pairingWith": "配對代幣",
+        "predictedLp": "預計 LP 數量",
+        "action": "存入 VN + LP",
+        "pending": "存入 VN + LP 中...",
+        "unlockDate": "解鎖日期: {date}"
+      },
+      "depositMore": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "wvnInfo": "存入您已使用的 VN 以提升 LP 額度空間。",
+        "lpInfo": "存入您的 LP 以提高挖礦算力。",
+        "depositUsedVn": "存入已用 VN",
+        "depositLp": "存入 LP",
+        "capIncrease": "LP 額度空間提升",
+        "unlockLater": "{lockPeriod} 後解鎖。",
+        "depositWvnAction": "存入 wVN",
+        "depositWvnPending": "存入 wVN 中...",
+        "depositLpAction": "存入 LP",
+        "depositLpPending": "存入 LP 中..."
+      },
+      "withdraw": {
+        "wvn": "wVN",
+        "lp": "LP",
+        "tabWvnLp": "360 天",
+        "tabWvnOrLp": "24 小時",
+        "tabLpOnly": "90 天",
+        "info": "選擇已解鎖的存入記錄來提取您的資產。您的 LP 額度空間和挖礦算力將相應降低。",
+        "miningPower": "挖礦算力",
+        "selectAll": "選擇當前頁全部",
+        "noRecords": "暫無已解鎖記錄",
+        "unlocked": "已解鎖",
+        "locked": "鎖定中",
+        "confirming": "上鏈中",
+        "selectedSummary": "已選提取（匯總）",
+        "totalWvn": "合計 wVN",
+        "totalLp": "合計 LP",
+        "capDecrease": "LP 額度空間降低",
+        "withdrawSelected": "提取已選",
+        "withdrawPending": "提取中...",
+        "successMessage": "提取已完成。",
+        "wvnInfo": "從礦池中提取已解鎖的 VN。您的 LP 額度空間將會降低。",
+        "lpInfo": "從礦池中提取已解鎖的 LP。您的挖礦算力將會降低。",
+        "withdrawWvn": "提取 wVN",
+        "withdrawLp": "提取 LP",
+        "withdrawWvnAction": "提取 wVN",
+        "withdrawWvnPending": "提取 wVN 中...",
+        "withdrawLpAction": "提取 LP",
+        "withdrawLpPending": "提取 LP 中..."
+      },
+      "rewards": {
+        "info": "將獎勵提取到您的錢包，或將其複投為新的 LP 以節省 {discount} 的手續費！",
+        "infoBefore": "將獎勵提取到您的錢包，或將其複投為新的 LP 以節省 ",
+        "infoAfter": " 的手續費！",
+        "autoAccumulated": "獎勵每 24 小時自動累積一次。",
+        "pendingRewards": "待領取的獎勵",
+        "directClaim": "直接領取",
+        "feeRate": "費率",
+        "receivingAmount": "到賬金額",
+        "directClaimAction": "直接領取",
+        "lessThanOneAction": "少於 1 BARKX",
+        "directClaimPending": "領取中...",
+        "compoundTitle": "複投至 LP",
+        "lockPeriod": "鎖定期",
+        "utilizedAmount": "使用金額",
+        "predictedLp": "預計 LP 數量",
+        "compoundAction": "複投",
+        "compoundPending": "複投中...",
+        "lockedUntil": "LP 鎖定至: {date}"
+      },
+      "depositStatus": {
+        "title": "個人狀態",
+        "vectorNexus": "向量權證（VN）",
+        "lpToken": "LP 代幣",
+        "lpCap": "LP 額度空間",
+        "unusedCap": "{amount} LP 剩餘額度",
+        "note": "您還有未使用的 LP 額度。",
+        "cta": "存入更多 LP",
+        "tail": "以最大化您的挖礦算力！",
+        "estimate": "估算",
+        "noteOver70": "您的 LP 容量已使用超過 70%。請記得始終留出一些空間用於複投。"
+      },
+      "estimate": {
+        "title": "LP 估算",
+        "emptyMessage": "您當前可用的 LP 額度空間太小，暫不支持估算。",
+        "emptyActionBefore": "請至少存入",
+        "emptyActionAfter": "來擴展您的 LP 額度空間，再估算流動性需求。",
+        "barkxPrice": "BARKX 價格",
+        "plannedLp": "計劃 LP",
+        "assetsRequired": "預估所需資產"
+      }
+    },
+    "vPool": {
+      "badge": "尊享邀請會員",
+      "viewInvitation": "查看邀請函",
+      "title": "BarkX VIP 礦池",
+      "subtitle": "vLP 挖礦池",
+      "notWhitelisted": "您的地址未被加入 VIP 礦池白名單。請聯繫團隊申請。",
+      "invitation": {
+        "changeLanguage": "點擊切換語言",
+        "lines": {
+          "greeting": "尊貴的賓客，",
+          "welcome": "歡迎來到專屬的 BarkX VIP 礦池。",
+          "contribution": "您的卓越貢獻與堅定信任，使您在我們的生態系統中脫穎而出。作為您尊貴身份的象徵，我們為您打造了這處私人專屬空間，旨在以最高級別的優質收益，最大化您的資產回報。",
+          "honor": "為您服務是我們無上的榮幸。",
+          "rewards": "請盡情享受您的專屬豐厚回報。"
+        },
+        "signature": "誠摯敬上"
+      },
+      "tabs": {
+        "depositVn": "存入 VN",
+        "depositVlp": "存入 vLP",
+        "withdraw": "提取",
+        "rewards": "獎勵"
+      },
+      "common": {
+        "vipApy": "VIP 礦池 APR",
+        "lockPeriod": "鎖定期",
+        "unlockLater": "{lockPeriod} 後解鎖。"
+      },
+      "depositVn": {
+        "info": "存入您的 VN 以提升 vLP 額度空間。",
+        "vn": "VN",
+        "wvn": "wVN",
+        "wvn2": "wVN2",
+        "depositNewVn": "存入新 VN",
+        "depositWvn": "存入 wVN",
+        "depositWvn2": "存入 wVN2",
+        "capIncrease": "vLP 額度空間提升",
+        "depositVnAction": "存入 VN",
+        "depositVnPending": "存入 VN 中...",
+        "depositWvnAction": "存入 wVN",
+        "depositWvnPending": "存入 wVN 中...",
+        "depositWvn2Action": "存入 wVN2",
+        "depositWvn2Pending": "存入 wVN2 中...",
+        "depositVnSuccess": "存入完成。您的 vLP 額度空間已擴展。",
+        "depositVnFailure": "存入失敗，請重試。",
+        "depositWvnSuccess": "存入完成。您的 vLP 額度空間已擴展。",
+        "depositWvnFailure": "存入失敗，請重試。",
+        "depositWvn2Success": "存入完成。您的 vLP 額度空間已擴展。",
+        "depositWvn2Failure": "存入失敗，請重試。",
+        "vnCapReached": "用戶存入 VN 數量已達白名單上限。",
+        "unlockLater": "{lockPeriod} 後解鎖。"
+      },
+      "depositVlp": {
+        "info": "存入您的 vLP 以提高挖礦算力。",
+        "unlockLater": "{lockPeriod} 後解鎖。",
+        "depositVlp": "存入 vLP",
+        "action": "存入 vLP",
+        "pending": "存入 vLP 中...",
+        "depositVlpSuccess": "存入完成。您的挖礦算力已提升。",
+        "depositVlpFailure": "存入失敗，請重試。"
+      },
+      "withdraw": {
+        "info": "選擇已解鎖的存入記錄以提取您的資產。您的 vLP 額度空間和挖礦算力將相應下降。",
+        "selectAllCurrentPage": "全選當前頁",
+        "noUnlockedRecords": "未找到已解鎖的記錄。",
+        "statusUnlocked": "已解鎖",
+        "selectedSummary": "已選提取匯總",
+        "totalWvn2": "wVN2 總量",
+        "totalVlp": "vLP 總量",
+        "capDecrease": "vLP 額度空間降低",
+        "statusLocked": "鎖定中",
+        "statusConfirming": "上鏈中",
+        "withdrawSelected": "提取已選",
+        "withdrawPending": "提取中...",
+        "withdrawSuccess": "提取完成。您的 vLP 額度空間已降低。",
+        "withdrawFailure": "提取失敗，請重試。",
+        "withdrawFailureCapExceeded": "提取失敗。取出 wVN2 後將超出 vLP 額度空間。請先提取部分 vLP。"
+      },
+      "rewards": {
+        "info": "將您的 VIP 獎勵直接提取到錢包。零手續費！",
+        "autoAccumulated": "獎勵每 24 小時自動累積一次。",
+        "pendingRewards": "待領取的獎勵",
+        "directClaim": "直接領取",
+        "feeRate": "費率",
+        "receivingAmount": "到賬金額",
+        "claimToWallet": "領取至錢包",
+        "lessThanOneAction": "少於 1 BARKX",
+        "claimPending": "領取獎勵中...",
+        "claimSuccess": "已領取 {amount} BARKX 至您的錢包。",
+        "claimFailure": "領取失敗，請重試。",
+        "noDeposits": "未找到可領取的存入記錄。"
+      },
+      "depositStatus": {
+        "title": "個人狀態",
+        "personalCapacity": "個人 VN 額度",
+        "vlpToken": "vLP 代幣",
+        "vlpCap": "vLP 額度空間",
+        "unusedCap": "{amount} vLP 剩餘額度",
+        "note": "您還有未使用的 vLP 額度。",
+        "cta": "存入更多 vLP",
+        "tail": "以最大化您的挖礦算力！"
+      }
+    },
+    "ePool": {
+      "title": "BarkX 精英礦池",
+      "subtitle": "精英俱樂部流動性挖礦",
+      "tabs": {
+        "depositVn": "存入 VN",
+        "depositVbarkx": "存入 vBARKX",
+        "withdraw": "提取",
+        "rewards": "獎勵"
+      },
+      "common": {
+        "apr": "APR",
+        "nodeBoostTitle": "查看節點提速明細",
+        "lockPeriod": "鎖定期",
+        "unlockLater": "{lockPeriod} 後解鎖。",
+        "barkxPrice": "BARKX 價格: {price} USDT"
+      },
+      "depositVn": {
+        "info": "僅全新 VN 可用於擴展 BarkX 精英礦池的 LP 額度空間。存入此處的全新 VN 仍會保持全新狀態，也可繼續在 BarkX 礦池中用於 BARKX 贈予。",
+        "depositNewVn": "存入新 VN",
+        "capIncrease": "LP 額度空間提升",
+        "action": "存入 VN",
+        "pending": "存入 VN 中...",
+        "success": "VN 存入成功。",
+        "failure": "VN 存入失敗。",
+        "paused": "VN 存入當前已暫停。"
+      },
+      "depositVbarkx": {
+        "infoBefore": "將您的 vBARKX 與 USDT 一起存入以自動鑄造 LP。所有 vBARKX 都會按 ",
+        "infoAfter": " 轉為 BARKX。",
+        "depositVbarkx": "存入 vBARKX",
+        "convertToDeposit": "轉換後存入",
+        "pairingWith": "配對代幣",
+        "predictedLp": "預計 LP 數量",
+        "action": "存入 vBARKX + USDT",
+        "pending": "存入 vBARKX + USDT 中...",
+        "minimum": "最少 {amount} vBARKX",
+        "success": "vBARKX 存入成功。",
+        "failure": "vBARKX 存入失敗。",
+        "paused": "vBARKX 存入當前已暫停。",
+        "depositVnFirst": "請先存入 VN 以解鎖 LP 額度空間。",
+        "priceUnavailable": "當前暫無可用的 BARKX 價格。",
+        "insufficientUsdt": "USDT 餘額不足。",
+        "capExceeded": "已超出 LP 額度空間。"
+      },
+      "withdraw": {
+        "info": "選擇已解鎖的存入記錄來提取您的資產。您的 LP 額度空間和挖礦算力將相應降低。",
+        "selectAllCurrentPage": "選擇當前頁全部",
+        "statusUnlocked": "已解鎖",
+        "selectedSummary": "已選提取（匯總）",
+        "totalVn": "合計 VN",
+        "totalLp": "合計 LP",
+        "capDecrease": "LP 額度空間降低",
+        "withdrawSelected": "提取已選",
+        "withdrawPending": "正在提取已選資產...",
+        "withdrawSuccess": "已提取選中的資產。",
+        "withdrawFailure": "提取失敗。",
+        "vnPaused": "VN 提取當前已暫停。",
+        "lpPaused": "LP 提取當前已暫停。",
+        "withdrawLpFirst": "請先提取 LP，或選擇更少的 VN 存入桶。"
+      },
+      "rewards": {
+        "info": "將您的精英礦池獎勵直接領取到錢包。零手續費！",
+        "autoAccumulated": "獎勵每 24 小時自動累積一次。",
+        "pendingRewards": "待領取的獎勵",
+        "directClaim": "直接領取",
+        "feeRate": "費率",
+        "receivingAmount": "到賬金額",
+        "claimToWallet": "領取至錢包",
+        "lessThanOneAction": "少於 1 BARKX",
+        "claimPending": "領取獎勵中...",
+        "claimSuccess": "已領取 {amount} BARKX。",
+        "claimFailure": "領取失敗。"
+      },
+      "depositStatus": {
+        "title": "個人狀態",
+        "vectorNexus": "向量權證（VN）",
+        "lpToken": "LP 代幣",
+        "lpCap": "LP 額度空間",
+        "unusedCap": "{amount} LP 剩餘額度",
+        "note": "您還有未使用的 LP 額度。",
+        "cta": "存入更多 LP",
+        "tail": "以最大化您的挖礦算力！",
+        "estimate": "估算"
+      },
+      "estimate": {
+        "title": "LP 估算",
+        "emptyMessage": "您當前可用的 LP 額度空間太小，暫不支持估算。",
+        "emptyActionBefore": "請至少存入",
+        "emptyActionAfter": "來擴展您的 LP 額度空間，再估算流動性需求。",
+        "barkxPrice": "BARKX 價格",
+        "plannedLp": "計劃 LP",
+        "assetsRequired": "預估所需資產"
+      },
+      "leaderboard": {
+        "title": "排行榜",
+        "topBurn": "燃燒排行",
+        "topDeposit": "存入排行"
+      },
+      "time": {
+        "fallback": "180 天",
+        "day": "{count} 天",
+        "days": "{count} 天",
+        "hour": "{count} 小時",
+        "hours": "{count} 小時",
+        "minute": "{count} 分鐘",
+        "minutes": "{count} 分鐘",
+        "lessThanMinute": "少於 1 分鐘"
+      },
+      "errors": {
+        "belowMinDeposit": "低於最小 vBARKX 存入數量。",
+        "insufficientBalance": "餘額不足。",
+        "invalidBucket": "存入桶選擇無效。",
+        "invalidParam": "交易參數無效。",
+        "invalidSignature": "領取簽名無效。",
+        "lpCapExceeded": "已超出 LP 額度空間。",
+        "noVnStaked": "請先存入 VN 以解鎖 LP 額度空間。",
+        "nothingToWithdraw": "沒有可提取的資產。",
+        "paused": "此操作當前已暫停。",
+        "signatureExpired": "領取簽名已過期。",
+        "slippageExceeded": "滑點超出限制，請重試。",
+        "stillLocked": "選中的資產仍在鎖定中。",
+        "zeroAmount": "數量必須大於 0。"
+      }
+    },
+    "barkdao": {
+      "subtitle": "節點領袖網絡",
+      "actionRequired": "需要操作",
+      "tabs": {
+        "invite": "邀請",
+        "network": "網絡",
+        "incentive": "激勵"
+      },
+      "unregistered": {
+        "title": "您尚未加入 BarkDAO。",
+        "desc": "要參與網絡，您必須註冊您的節點領袖錢包地址。這將確立您在 BarkDAO 結構中的位置。",
+        "warningTitle": "重要警告：",
+        "warningText": "您在下方輸入的領袖地址一旦在智能合約上註冊，將無法更改。請仔細檢查並確保地址 100% 準確後再確認。",
+        "leaderLabel": "領袖節點地址",
+        "feeLabel": "註冊費用",
+        "feeSub": "這是協議費用，不包含標準網絡燃料費。",
+        "register": "確認並註冊",
+        "registerPending": "註冊中...",
+        "registerSuccess": "註冊完成，BarkDAO 成員身份已生效。",
+        "registerFailure": "註冊失敗，請重試。",
+        "contractNotConfigured": "當前環境尚未配置 BarkDAO 合約地址。",
+        "registerDisabled": "目前已暫停註冊。",
+        "paymentDisabled": "目前暫不支持使用 ETH 註冊。",
+        "rootForbidden": "不能直接註冊在根節點地址下。",
+        "parentNotFound": "您輸入的領袖地址尚未註冊 BarkDAO。",
+        "parentDisabled": "該領袖地址目前不接受新成員節點。",
+        "alreadyRegistered": "當前錢包已註冊 BarkDAO。"
+      },
+      "invite": {
+        "badge": "活躍成員",
+        "title": "歡迎來到您的節點網絡",
+        "desc": "您已正式註冊 BarkDAO。通過分享您的錢包地址邀請他人加入您的網絡。他們註冊時，應輸入您的地址作為其領袖節點。",
+        "addressLabel": "您的錢包地址（用於邀請）",
+        "invitedByLabel": "邀請人",
+        "copy": "複製地址",
+        "copied": "已複製！"
+      },
+      "network": {
+        "title": "BarkX 可視化",
+        "howToExplore": "如何探索",
+        "viewLabel": "視圖：{label}",
+        "permissions": {
+          "max": "最大（20↑ / 20↓）",
+          "medium": "中等（20↑ / 3↓）",
+          "min": "最小（1↑ / 1↓）"
+        },
+        "guideTitle": "探索指南",
+        "guideDrag": "拖動",
+        "guideDragDesc": "畫布以平移。",
+        "guideTap": "點擊",
+        "guideTapDesc": "節點查看其地址。點擊空白處關閉。",
+        "guideDouble": "雙擊",
+        "guideDoubleDesc": "實心節點以展開。",
+        "guideLimit": "限制：",
+        "guideLimitDesc": "您最多可以探索距離您節點 {levels} 層的範圍。",
+        "legend": "圖例",
+        "legendRoot": "根節點",
+        "legendHigher": "上級領導",
+        "legendDirect": "直屬領導",
+        "legendYou": "您",
+        "legendSub": "下級網絡",
+        "legendSingle": "單個節點",
+        "legendCluster": "聚合單節點"
+      },
+      "incentive": {
+        "title": "節點激勵",
+        "qualified": "已達標",
+        "unqualified": "未達標",
+        "pending": "待領取激勵",
+        "infoStart": "將您累積的節點激勵合併到 BarkX 礦池的",
+        "pendingRewards": "待領取獎勵",
+        "infoMiddle": "中，以便領取或複投。",
+        "zeroFee": "0%",
+        "infoEnd": "手續費！",
+        "reqTitle": "需要達標：",
+        "reqText": "您的網絡激勵正在安全累積，但要合併它們，您必須在 BarkX 礦池中保持一個活躍的 360 天倉位（持有 1 VN + LP）。已解鎖的資產仍然有效。",
+        "mergeTitle": "合併到獎勵",
+        "feeRate": "手續費率",
+        "receiving": "到賬金額",
+        "mergingAmount": "合併金額",
+        "merge": "合併到獎勵",
+        "merging": "合併中...",
+        "mergedSuccess": "合併成功",
+        "goToRewards": "前往獎勵",
+        "claiming": "領取中...",
+        "claim": "領取至錢包"
+      },
+      "signal": {
+        "title": "網絡信號分佈",
+        "about": "關於 BarkX 網絡與激勵：",
+        "rule1": "1. 您的激勵效率取決於下游網絡的規模。",
+        "rule2": "2. 信號強度隨距離衰減。每一層保留上一層的 70%。",
+        "rule3": "3. 一個節點的信號最多可以到達 20 層深度。",
+        "colStrength": "信號強度",
+        "colDistance": "距離",
+        "colNodes": "活躍節點",
+        "colContribution": "貢獻",
+        "unauthorized": "數據未授權",
+        "summary": "匯總 / 合計："
+      }
+    },
+    "settings": {
+      "title": "設置",
+      "subtitle": "偏好與鏈接",
+      "wallet": {
+        "title": "錢包",
+        "copy": "複製",
+        "copied": "已複製",
+        "switchWallet": "切換錢包",
+        "disconnect": "斷開連接"
+      },
+      "contracts": {
+        "title": "智能合約",
+        "copy": "複製合約地址"
+      },
+      "display": {
+        "title": "顯示",
+        "language": "語言",
+        "selectLanguage": "選擇語言",
+        "en": "EN",
+        "cn": "CN"
+      },
+      "about": {
+        "title": "關於",
+        "version": "版本",
+        "tutorial": "教程",
+        "docs": "文檔",
+        "discord": "Discord"
+      }
+    },
+    "nodeBoost": {
+      "title": "節點提速",
+      "subtitle": "個人提速管理",
+      "days": "天",
+      "status": {
+        "noRecord": "當前錢包尚未查到 BarkX 礦池記錄。請先完成礦池存入，才能解鎖個人化提速資訊。",
+        "loadFailed": "節點提速資料刷新失敗，頁面目前展示的是安全兜底值。"
+      },
+      "toggle": {
+        "emptyState": "切換空狀態",
+        "mockData": "查看：模擬數據"
+      },
+      "modal": {
+        "close": "關閉彈窗"
+      },
+      "totalCard": {
+        "title": "BarkX 礦池基礎 APR 倍率"
+      },
+      "active": {
+        "title": "已激活提速明細",
+        "empty": "當前帳戶未找到已激活的提速。"
+      },
+      "available": {
+        "title": "可解鎖提速",
+        "allUnlocked": "您目前已擁有全部可用提速！"
+      },
+      "boosts": {
+        "permanent": {
+          "name": "永久提速",
+          "meta": "終身帳戶特權"
+        },
+        "leadership": {
+          "name": "領袖獎章提速",
+          "expiresIn": "剩餘時間：",
+          "unlockHint": "建設您的 BarkX 節點網絡",
+          "upTo": "最高 {rate}"
+        },
+        "compound": {
+          "name": "複投獎章提速",
+          "nextEvaluation": "下次評估還有：",
+          "globalEvaluation": "全局評估還有：",
+          "evaluatedRatio": "上次評估比例：",
+          "weeklyEvaluation": "每週全局評估",
+          "liveRatio": "當前複投比例：",
+          "upTo": "最高 {rate}"
+        },
+        "device": {
+          "name": "設備提速",
+          "meta": "符合條件的智能硬件提速"
+        },
+        "penalty": {
+          "name": "減益調整",
+          "meta": "協議風控調整"
+        }
+      },
+      "modals": {
+        "permanent": {
+          "title": "永久提速",
+          "text": "感謝您為 BarkAI 生態做出的巨大貢獻。這是屬於您的終身榮耀。"
+        },
+        "leadership": {
+          "title": "領袖獎章提速",
+          "text": "您近期在建設 BarkX 節點網絡方面的領導力，為您贏得了這枚獎章。"
+        },
+        "compound": {
+          "title": "複投獎章提速",
+          "text": "如果您在 BarkX 礦池中的終身複投比例保持高於 <strong>{threshold}%</strong>，您將在下個評估日繼續獲得此獎章。您在上次評估時的複投比例為 <strong style=\"color: var(--amber);\">{ratio}%</strong>。"
+        },
+        "device": {
+          "title": "設備提速",
+          "text": "此提速預留給符合條件的智能硬件激勵。目前公共接口只會返回已生效的提速比例，不會返回資格細節。"
+        },
+        "penalty": {
+          "title": "減益調整",
+          "text": "減益係數是協議風控調整的一部分，會直接作用在最終 Node Boost 倍率上。當其為負值時，會降低您的有效收益倍率。"
+        },
+        "protocol": {
+          "title": "協議風控參數",
+          "text": "總收益倍率硬上限為 <strong style=\"color: var(--amber);\">x2.00</strong>。超過 +100% 的累積提速將被截斷，以確保網絡可持續性並遵守加速引擎的嚴格風控規則。"
+        }
+      }
+    },
+    "vn": {
+      "title": "向量權證",
+      "subtitle": "轉帳服務",
+      "tabs": {
+        "newVn": "全新 VN",
+        "usedVn": "已用 VN"
+      },
+      "recipientAddress": "接收地址",
+      "addressPlaceholder": "0x...",
+      "transferAmount": "轉帳數量",
+      "balance": "餘額",
+      "newVn": {
+        "info": "將您的全新向量權證 (VN) 轉帳至其他錢包地址。區塊鏈上的操作不可逆轉。",
+        "btn": "轉帳 VN"
+      },
+      "usedVn": {
+        "info": "轉帳您的已用向量權證 (wVN/wVN2)。請注意，ERC721 轉帳會產生稍高的 Gas 費用。",
+        "btn": "轉帳"
+      },
+      "modal": {
+        "title": "確認轉帳",
+        "confirm": "簽名並繼續",
+        "pending": "轉帳中...",
+        "aboutToTransfer": "您即將轉帳",
+        "toAddress": "至以下地址：",
+        "warning": "⚠️ 請仔細核對接收地址。區塊鏈轉帳無法撤銷。"
+      },
+      "transfer": {
+        "pending": "正在轉帳 {asset}...",
+        "success": "轉帳完成。",
+        "failed": "轉帳失敗。"
+      }
+    },
+    "noticeTest": {
+      "eyebrow": "測試路由",
+      "title": "提示預覽",
+      "subtitle": "此測試路由僅用於預覽提示組件，未接入實際業務流程。當前包含 BarkX 礦池和 Uniswap 的消息文案。點擊任意預覽按鈕可將提示顯示為屏幕底部居中的浮動彈窗。",
+      "path": "路徑: /test/barkx-pool-notice",
+      "floatingPreview": "浮動提示預覽",
+      "noActiveNotice": "無活動提示",
+      "sourceBarkx": "BarkX",
+      "sourceUniswap": "Uniswap",
+      "showBarkxExample": "顯示 BarkX 示例",
+      "showUniswapExample": "顯示 Uniswap 示例",
+      "hideNotice": "隱藏提示",
+      "pendingNotice": "處理中提示",
+      "pendingHint": "屏幕底部居中浮動提示；顯示期間錢包相關按鈕將保持鎖定。",
+      "showPending": "顯示處理中",
+      "hidePending": "隱藏處理中",
+      "itemsCount": "{count} 條",
+      "preview": "預覽",
+      "outcomeSuccess": "成功",
+      "outcomeFailure": "失敗",
+      "uniswapPreview": "Uniswap 預覽",
+      "pair": "BARKX / USDT"
+    }
+  }
+}
